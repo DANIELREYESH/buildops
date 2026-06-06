@@ -31,6 +31,8 @@ export default function RequestsPage() {
   const [showNew, setShowNew] = useState(false)
   const [showQuote, setShowQuote] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [dragOver, setDragOver] = useState<Request['status'] | null>(null)
+  const [draggingId, setDraggingId] = useState<string | null>(null)
 
   const [newForm, setNewForm] = useState({ client_name: '', client_email: '', client_phone: '', description: '', location: '', budget_estimate: '', job_type: '' })
   const [quoteItems, setQuoteItems] = useState<QuoteItem[]>([{ description: '', qty: '1', unit: 'item', unit_price: '' }])
@@ -143,18 +145,33 @@ export default function RequestsPage() {
           <div className="flex gap-4 min-w-max">
             {STAGES.map(stage => {
               const stageReqs = requests.filter(r => r.status === stage.key)
+              const isOver = dragOver === stage.key
               return (
-                <div key={stage.key} className="w-64 flex-shrink-0">
+                <div key={stage.key} className="w-64 flex-shrink-0"
+                  onDragOver={e => { e.preventDefault(); setDragOver(stage.key) }}
+                  onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOver(null) }}
+                  onDrop={async e => {
+                    e.preventDefault(); setDragOver(null)
+                    const id = e.dataTransfer.getData('requestId')
+                    const req = requests.find(r => r.id === id)
+                    if (req && req.status !== stage.key) await moveStage(req, stage.key)
+                    setDraggingId(null)
+                  }}
+                >
                   <div className="flex items-center justify-between mb-2 px-1">
                     <span className={`text-xs font-bold uppercase tracking-wide ${stage.color}`}>{stage.label}</span>
                     <span className="text-xs font-bold text-[#9B978F]">{stageReqs.length}</span>
                   </div>
-                  <div className="space-y-2 min-h-[400px]">
+                  <div className={`space-y-2 min-h-[400px] rounded-[10px] p-1 transition-colors ${isOver ? 'bg-[#F0EDE8]' : ''}`}>
                     {loading ? (
                       <div className="animate-pulse space-y-2">{[1,2].map(i=><div key={i} className="h-24 bg-gray-100 rounded-[10px]"/>)}</div>
                     ) : stageReqs.map(req => (
-                      <div key={req.id} onClick={() => setPanel(req)}
-                        className="bg-white border border-[#DDD9D0] rounded-[10px] shadow-[0_1px_2px_rgba(0,0,0,.05)] p-3.5 cursor-pointer hover:border-[#D4561A] transition-colors">
+                      <div key={req.id}
+                        draggable
+                        onDragStart={e => { e.dataTransfer.setData('requestId', req.id); setDraggingId(req.id) }}
+                        onDragEnd={() => setDraggingId(null)}
+                        onClick={() => setPanel(req)}
+                        className={`bg-white border border-[#DDD9D0] rounded-[10px] shadow-[0_1px_2px_rgba(0,0,0,.05)] p-3.5 cursor-grab active:cursor-grabbing hover:border-[#D4561A] transition-colors select-none ${draggingId === req.id ? 'opacity-50' : ''}`}>
                         <div className="text-xs font-bold text-gray-900 mb-1">{req.client_name}</div>
                         {req.job_type && <div className="text-[11px] text-[#9B978F] mb-2">{req.job_type}</div>}
                         {req.location && (

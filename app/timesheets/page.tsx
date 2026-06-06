@@ -38,6 +38,12 @@ export default function TimesheetsPage() {
   const [userEmail, setUserEmail] = useState('')
   const [activeEntry, setActiveEntry] = useState<Timesheet | null>(null)
 
+  const [now, setNow] = useState(new Date())
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000)
+    return () => clearInterval(id)
+  }, [])
+
   const today = new Date().toISOString().split('T')[0]
   const weekStart = (() => {
     const d = new Date(); const day = d.getDay(); const diff = d.getDate() - day + (day === 0 ? -6 : 1)
@@ -180,8 +186,23 @@ export default function TimesheetsPage() {
         {activeEntry ? (
           <div className="bg-[#E8F5EE] border border-[#1A6B45]/20 rounded-[10px] p-4 mb-5 flex items-center justify-between">
             <div>
-              <span className="text-sm font-bold text-[#1A6B45]">Clocked in since {fmtTime(activeEntry.clock_in)}</span>
-              <p className="text-xs text-[#1A6B45]/70 mt-0.5">Project: {projName(activeEntry.project_id)}</p>
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-bold text-[#1A6B45]">Clocked in</span>
+                <span className="text-xl font-bold font-mono text-[#1A6B45] tabular-nums">
+                  {(() => {
+                    const ms = now.getTime() - new Date(activeEntry.clock_in!).getTime()
+                    const h = Math.floor(ms / 3600000)
+                    const m = Math.floor((ms % 3600000) / 60000)
+                    const s = Math.floor((ms % 60000) / 1000)
+                    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`
+                  })()}
+                </span>
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#1A6B45] bg-[#1A6B45]/10 px-2 py-0.5 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#1A6B45] animate-pulse" />
+                  Live
+                </span>
+              </div>
+              <p className="text-xs text-[#1A6B45]/70 mt-0.5">Since {fmtTime(activeEntry.clock_in)} · {projName(activeEntry.project_id)}</p>
             </div>
             <button onClick={clockOut} className="text-xs font-bold text-white bg-[#1A6B45] px-4 py-2 rounded-lg hover:bg-[#145538]">Clock Out</button>
           </div>

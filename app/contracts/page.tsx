@@ -118,6 +118,24 @@ export default function ContractsPage() {
     toast('Contract generated')
   }
 
+  const downloadContract = () => {
+    if (!viewContract) return
+    const body = generateBody(viewProject, viewContract, userEmail)
+    const signBlock = [
+      '\n\nSIGNATURES',
+      '─'.repeat(60),
+      `Contractor: ${viewContract.company_signed_by || '(unsigned)'}  |  Date: ${viewContract.company_signed_at ? new Date(viewContract.company_signed_at).toLocaleDateString('en-GB') : '—'}`,
+      `Client:     ${viewContract.client_signed_by || '(unsigned)'}  |  Date: ${viewContract.client_signed_at ? new Date(viewContract.client_signed_at).toLocaleDateString('en-GB') : '—'}`,
+    ].join('\n')
+    const content = `BuildOps Services Contract\nReference: ${viewContract.contract_ref}\n${'─'.repeat(60)}\n\n${body}${signBlock}`
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url; a.download = `${viewContract.contract_ref}.txt`; a.click()
+    URL.revokeObjectURL(url)
+    toast('Contract downloaded')
+  }
+
   const handleClientSign = async () => {
     if (!viewContract) return
     setSigningClient(true)
@@ -238,7 +256,7 @@ export default function ContractsPage() {
                 )}
               </div>
               <div className="flex items-center gap-2">
-                <button className="text-xs font-semibold text-gray-500 border border-[#E5E2DB] px-3 py-1.5 rounded-lg hover:bg-gray-50">Download PDF</button>
+                <button onClick={downloadContract} className="text-xs font-semibold text-gray-500 border border-[#E5E2DB] px-3 py-1.5 rounded-lg hover:bg-gray-50">Download</button>
                 <button onClick={() => setViewContract(null)} className="text-[#9B978F] hover:text-gray-700">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
                 </button>
