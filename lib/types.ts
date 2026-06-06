@@ -138,3 +138,15 @@ export interface TeamMember {
   status: 'active' | 'invited'
   created_at: string
 }
+
+export interface Supplier {
+  id: string
+  name: string
+  trade: string | null
+  contact: string | null
+  phone: string | null
+  email: string | null
+  address: string | null
+  notes: string | null
+  created_at: string
+}
