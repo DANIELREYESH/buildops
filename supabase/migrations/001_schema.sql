@@ -113,6 +113,7 @@ CREATE TABLE IF NOT EXISTS subcontractors (
   verified boolean DEFAULT false,
   availability boolean DEFAULT true,
   certifications jsonb DEFAULT '{}',
+  avatar_url text,
   created_at timestamptz DEFAULT now()
 );
 
@@ -142,15 +143,63 @@ CREATE TABLE IF NOT EXISTS team_members (
 );
 
 -- Seed subcontractors (run once)
-INSERT INTO subcontractors (name, trade, bio, location, day_rate, rating, reviews_count, verified, availability, certifications)
+INSERT INTO subcontractors (name, trade, bio, location, day_rate, rating, reviews_count, verified, availability, certifications, avatar_url)
 SELECT * FROM (VALUES
-  ('Marcus Reid',     'Electrician',         '12 years commercial and residential experience. First fix, second fix, and consumer units.',        'Hackney, London',      280, 4.9, 47, true,  true,  '{"verified_id":true,"insured":true,"cscs":true,"niceic":true,"part_p":true}'::jsonb),
-  ('Kevin Okafor',    'Plumber',             'Gas Safe registered. Expert in underfloor heating, bathroom installations, and central heating.',   'Brixton, London',      260, 4.7, 31, true,  true,  '{"verified_id":true,"insured":true,"cscs":true,"gas_safe":true}'::jsonb),
-  ('Dale Hennessy',   'Plasterer',           'Bonding coat, skim, and dry lining. 18 years experience. Fast, clean worker with references.',     'Croydon, London',      230, 4.8, 62, true,  false, '{"verified_id":true,"insured":true,"cscs":true}'::jsonb),
-  ('James Whitfield', 'Roofer',              'Flat and pitched roofing, EPDM rubber, lead work, and guttering. Insured to £2m.',                 'Lewisham, London',     290, 4.6, 28, true,  true,  '{"verified_id":true,"insured":true}'::jsonb),
-  ('Piotr Wojcik',    'Groundworker',        'Foundations, drainage, concrete slabs, blockwork. CSCS Gold card. Clean driving licence.',         'Edmonton, London',     240, 4.5, 19, true,  true,  '{"verified_id":true,"insured":true,"cscs":true}'::jsonb),
-  ('Tony Adeyemi',    'Carpenter',           'First and second fix carpentry, fitted furniture, and site management. 20 years UK experience.',   'Peckham, London',      250, 4.9, 84, true,  true,  '{"verified_id":true,"insured":true,"cscs":true}'::jsonb),
-  ('Ben Ashworth',    'Tiler',               'Wall and floor tiling, wet rooms, and feature walls. Porcelain, ceramic, and natural stone.',      'Islington, London',    220, 4.7, 35, false, false, '{"insured":true,"cscs":true}'::jsonb),
-  ('Femi Lawal',      'Painter & Decorator', 'Interior and exterior, spray finish, heritage property specialist. CIS registered.',               'Tottenham, London',    200, 4.8, 51, true,  true,  '{"verified_id":true,"insured":true}'::jsonb)
-) AS v(name, trade, bio, location, day_rate, rating, reviews_count, verified, availability, certifications)
+  (
+    'James Mitchell', 'Electrician',
+    'NICEIC-registered electrician with 14 years of commercial and residential experience across London. Specialises in first and second fix, consumer unit upgrades, and EV charger installations.',
+    'London', 320, 4.8, 63, true, true,
+    '{"verified_id":true,"insured":true,"cscs":true,"niceic":true,"part_p":true}'::jsonb,
+    'https://ui-avatars.com/api/?name=James+Mitchell&background=1A1916&color=fff&size=128&rounded=true&bold=true'
+  ),
+  (
+    'Ryan O''Brien', 'Plumber',
+    'Gas Safe registered plumber with 11 years across Surrey and South London. Expert in boiler installations, underfloor heating, and full bathroom fit-outs.',
+    'Surrey', 280, 4.9, 81, true, true,
+    '{"verified_id":true,"insured":true,"cscs":true,"gas_safe":true}'::jsonb,
+    'https://ui-avatars.com/api/?name=Ryan+O%27Brien&background=1A1916&color=fff&size=128&rounded=true&bold=true'
+  ),
+  (
+    'Thomas Clarke', 'Plasterer',
+    'Experienced plasterer covering Kent and South East London with 16 years in bonding coat, skim, and dry lining. Consistently clean finishes with strong client references.',
+    'Kent', 220, 4.6, 44, true, true,
+    '{"verified_id":true,"insured":true,"cscs":true}'::jsonb,
+    'https://ui-avatars.com/api/?name=Thomas+Clarke&background=1A1916&color=fff&size=128&rounded=true&bold=true'
+  ),
+  (
+    'Mohammed Al-Hassan', 'Roofer',
+    'Flat and pitched roofing specialist based in Essex with 12 years of experience. Covers EPDM rubber, lead work, guttering, and emergency repairs — fully insured to £5m.',
+    'Essex', 260, 4.7, 37, true, false,
+    '{"verified_id":true,"insured":true}'::jsonb,
+    'https://ui-avatars.com/api/?name=Mohammed+Al-Hassan&background=1A1916&color=fff&size=128&rounded=true&bold=true'
+  ),
+  (
+    'David Patel', 'Carpenter',
+    'CSCS Gold card carpenter with 9 years of first and second fix across London new-build and refurbishment sites. Strong in fitted furniture, staircases, and site joinery.',
+    'London', 240, 4.5, 29, true, true,
+    '{"verified_id":true,"insured":true,"cscs":true}'::jsonb,
+    'https://ui-avatars.com/api/?name=David+Patel&background=1A1916&color=fff&size=128&rounded=true&bold=true'
+  ),
+  (
+    'Connor Murphy', 'Tiler',
+    'Tiling specialist with 10 years covering London residential and commercial projects. Expert in large-format porcelain, natural stone, and wet room waterproofing systems.',
+    'London', 200, 4.8, 55, true, true,
+    '{"verified_id":true,"insured":true,"cscs":true}'::jsonb,
+    'https://ui-avatars.com/api/?name=Connor+Murphy&background=1A1916&color=fff&size=128&rounded=true&bold=true'
+  ),
+  (
+    'Sean Williams', 'Painter & Decorator',
+    'Reliable painter and decorator based in Hertfordshire with 8 years of interior and exterior experience. Spray finish, heritage restoration, and new-build handover specialist.',
+    'Hertfordshire', 180, 4.3, 22, false, true,
+    '{"insured":true}'::jsonb,
+    'https://ui-avatars.com/api/?name=Sean+Williams&background=1A1916&color=fff&size=128&rounded=true&bold=true'
+  ),
+  (
+    'Luke Thompson', 'Scaffolder',
+    'NASC-compliant scaffolding contractor with 13 years across London construction sites. Handles complex access solutions, birdcage scaffolds, and rapid-turnaround residential jobs.',
+    'London', 380, 4.9, 71, true, true,
+    '{"verified_id":true,"insured":true,"cscs":true}'::jsonb,
+    'https://ui-avatars.com/api/?name=Luke+Thompson&background=1A1916&color=fff&size=128&rounded=true&bold=true'
+  )
+) AS v(name, trade, bio, location, day_rate, rating, reviews_count, verified, availability, certifications, avatar_url)
 WHERE NOT EXISTS (SELECT 1 FROM subcontractors LIMIT 1);

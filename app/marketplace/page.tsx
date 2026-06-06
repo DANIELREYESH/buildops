@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import Image from 'next/image'
 import AppLayout from '@/app/dashboard/layout'
 import { supabase } from '@/lib/supabase'
 import { useToast } from '@/lib/toast'
@@ -126,8 +127,14 @@ export default function MarketplacePage() {
                 <div key={sub.id} className="bg-white border border-[#DDD9D0] rounded-[10px] shadow-[0_1px_2px_rgba(0,0,0,.05)] p-5">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-[#D4561A] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                        {sub.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                      <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-gray-100">
+                        {sub.avatar_url ? (
+                          <Image src={sub.avatar_url} alt={sub.name} width={40} height={40} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-[#1A1916] flex items-center justify-center text-white text-sm font-bold">
+                            {sub.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                          </div>
+                        )}
                       </div>
                       <div>
                         <div className="flex items-center gap-1.5">
@@ -191,9 +198,20 @@ export default function MarketplacePage() {
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setInviteSub(null)}>
           <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-[#E5E2DB] flex items-center justify-between">
-              <div>
-                <h3 className="font-bold text-sm text-gray-900">Invite to Job</h3>
-                <p className="text-[11px] text-[#9B978F] mt-0.5">{inviteSub.name} · {inviteSub.trade}</p>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 bg-gray-100">
+                  {inviteSub.avatar_url ? (
+                    <Image src={inviteSub.avatar_url} alt={inviteSub.name} width={36} height={36} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-9 h-9 rounded-full bg-[#1A1916] flex items-center justify-center text-white text-xs font-bold">
+                      {inviteSub.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm text-gray-900">Invite to Job</h3>
+                  <p className="text-[11px] text-[#9B978F] mt-0.5">{inviteSub.name} · {inviteSub.trade}</p>
+                </div>
               </div>
               <button onClick={() => setInviteSub(null)} className="text-[#9B978F] hover:text-gray-700">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>

@@ -112,6 +112,7 @@ export interface Subcontractor {
   verified: boolean
   availability: boolean
   certifications: Record<string, boolean> | null
+  avatar_url: string | null
   created_at: string
 }
 
