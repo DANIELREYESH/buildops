@@ -10,16 +10,27 @@ function Chevron() {
 
 const fmt = (n: number) => `£${Math.abs(n).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 
-type Bank = { id: string; name: string; color: string; textColor: string; balance: number; accountNo: string; sortCode: string }
+type Bank = { id: string; name: string; color: string; textColor: string; balance: number; accountNo: string; sortCode: string; mark: string }
+
+function BankLogo({ bank, size = 36 }: { bank: Bank; size?: number }) {
+  return (
+    <div
+      className="rounded-full flex items-center justify-center font-black flex-shrink-0"
+      style={{ width: size, height: size, backgroundColor: 'white', color: bank.color, fontSize: size * 0.4 }}
+    >
+      {bank.mark}
+    </div>
+  )
+}
 type Transaction = { id: string; bankId: string; date: string; description: string; amount: number; type: 'debit' | 'credit'; category: string; matched: boolean; matchedCostId?: string }
 
 const BANKS: Bank[] = [
-  { id: 'barclays',  name: 'Barclays',  color: '#00AEEF', textColor: 'white', balance: 48230.50, accountNo: '****4821', sortCode: '20-00-00' },
-  { id: 'hsbc',      name: 'HSBC',      color: '#DB0011', textColor: 'white', balance: 12890.75, accountNo: '****7293', sortCode: '40-02-50' },
-  { id: 'lloyds',    name: 'Lloyds',    color: '#006A4D', textColor: 'white', balance: 6102.30,  accountNo: '****1138', sortCode: '30-00-00' },
-  { id: 'natwest',   name: 'NatWest',   color: '#42145F', textColor: 'white', balance: 22450.00, accountNo: '****5566', sortCode: '60-60-06' },
-  { id: 'starling',  name: 'Starling',  color: '#7B5EA7', textColor: 'white', balance: 8720.44,  accountNo: '****0012', sortCode: '60-83-71' },
-  { id: 'monzo',     name: 'Monzo',     color: '#FF3B6B', textColor: 'white', balance: 3240.00,  accountNo: '****9871', sortCode: '04-00-04' },
+  { id: 'barclays',  name: 'Barclays',  color: '#00AEEF', textColor: 'white', balance: 48230.50, accountNo: '****4821', sortCode: '20-00-00', mark: 'B' },
+  { id: 'hsbc',      name: 'HSBC',      color: '#DB0011', textColor: 'white', balance: 12890.75, accountNo: '****7293', sortCode: '40-02-50', mark: 'H' },
+  { id: 'lloyds',    name: 'Lloyds',    color: '#006A4D', textColor: 'white', balance: 6102.30,  accountNo: '****1138', sortCode: '30-00-00', mark: 'L' },
+  { id: 'natwest',   name: 'NatWest',   color: '#42145F', textColor: 'white', balance: 22450.00, accountNo: '****5566', sortCode: '60-60-06', mark: 'N' },
+  { id: 'starling',  name: 'Starling',  color: '#7B5EA7', textColor: 'white', balance: 8720.44,  accountNo: '****0012', sortCode: '60-83-71', mark: 'S' },
+  { id: 'monzo',     name: 'Monzo',     color: '#FF3B6B', textColor: 'white', balance: 3240.00,  accountNo: '****9871', sortCode: '04-00-04', mark: 'M' },
 ]
 
 const MOCK_TRANSACTIONS: Transaction[] = [
@@ -139,7 +150,10 @@ export default function BankingPage() {
               style={{ backgroundColor: bank.color }}
             >
               <div className="flex items-center justify-between mb-3">
-                <span className="font-bold text-sm" style={{ color: bank.textColor }}>{bank.name}</span>
+                <div className="flex items-center gap-2">
+                  <BankLogo bank={bank} />
+                  <span className="font-bold text-sm" style={{ color: bank.textColor }}>{bank.name}</span>
+                </div>
                 {selectedBank === bank.id && (
                   <div className="w-2 h-2 rounded-full bg-white/80" />
                 )}
@@ -156,7 +170,10 @@ export default function BankingPage() {
 
         {/* Transaction feed */}
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-xs font-bold text-gray-900 uppercase tracking-wide">
+          <h2 className="text-xs font-bold text-gray-900 uppercase tracking-wide flex items-center gap-2">
+            <div className="rounded-full flex items-center justify-center font-black flex-shrink-0 w-5 h-5 text-[10px]" style={{ backgroundColor: selectedBankObj.color, color: 'white' }}>
+              {selectedBankObj.mark}
+            </div>
             {selectedBankObj.name} Transactions
           </h2>
           <button onClick={() => handleConnect(selectedBankObj)} className="text-[10px] font-semibold text-[#D4561A] border border-[#D4561A]/30 px-2.5 py-1 rounded-lg hover:bg-[#FEF6E4]">

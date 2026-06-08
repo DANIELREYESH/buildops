@@ -24,6 +24,7 @@ export interface Task {
   priority: 'low' | 'medium' | 'high' | 'urgent'
   due_date: string | null
   estimated_hours: number | null
+  comments: { id: string; author: string; text: string; created_at: string }[]
   created_at: string
 }
 
@@ -68,6 +69,36 @@ export interface Checkin {
   issue_description: string | null
   status: 'pending' | 'received' | 'issue' | 'no_response'
   checkin_date: string
+  created_at: string
+}
+
+export interface AiCheckin {
+  id: string
+  checkin_id: string | null
+  project_id: string | null
+  summary: string | null
+  risks: string[]
+  action_items: string[]
+  sentiment: 'positive' | 'neutral' | 'negative' | null
+  safety_flags: string[]
+  raw_response: unknown
+  created_at: string
+}
+
+export interface AiForecast {
+  id: string
+  overall_health: 'on_track' | 'at_risk' | 'critical' | string | null
+  projects: {
+    project_id: string
+    name: string
+    health: 'on_track' | 'at_risk' | 'critical'
+    projected_margin: number
+    projected_completion: string
+    summary: string
+  }[]
+  executive_summary: string | null
+  top_3_risks: string[]
+  raw_response: unknown
   created_at: string
 }
 
