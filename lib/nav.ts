@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, FolderKanban, CheckSquare, Clock, ScanLine, Bot,
-  Wallet, FileText, Landmark, Banknote, Inbox, Users, Store, TrendingUp,
-  Plug, CreditCard, type LucideIcon,
+  FileSignature, Wallet, FileText, Landmark, Banknote, TrendingUp,
+  Inbox, Users, Store, BarChart2, Plug, CreditCard, type LucideIcon,
 } from 'lucide-react'
 
 export type NavItem = { label: string; href: string; icon: LucideIcon }
@@ -19,17 +19,19 @@ export const NAV: NavGroup[] = [
   {
     group: 'FIELD OPS',
     items: [
+      { label: 'AI Check-ins', href: '/checkins', icon: Bot },
+      { label: 'Contracts', href: '/contracts', icon: FileSignature },
       { label: 'Timesheets', href: '/timesheets', icon: Clock },
       { label: 'Scan Tickets', href: '/tickets', icon: ScanLine },
-      { label: 'AI Check-ins', href: '/checkins', icon: Bot },
     ],
   },
   {
     group: 'FINANCE',
     items: [
       { label: 'Budget', href: '/costs', icon: Wallet },
-      { label: 'Invoicing', href: '/invoicing', icon: FileText },
+      { label: 'Cashflow', href: '/cashflow', icon: BarChart2 },
       { label: 'Banking', href: '/banking', icon: Landmark },
+      { label: 'Invoicing', href: '/invoicing', icon: FileText },
       { label: 'Sub Payments', href: '/payments', icon: Banknote },
     ],
   },

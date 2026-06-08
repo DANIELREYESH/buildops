@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import { useTheme } from 'next-themes'
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts'
@@ -63,6 +64,12 @@ function RevenueTooltip({ active, payload, label }: { active?: boolean; payload?
 }
 
 function RevenueChart() {
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === 'dark'
+  const gridColor = isDark ? '#1f1f1f' : '#e5e5e5'
+  const tickColor = isDark ? '#52525b' : '#a3a3a3'
+  const accent = '#6366f1'
+
   const last = REVENUE_DATA[REVENUE_DATA.length - 1].revenue
   const prev = REVENUE_DATA[REVENUE_DATA.length - 2].revenue
   const pct = Math.round(((last - prev) / prev) * 100)
@@ -83,15 +90,15 @@ function RevenueChart() {
         <AreaChart data={REVENUE_DATA} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
           <defs>
             <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#6366f1" stopOpacity={0.35} />
-              <stop offset="100%" stopColor="#6366f1" stopOpacity={0} />
+              <stop offset="0%" stopColor={accent} stopOpacity={0.35} />
+              <stop offset="100%" stopColor={accent} stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#1f1f1f" vertical={false} />
-          <XAxis dataKey="month" tick={{ fill: '#52525b', fontSize: 10 }} axisLine={{ stroke: '#1f1f1f' }} tickLine={false} />
-          <YAxis tick={{ fill: '#52525b', fontSize: 10 }} axisLine={false} tickLine={false} width={48} tickFormatter={v => `£${v / 1000}k`} />
-          <Tooltip content={<RevenueTooltip />} cursor={{ stroke: '#6366f1', strokeWidth: 1, strokeDasharray: '3 3' }} />
-          <Area type="monotone" dataKey="revenue" stroke="#6366f1" strokeWidth={2} fill="url(#revenueGradient)" />
+          <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
+          <XAxis dataKey="month" tick={{ fill: tickColor, fontSize: 10 }} axisLine={{ stroke: gridColor }} tickLine={false} />
+          <YAxis tick={{ fill: tickColor, fontSize: 10 }} axisLine={false} tickLine={false} width={48} tickFormatter={v => `£${v / 1000}k`} />
+          <Tooltip content={<RevenueTooltip />} cursor={{ stroke: accent, strokeWidth: 1, strokeDasharray: '3 3' }} />
+          <Area type="monotone" dataKey="revenue" stroke={accent} strokeWidth={2} fill="url(#revenueGradient)" />
         </AreaChart>
       </ResponsiveContainer>
     </div>

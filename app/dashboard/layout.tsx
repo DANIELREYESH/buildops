@@ -2,10 +2,11 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
+import { useTheme } from 'next-themes'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import {
   ChevronsLeft, ChevronsRight, ChevronDown, Search, Bell, Plus,
-  Settings, LogOut, FolderPlus, ListPlus, FileText,
+  Settings, LogOut, FolderPlus, ListPlus, FileText, Sun, Moon,
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { ToastProvider } from '@/lib/toast'
@@ -20,12 +21,18 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [hovering, setHovering] = useState(false)
   const [email, setEmail] = useState('')
   const [paletteOpen, setPaletteOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const { resolvedTheme, setTheme } = useTheme()
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user?.email) setEmail(user.email)
     })
   }, [])
+
+  useEffect(() => { setMounted(true) }, [])
+
+  const toggleTheme = () => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -128,6 +135,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                     <div className="text-xs font-medium text-text-primary truncate leading-tight">Helion Tech Ltd</div>
                     <div className="text-[10px] text-text-muted truncate leading-tight">{email || '—'}</div>
                   </div>
+                  <button
+                    onClick={toggleTheme}
+                    className="text-text-muted hover:text-text-primary transition-colors flex-shrink-0"
+                    title={mounted ? (resolvedTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode') : undefined}
+                    suppressHydrationWarning
+                  >
+                    {mounted && resolvedTheme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+                  </button>
                   <button onClick={() => router.push('/users')} className="text-text-muted hover:text-text-primary transition-colors flex-shrink-0" title="Settings">
                     <Settings size={14} />
                   </button>
@@ -156,6 +171,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             </button>
 
             <div className="flex items-center gap-3 ml-auto">
+              <button
+                onClick={toggleTheme}
+                className="text-text-muted hover:text-text-primary transition-colors"
+                title={mounted ? (resolvedTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode') : undefined}
+                suppressHydrationWarning
+              >
+                {mounted && resolvedTheme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+              </button>
+
               <button className="text-text-muted hover:text-text-primary transition-colors relative" title="Notifications">
                 <Bell size={16} />
                 <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-accent" />

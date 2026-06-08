@@ -81,8 +81,50 @@ export interface AiCheckin {
   action_items: string[]
   sentiment: 'positive' | 'neutral' | 'negative' | null
   safety_flags: string[]
+  patterns: string[]
+  productivity_score: number | null
+  predicted_delay_days: number
+  materials_mentioned: string[]
+  urgent: boolean
+  weather_impact: string | null
   raw_response: unknown
   created_at: string
+}
+
+export interface SubContract {
+  id: string
+  contract_number: string | null
+  subcontractor_name: string | null
+  project_id: string | null
+  trade: string | null
+  contract_value: number | null
+  start_date: string | null
+  end_date: string | null
+  payment_terms: string | null
+  retention_percent: number | null
+  description_of_works: string | null
+  generated_contract_text: string | null
+  status: 'draft' | 'active' | 'signed' | 'expired'
+  created_at: string
+}
+
+export type ForecastPeriod = {
+  week_label: string
+  money_in: number
+  money_out: number
+  net: number
+  cumulative_balance: number
+  confidence: 'high' | 'medium' | 'low'
+}
+
+export interface CashflowForecast {
+  current_balance_estimate: number
+  forecast_periods: ForecastPeriod[]
+  traffic_light: 'green' | 'amber' | 'red'
+  traffic_light_reason: string
+  key_risks: string[]
+  recommendations: string[]
+  break_even_week: number | null
 }
 
 export interface AiForecast {

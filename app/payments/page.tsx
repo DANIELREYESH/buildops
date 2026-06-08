@@ -6,10 +6,6 @@ import { supabase } from '@/lib/supabase'
 import { useToast } from '@/lib/toast'
 import type { Subcontractor, SubPayment } from '@/lib/types'
 
-function Chevron() {
-  return <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><polyline points="9 18 15 12 9 6" stroke="#9B978F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-}
-
 const fmt = (n: number) => `£${n.toLocaleString('en-GB', { maximumFractionDigits: 0 })}`
 
 type SubWithPayments = Subcontractor & { payments: SubPayment[] }
@@ -85,37 +81,30 @@ export default function PaymentsPage() {
   const subsWithPayments = subs.filter(s => s.payments.length > 0)
 
   const STEPS: SubPayment['status'][] = ['pending', 'approved', 'processing', 'paid']
-  const stepLabel: Record<SubPayment['status'], string> = { pending: 'Pending', approved: 'Approved', processing: 'Processing', paid: 'Paid' }
 
   return (
     <AppLayout>
-      <div className="sticky top-0 z-10 h-12 bg-white border-b border-[#E5E2DB] px-6 flex items-center justify-between">
-        <div className="flex items-center gap-1.5">
-          <span className="text-xs text-[#9B978F]">BuildOps</span>
-          <Chevron />
-          <span className="text-xs font-semibold text-gray-900">Sub Payments</span>
-        </div>
-        <button onClick={() => setShowModal(true)} className="text-xs font-semibold text-white bg-[#D4561A] px-3.5 py-1.5 rounded-lg hover:bg-[#BE4A16] transition-colors">
-          + Add Milestone
-        </button>
-      </div>
-
       <div className="p-6">
-        <div className="mb-5">
-          <h1 className="text-xl font-bold tracking-tight text-gray-900">Sub Payments</h1>
-          <p className="text-xs text-[#9B978F] mt-1">Track milestone payments to all subcontractors on active projects.</p>
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h1 className="text-lg font-semibold text-text-primary">Sub Payments</h1>
+            <p className="text-xs text-text-muted mt-1">Track milestone payments to all subcontractors on active projects.</p>
+          </div>
+          <button onClick={() => setShowModal(true)} className="text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover transition-colors">
+            + Add Milestone
+          </button>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-4 gap-4 mb-5">
           {[
-            { label: 'Outstanding', value: fmt(outstanding), color: 'text-gray-900' },
-            { label: 'Overdue', value: fmt(overdue), color: overdue > 0 ? 'text-[#B8301A]' : 'text-gray-900' },
-            { label: 'Paid this month', value: fmt(paidThisMonth), color: 'text-[#1A6B45]' },
-            { label: 'Next due', value: nextDue ? `${nextDue.due_date}` : 'None', color: 'text-gray-900' },
+            { label: 'Outstanding', value: fmt(outstanding), color: 'text-text-primary' },
+            { label: 'Overdue', value: fmt(overdue), color: overdue > 0 ? 'text-danger' : 'text-text-primary' },
+            { label: 'Paid this month', value: fmt(paidThisMonth), color: 'text-success' },
+            { label: 'Next due', value: nextDue ? `${nextDue.due_date}` : 'None', color: 'text-text-primary' },
           ].map(s => (
-            <div key={s.label} className="bg-white border border-[#DDD9D0] rounded-[10px] shadow-[0_1px_2px_rgba(0,0,0,.05)] px-4 py-3">
-              <div className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold mb-1">{s.label}</div>
+            <div key={s.label} className="bg-surface border border-border rounded-xl p-4">
+              <div className="text-[10px] uppercase tracking-wide text-text-muted font-semibold mb-1">{s.label}</div>
               <div className={`text-lg font-bold font-mono ${s.color}`}>{s.value}</div>
             </div>
           ))}
@@ -123,20 +112,23 @@ export default function PaymentsPage() {
 
         {/* Overdue alerts */}
         {overduePayments.length > 0 && (
-          <div className="bg-[#FEF2F2] border border-[#F5C0BC] rounded-lg px-4 py-3 mb-5 flex items-center gap-2">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#B8301A" strokeWidth="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="#B8301A" strokeWidth="2" strokeLinecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="#B8301A" strokeWidth="2" strokeLinecap="round"/></svg>
-            <span className="text-xs font-semibold text-[#B8301A]">{overduePayments.length} overdue payment{overduePayments.length > 1 ? 's' : ''} — {fmt(overdue)} total. Action required.</span>
+          <div className="bg-danger/10 border border-danger/20 rounded-lg px-4 py-3 mb-5 flex items-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+            <span className="text-xs font-semibold text-danger">{overduePayments.length} overdue payment{overduePayments.length > 1 ? 's' : ''} — {fmt(overdue)} total. Action required.</span>
           </div>
         )}
 
         {loading ? (
           <div className="space-y-3">
-            {[1,2,3].map(i => <div key={i} className="animate-pulse h-16 bg-gray-100 rounded-[10px]" />)}
+            {[1, 2, 3].map(i => <div key={i} className="skeleton h-16 rounded-xl" />)}
           </div>
         ) : subsWithPayments.length === 0 ? (
-          <div className="bg-white border border-[#DDD9D0] rounded-[10px] text-center py-16">
-            <p className="text-sm font-semibold text-gray-500">No payment milestones yet</p>
-            <p className="text-xs text-[#9B978F] mt-1">Add milestones to track payments to your subcontractors</p>
+          <div className="bg-surface border border-border rounded-xl text-center py-16">
+            <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="var(--color-accent)" strokeWidth="2"/><line x1="2" y1="10" x2="22" y2="10" stroke="var(--color-accent)" strokeWidth="2"/></svg>
+            </div>
+            <p className="text-sm font-medium text-text-primary">No payment milestones yet</p>
+            <p className="text-xs text-text-muted mt-1">Add milestones to track payments to your subcontractors</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -146,33 +138,33 @@ export default function PaymentsPage() {
               const subPaid = sub.payments.filter(p => p.status === 'paid').reduce((s, p) => s + p.amount, 0)
               const hasOverdue = sub.payments.some(p => p.status !== 'paid' && p.due_date && p.due_date < today)
               return (
-                <div key={sub.id} className="bg-white border border-[#DDD9D0] rounded-[10px] shadow-[0_1px_2px_rgba(0,0,0,.05)] overflow-hidden">
+                <div key={sub.id} className="bg-surface border border-border rounded-xl overflow-hidden">
                   <button
-                    className="w-full px-5 py-4 flex items-center gap-3 hover:bg-[#F7F6F2] transition-colors text-left"
+                    className="w-full px-5 py-4 flex items-center gap-3 hover:bg-muted/30 transition-colors text-left"
                     onClick={() => setExpanded(prev => { const n = new Set(prev); if (n.has(sub.id)) n.delete(sub.id); else n.add(sub.id); return n })}
                   >
-                    <div className="w-8 h-8 rounded-full bg-[#D4561A] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
                       {sub.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-gray-900">{sub.name}</span>
-                        <span className="text-[10px] text-[#9B978F]">{sub.trade}</span>
-                        {hasOverdue && <span className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-[#FEF2F2] text-[#B8301A]">Overdue</span>}
+                        <span className="text-xs font-bold text-text-primary">{sub.name}</span>
+                        <span className="text-[10px] text-text-muted">{sub.trade}</span>
+                        {hasOverdue && <span className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-danger/10 text-danger border border-danger/20">Overdue</span>}
                       </div>
-                      <div className="text-[11px] text-[#9B978F] mt-0.5">{sub.payments.length} milestones · {fmt(subPaid)} paid of {fmt(subTotal)}</div>
+                      <div className="text-[11px] text-text-muted mt-0.5">{sub.payments.length} milestones · {fmt(subPaid)} paid of {fmt(subTotal)}</div>
                     </div>
                     <div className="flex-shrink-0">
                       {/* Progress bar */}
-                      <div className="w-32 h-1.5 bg-[#F0EDE8] rounded-full overflow-hidden">
-                        <div className="h-full bg-[#1A6B45] rounded-full" style={{ width: `${subTotal > 0 ? (subPaid / subTotal) * 100 : 0}%` }} />
+                      <div className="w-32 h-1.5 bg-muted rounded-full overflow-hidden">
+                        <div className="h-full bg-success rounded-full" style={{ width: `${subTotal > 0 ? (subPaid / subTotal) * 100 : 0}%` }} />
                       </div>
                     </div>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className={`ml-2 transition-transform ${isOpen ? 'rotate-90' : ''}`}><polyline points="9 18 15 12 9 6" stroke="#9B978F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className={`ml-2 transition-transform ${isOpen ? 'rotate-90' : ''}`}><polyline points="9 18 15 12 9 6" stroke="var(--color-text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </button>
 
                   {isOpen && (
-                    <div className="border-t border-[#F0EDE8] p-5">
+                    <div className="border-t border-border p-5">
                       {/* Milestone steps */}
                       <div className="space-y-3">
                         {sub.payments.map(p => {
@@ -184,24 +176,24 @@ export default function PaymentsPage() {
                               <div className="flex items-center gap-1 flex-shrink-0">
                                 {STEPS.map((step, i) => (
                                   <div key={step} className="flex items-center">
-                                    <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold flex-shrink-0 ${i <= stepIdx ? 'bg-[#1A6B45] text-white' : 'bg-[#F0EDE8] text-[#9B978F]'}`}>
+                                    <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold flex-shrink-0 ${i <= stepIdx ? 'bg-success text-white' : 'bg-muted text-text-muted'}`}>
                                       {i < stepIdx ? '✓' : i + 1}
                                     </div>
-                                    {i < STEPS.length - 1 && <div className={`w-4 h-0.5 ${i < stepIdx ? 'bg-[#1A6B45]' : 'bg-[#F0EDE8]'}`} />}
+                                    {i < STEPS.length - 1 && <div className={`w-4 h-0.5 ${i < stepIdx ? 'bg-success' : 'bg-muted'}`} />}
                                   </div>
                                 ))}
                               </div>
                               <div className="flex-1 min-w-0">
-                                <span className="text-xs font-semibold text-gray-900">{p.milestone}</span>
-                                {p.due_date && <span className={`text-[10px] ml-2 ${isOverdueP ? 'text-[#B8301A] font-bold' : 'text-[#9B978F]'}`}>Due {p.due_date}{isOverdueP ? ' — OVERDUE' : ''}</span>}
+                                <span className="text-xs font-semibold text-text-primary">{p.milestone}</span>
+                                {p.due_date && <span className={`text-[10px] ml-2 ${isOverdueP ? 'text-danger font-bold' : 'text-text-muted'}`}>Due {p.due_date}{isOverdueP ? ' — OVERDUE' : ''}</span>}
                               </div>
-                              <span className="text-xs font-mono font-bold text-gray-900 flex-shrink-0">{fmt(p.amount)}</span>
+                              <span className="text-xs font-mono font-bold text-text-primary flex-shrink-0">{fmt(p.amount)}</span>
                               {p.status !== 'paid' ? (
-                                <button onClick={() => pay(p.id)} disabled={paying === p.id} className="text-[10px] font-bold text-white bg-[#D4561A] px-3 py-1.5 rounded-lg hover:bg-[#BE4A16] disabled:opacity-50 flex-shrink-0">
+                                <button onClick={() => pay(p.id)} disabled={paying === p.id} className="text-[10px] font-bold text-white bg-accent px-3 py-1.5 rounded-lg hover:bg-accent-hover disabled:opacity-50 flex-shrink-0">
                                   {paying === p.id ? '...' : `Pay ${fmt(p.amount)}`}
                                 </button>
                               ) : (
-                                <span className="text-[10px] font-bold text-[#1A6B45] flex-shrink-0">Paid {p.paid_at?.slice(0, 10)}</span>
+                                <span className="text-[10px] font-bold text-success flex-shrink-0">Paid {p.paid_at?.slice(0, 10)}</span>
                               )}
                             </div>
                           )
@@ -218,42 +210,42 @@ export default function PaymentsPage() {
 
       {showModal && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
-          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
-            <div className="px-6 py-4 border-b border-[#E5E2DB] flex items-center justify-between">
-              <h3 className="font-bold text-sm text-gray-900">Add Payment Milestone</h3>
-              <button onClick={() => setShowModal(false)} className="text-[#9B978F] hover:text-gray-700">
+          <div className="bg-surface border border-border rounded-2xl w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h3 className="font-bold text-sm text-text-primary">Add Payment Milestone</h3>
+              <button onClick={() => setShowModal(false)} className="text-text-muted hover:text-text-primary">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
               </button>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1.5">Subcontractor *</label>
-                <select value={form.sub_id} onChange={e => setForm(f=>({...f,sub_id:e.target.value}))} className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A]">
+                <label className="text-[10px] uppercase tracking-wide text-text-muted font-semibold block mb-1.5">Subcontractor *</label>
+                <select value={form.sub_id} onChange={e => setForm(f=>({...f,sub_id:e.target.value}))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-accent">
                   <option value="">Select...</option>
                   {subs.map(s => <option key={s.id} value={s.id}>{s.name} — {s.trade}</option>)}
                 </select>
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1.5">Milestone *</label>
-                <input value={form.milestone} onChange={e => setForm(f=>({...f,milestone:e.target.value}))} className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A]" placeholder="e.g. First fix complete" />
+                <label className="text-[10px] uppercase tracking-wide text-text-muted font-semibold block mb-1.5">Milestone *</label>
+                <input value={form.milestone} onChange={e => setForm(f=>({...f,milestone:e.target.value}))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent" placeholder="e.g. First fix complete" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1.5">Amount (£) *</label>
-                  <input type="number" value={form.amount} onChange={e => setForm(f=>({...f,amount:e.target.value}))} className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A]" placeholder="3500" />
+                  <label className="text-[10px] uppercase tracking-wide text-text-muted font-semibold block mb-1.5">Amount (£) *</label>
+                  <input type="number" value={form.amount} onChange={e => setForm(f=>({...f,amount:e.target.value}))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent" placeholder="3500" />
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1.5">Due Date</label>
-                  <input type="date" value={form.due_date} onChange={e => setForm(f=>({...f,due_date:e.target.value}))} className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A]" />
+                  <label className="text-[10px] uppercase tracking-wide text-text-muted font-semibold block mb-1.5">Due Date</label>
+                  <input type="date" value={form.due_date} onChange={e => setForm(f=>({...f,due_date:e.target.value}))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-accent" />
                 </div>
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1.5">Notes</label>
-                <input value={form.notes} onChange={e => setForm(f=>({...f,notes:e.target.value}))} className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A]" placeholder="Optional" />
+                <label className="text-[10px] uppercase tracking-wide text-text-muted font-semibold block mb-1.5">Notes</label>
+                <input value={form.notes} onChange={e => setForm(f=>({...f,notes:e.target.value}))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent" placeholder="Optional" />
               </div>
               <div className="flex gap-3 pt-1">
-                <button onClick={() => setShowModal(false)} className="flex-1 border border-[#E5E2DB] text-gray-500 text-xs font-semibold py-2.5 rounded-lg hover:bg-gray-50">Cancel</button>
-                <button onClick={handleCreate} disabled={saving || !form.sub_id || !form.milestone || !form.amount} className="flex-1 bg-[#D4561A] text-white text-xs font-semibold py-2.5 rounded-lg hover:bg-[#BE4A16] disabled:opacity-50">
+                <button onClick={() => setShowModal(false)} className="flex-1 bg-muted hover:bg-border text-text-primary text-xs font-semibold py-2.5 rounded-lg transition-colors">Cancel</button>
+                <button onClick={handleCreate} disabled={saving || !form.sub_id || !form.milestone || !form.amount} className="flex-1 bg-accent text-white text-xs font-semibold py-2.5 rounded-lg hover:bg-accent-hover disabled:opacity-50">
                   {saving ? 'Saving...' : 'Add Milestone'}
                 </button>
               </div>

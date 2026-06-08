@@ -1,13 +1,10 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { Building2, X } from 'lucide-react'
 import AppLayout from '@/app/dashboard/layout'
 import { supabase } from '@/lib/supabase'
 import { useToast } from '@/lib/toast'
-
-function Chevron() {
-  return <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><polyline points="9 18 15 12 9 6" stroke="#9B978F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-}
 
 interface Supplier {
   id: string
@@ -82,83 +79,87 @@ export default function SuppliersPage() {
 
   return (
     <AppLayout>
-      <div className="sticky top-0 z-10 h-12 bg-white border-b border-[#E5E2DB] px-6 flex items-center justify-between">
-        <div className="flex items-center gap-1.5">
-          <span className="text-xs text-[#9B978F]">BuildOps</span>
-          <Chevron />
-          <span className="text-xs font-semibold text-gray-900">Suppliers & Prices</span>
-        </div>
-        <button onClick={() => setShowNew(true)} className="text-xs font-semibold text-white bg-[#D4561A] px-3.5 py-1.5 rounded-lg hover:bg-[#BE4A16] transition-colors">
-          + Add Supplier
-        </button>
-      </div>
-
       <div className="p-6">
-        <div className="mb-5">
-          <h1 className="text-xl font-bold tracking-tight text-gray-900">Suppliers & Prices</h1>
-          <p className="text-xs text-[#9B978F] mt-1">{suppliers.length} suppliers on record. Click any row to view contact details.</p>
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h1 className="text-lg font-semibold text-text-primary">Suppliers & Prices</h1>
+            <p className="text-xs text-text-muted mt-1">{suppliers.length} suppliers on record. Click any row to view contact details.</p>
+          </div>
+          <button onClick={() => setShowNew(true)} className="text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover transition-colors">
+            + Add Supplier
+          </button>
         </div>
 
         <div className="mb-4">
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name, trade or contact..." className="w-full max-w-sm border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A]" />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name, trade or contact..." className="w-full max-w-sm bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent" />
         </div>
 
-        <div className="bg-white border border-[#DDD9D0] rounded-[10px] shadow-[0_1px_2px_rgba(0,0,0,.05)] overflow-hidden">
-          <table className="w-full">
-            <thead><tr className="bg-[#F7F6F2] border-b border-[#E5E2DB]">
-              <th className="px-5 py-2.5 text-[9px] uppercase tracking-wide text-[#9B978F] font-semibold text-left">Supplier</th>
-              <th className="px-4 py-2.5 text-[9px] uppercase tracking-wide text-[#9B978F] font-semibold text-left">Trade / Category</th>
-              <th className="px-4 py-2.5 text-[9px] uppercase tracking-wide text-[#9B978F] font-semibold text-left">Contact</th>
-              <th className="px-4 py-2.5 text-[9px] uppercase tracking-wide text-[#9B978F] font-semibold text-left">Phone</th>
-              <th className="px-4 py-2.5 text-[9px] uppercase tracking-wide text-[#9B978F] font-semibold text-left">Email</th>
-              <th className="px-4 py-2.5 text-[9px] uppercase tracking-wide text-[#9B978F] font-semibold text-left">Location</th>
-            </tr></thead>
-            <tbody className="divide-y divide-[#F0EDE8]">
-              {loading ? (
-                [1,2,3,4].map(i => <tr key={i}><td colSpan={6} className="px-5 py-3"><div className="animate-pulse h-4 bg-gray-100 rounded w-3/4" /></td></tr>)
-              ) : filtered.length === 0 ? (
-                <tr><td colSpan={6} className="px-5 py-16 text-center">
-                  <p className="text-sm font-semibold text-gray-500">{search ? 'No suppliers match your search' : 'No suppliers yet'}</p>
-                  {!search && <p className="text-xs text-[#9B978F] mt-1">Add your first supplier to start tracking contact details and pricing</p>}
-                </td></tr>
-              ) : filtered.map(s => (
-                <tr key={s.id} onClick={() => setPanel(s)} className="hover:bg-[#F7F6F2] cursor-pointer transition-colors">
-                  <td className="px-5 py-3">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-lg bg-[#F0EDE8] flex items-center justify-center text-[10px] font-bold text-[#9B978F] flex-shrink-0">
-                        {s.name.slice(0, 2).toUpperCase()}
+        {loading ? (
+          <div className="space-y-3">{[1, 2, 3, 4].map(i => <div key={i} className="skeleton h-12 rounded-xl" />)}</div>
+        ) : filtered.length === 0 ? (
+          <div className="bg-surface border border-border rounded-xl text-center py-16">
+            <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
+              <Building2 size={20} className="text-accent" />
+            </div>
+            <p className="text-sm font-medium text-text-primary">{search ? 'No suppliers match your search' : 'No suppliers yet'}</p>
+            <p className="text-xs text-text-muted mt-1">{search ? 'Try a different search term' : 'Add your first supplier to start tracking contact details and pricing'}</p>
+            {!search && (
+              <button onClick={() => setShowNew(true)} className="mt-4 text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover transition-colors">
+                + Add Supplier
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="bg-surface border border-border rounded-xl overflow-hidden">
+            <table className="w-full">
+              <thead><tr className="bg-background text-text-muted text-xs uppercase tracking-wider">
+                <th className="px-5 py-2.5 font-semibold text-left">Supplier</th>
+                <th className="px-4 py-2.5 font-semibold text-left">Trade / Category</th>
+                <th className="px-4 py-2.5 font-semibold text-left">Contact</th>
+                <th className="px-4 py-2.5 font-semibold text-left">Phone</th>
+                <th className="px-4 py-2.5 font-semibold text-left">Email</th>
+                <th className="px-4 py-2.5 font-semibold text-left">Location</th>
+              </tr></thead>
+              <tbody>
+                {filtered.map(s => (
+                  <tr key={s.id} onClick={() => setPanel(s)} className="border-b border-border last:border-b-0 hover:bg-muted/30 cursor-pointer transition-colors">
+                    <td className="px-5 py-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center text-[10px] font-bold text-text-muted flex-shrink-0">
+                          {s.name.slice(0, 2).toUpperCase()}
+                        </div>
+                        <span className="text-xs font-semibold text-text-primary">{s.name}</span>
                       </div>
-                      <span className="text-xs font-semibold text-gray-900">{s.name}</span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    {s.trade && <span className="inline-flex px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#F0EDE8] text-[#9B978F]">{s.trade}</span>}
-                  </td>
-                  <td className="px-4 py-3 text-xs text-gray-700">{s.contact || <span className="text-[#9B978F]">—</span>}</td>
-                  <td className="px-4 py-3 text-xs text-gray-700">{s.phone || <span className="text-[#9B978F]">—</span>}</td>
-                  <td className="px-4 py-3 text-xs text-gray-700">{s.email ? <a href={`mailto:${s.email}`} onClick={e => e.stopPropagation()} className="text-[#1A3FAA] hover:underline">{s.email}</a> : <span className="text-[#9B978F]">—</span>}</td>
-                  <td className="px-4 py-3 text-xs text-gray-700">{s.address || <span className="text-[#9B978F]">—</span>}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      {s.trade && <span className="inline-flex px-2 py-0.5 rounded-full text-[9px] font-bold bg-muted text-text-muted">{s.trade}</span>}
+                    </td>
+                    <td className="px-4 py-3 text-xs text-text-secondary">{s.contact || <span className="text-text-muted">—</span>}</td>
+                    <td className="px-4 py-3 text-xs text-text-secondary">{s.phone || <span className="text-text-muted">—</span>}</td>
+                    <td className="px-4 py-3 text-xs text-text-secondary">{s.email ? <a href={`mailto:${s.email}`} onClick={e => e.stopPropagation()} className="text-accent hover:underline">{s.email}</a> : <span className="text-text-muted">—</span>}</td>
+                    <td className="px-4 py-3 text-xs text-text-secondary">{s.address || <span className="text-text-muted">—</span>}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Supplier detail panel */}
       {panel && (
         <>
           <div className="fixed inset-0 z-30" onClick={() => setPanel(null)} />
-          <div className="fixed top-0 right-0 h-full w-[400px] bg-white shadow-2xl z-40 border-l border-[#E5E2DB] flex flex-col overflow-hidden">
-            <div className="h-12 border-b border-[#E5E2DB] px-5 flex items-center justify-between flex-shrink-0">
+          <div className="fixed top-0 right-0 h-full w-[400px] bg-surface shadow-2xl z-40 border-l border-border flex flex-col overflow-hidden">
+            <div className="h-12 border-b border-border px-5 flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-lg bg-[#F0EDE8] flex items-center justify-center text-[10px] font-bold text-[#9B978F]">
+                <div className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center text-[10px] font-bold text-text-muted">
                   {panel.name.slice(0, 2).toUpperCase()}
                 </div>
-                <span className="font-bold text-sm text-gray-900">{panel.name}</span>
+                <span className="font-bold text-sm text-text-primary">{panel.name}</span>
               </div>
-              <button onClick={() => setPanel(null)} className="text-[#9B978F] hover:text-gray-700">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+              <button onClick={() => setPanel(null)} className="text-text-muted hover:text-text-primary">
+                <X size={14} />
               </button>
             </div>
             <div className="flex-1 overflow-y-auto p-5 space-y-4">
@@ -170,12 +171,12 @@ export default function SuppliersPage() {
                 { label: 'Address', field: 'address', type: 'text' },
               ].map(({ label, field, type }) => (
                 <div key={field}>
-                  <label className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1.5">{label}</label>
+                  <label className="text-[10px] uppercase tracking-wide text-text-muted font-semibold block mb-1.5">{label}</label>
                   {type === 'select' ? (
                     <select
                       defaultValue={(panel as unknown as Record<string, string | null>)[field] ?? ''}
                       onBlur={e => saveField(panel.id, field, e.target.value)}
-                      className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A]"
+                      className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-accent"
                     >
                       <option value="">No category</option>
                       {TRADES.map(t => <option key={t} value={t}>{t}</option>)}
@@ -185,25 +186,25 @@ export default function SuppliersPage() {
                       type={type}
                       defaultValue={(panel as unknown as Record<string, string | null>)[field] ?? ''}
                       onBlur={e => saveField(panel.id, field, e.target.value)}
-                      className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A]"
+                      className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent"
                     />
                   )}
                 </div>
               ))}
               <div>
-                <label className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1.5">Notes</label>
+                <label className="text-[10px] uppercase tracking-wide text-text-muted font-semibold block mb-1.5">Notes</label>
                 <textarea
                   defaultValue={panel.notes ?? ''}
                   onBlur={e => saveField(panel.id, 'notes', e.target.value)}
                   rows={4}
-                  className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A] resize-none"
+                  className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent resize-none"
                   placeholder="Pricing agreements, lead times, account numbers..."
                 />
               </div>
-              <div className="text-[10px] text-[#9B978F]">Added {new Date(panel.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+              <div className="text-[10px] text-text-muted">Added {new Date(panel.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
             </div>
-            <div className="border-t border-[#E5E2DB] p-4 flex-shrink-0">
-              <button onClick={() => handleDelete(panel.id)} className="w-full text-xs font-semibold text-[#B8301A] border border-[#F5C0BC] py-2.5 rounded-lg hover:bg-[#FEF2F2] transition-colors">
+            <div className="border-t border-border p-4 flex-shrink-0">
+              <button onClick={() => handleDelete(panel.id)} className="w-full text-xs font-semibold text-danger border border-danger/30 py-2.5 rounded-lg hover:bg-danger/10 transition-colors">
                 Remove Supplier
               </button>
             </div>
@@ -213,52 +214,52 @@ export default function SuppliersPage() {
 
       {showNew && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setShowNew(false)}>
-          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
-            <div className="px-6 py-4 border-b border-[#E5E2DB] flex items-center justify-between">
-              <h3 className="font-bold text-sm text-gray-900">Add Supplier</h3>
-              <button onClick={() => setShowNew(false)} className="text-[#9B978F] hover:text-gray-700">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+          <div className="bg-surface border border-border rounded-2xl w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h3 className="font-bold text-sm text-text-primary">Add Supplier</h3>
+              <button onClick={() => setShowNew(false)} className="text-text-muted hover:text-text-primary">
+                <X size={14} />
               </button>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1.5">Company Name *</label>
-                <input value={form.name} onChange={e => setForm(f=>({...f,name:e.target.value}))} className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A]" placeholder="Travis Perkins, Jewson..." />
+                <label className="text-[10px] uppercase tracking-wide text-text-muted font-semibold block mb-1.5">Company Name *</label>
+                <input value={form.name} onChange={e => setForm(f=>({...f,name:e.target.value}))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent" placeholder="Travis Perkins, Jewson..." />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1.5">Category</label>
-                  <select value={form.trade} onChange={e => setForm(f=>({...f,trade:e.target.value}))} className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A]">
+                  <label className="text-[10px] uppercase tracking-wide text-text-muted font-semibold block mb-1.5">Category</label>
+                  <select value={form.trade} onChange={e => setForm(f=>({...f,trade:e.target.value}))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-accent">
                     <option value="">Select...</option>
                     {TRADES.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1.5">Contact Name</label>
-                  <input value={form.contact} onChange={e => setForm(f=>({...f,contact:e.target.value}))} className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A]" />
+                  <label className="text-[10px] uppercase tracking-wide text-text-muted font-semibold block mb-1.5">Contact Name</label>
+                  <input value={form.contact} onChange={e => setForm(f=>({...f,contact:e.target.value}))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1.5">Phone</label>
-                  <input value={form.phone} onChange={e => setForm(f=>({...f,phone:e.target.value}))} className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A]" />
+                  <label className="text-[10px] uppercase tracking-wide text-text-muted font-semibold block mb-1.5">Phone</label>
+                  <input value={form.phone} onChange={e => setForm(f=>({...f,phone:e.target.value}))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent" />
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1.5">Email</label>
-                  <input type="email" value={form.email} onChange={e => setForm(f=>({...f,email:e.target.value}))} className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A]" />
+                  <label className="text-[10px] uppercase tracking-wide text-text-muted font-semibold block mb-1.5">Email</label>
+                  <input type="email" value={form.email} onChange={e => setForm(f=>({...f,email:e.target.value}))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent" />
                 </div>
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1.5">Address</label>
-                <input value={form.address} onChange={e => setForm(f=>({...f,address:e.target.value}))} className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A]" placeholder="Branch address or depot" />
+                <label className="text-[10px] uppercase tracking-wide text-text-muted font-semibold block mb-1.5">Address</label>
+                <input value={form.address} onChange={e => setForm(f=>({...f,address:e.target.value}))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent" placeholder="Branch address or depot" />
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1.5">Notes</label>
-                <textarea value={form.notes} onChange={e => setForm(f=>({...f,notes:e.target.value}))} rows={2} className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A] resize-none" placeholder="Account number, pricing agreements..." />
+                <label className="text-[10px] uppercase tracking-wide text-text-muted font-semibold block mb-1.5">Notes</label>
+                <textarea value={form.notes} onChange={e => setForm(f=>({...f,notes:e.target.value}))} rows={2} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent resize-none" placeholder="Account number, pricing agreements..." />
               </div>
               <div className="flex gap-3 pt-1">
-                <button onClick={() => setShowNew(false)} className="flex-1 border border-[#E5E2DB] text-gray-500 text-xs font-semibold py-2.5 rounded-lg hover:bg-gray-50">Cancel</button>
-                <button onClick={handleCreate} disabled={saving || !form.name} className="flex-1 bg-[#D4561A] text-white text-xs font-semibold py-2.5 rounded-lg hover:bg-[#BE4A16] disabled:opacity-50">
+                <button onClick={() => setShowNew(false)} className="flex-1 bg-muted hover:bg-border text-text-primary text-xs font-semibold py-2.5 rounded-lg transition-colors">Cancel</button>
+                <button onClick={handleCreate} disabled={saving || !form.name} className="flex-1 bg-accent text-white text-xs font-semibold py-2.5 rounded-lg hover:bg-accent-hover disabled:opacity-50 transition-colors">
                   {saving ? 'Saving...' : 'Add Supplier'}
                 </button>
               </div>

@@ -6,23 +6,15 @@ import { supabase } from '@/lib/supabase'
 import { useToast } from '@/lib/toast'
 import type { Timesheet, Project } from '@/lib/types'
 
-function Chevron() {
-  return <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><polyline points="9 18 15 12 9 6" stroke="#9B978F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-}
-
 function Skeleton() {
   return (
-    <div className="animate-pulse">
+    <>
       {[...Array(5)].map((_, i) => (
-        <div key={i} className="flex gap-4 px-4 py-3 border-t border-[#F0EDE8]">
-          <div className="h-4 bg-gray-100 rounded w-1/5" />
-          <div className="h-4 bg-gray-100 rounded w-1/5" />
-          <div className="h-4 bg-gray-100 rounded w-1/5" />
-          <div className="h-4 bg-gray-100 rounded w-1/8" />
-          <div className="h-4 bg-gray-100 rounded w-1/8" />
-        </div>
+        <tr key={i} className="border-b border-border">
+          <td colSpan={9} className="px-4 py-3"><div className="skeleton h-4 rounded w-full" /></td>
+        </tr>
       ))}
-    </div>
+    </>
   )
 }
 
@@ -148,47 +140,41 @@ export default function TimesheetsPage() {
 
   return (
     <AppLayout>
-      <div className="sticky top-0 z-10 h-12 bg-white border-b border-[#E5E2DB] px-6 flex items-center justify-between">
-        <div className="flex items-center gap-1.5">
-          <span className="text-xs text-[#9B978F]">BuildOps</span>
-          <Chevron />
-          <span className="text-xs font-semibold text-gray-900">Timesheets</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <button onClick={exportCSV} className="text-xs text-gray-500 border border-[#E5E2DB] px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">Export CSV</button>
-          <button onClick={() => setShowModal(true)} className="text-xs font-semibold text-white bg-[#D4561A] px-3.5 py-1.5 rounded-lg hover:bg-[#BE4A16] transition-colors">+ Log Hours</button>
-        </div>
-      </div>
-
       <div className="p-6">
-        <div className="mb-5">
-          <h1 className="text-xl font-bold tracking-tight text-gray-900">Timesheets</h1>
-          <p className="text-xs text-[#9B978F] mt-1">Log and review hours worked across all projects and trades.</p>
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h1 className="text-lg font-semibold text-text-primary">Timesheets</h1>
+            <p className="text-xs text-text-muted mt-1">Log and review hours worked across all projects and trades.</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <button onClick={exportCSV} className="text-xs font-medium text-text-secondary border border-border px-3 py-1.5 rounded-lg hover:bg-muted transition-colors">Export CSV</button>
+            <button onClick={() => setShowModal(true)} className="text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover transition-colors">+ Log Hours</button>
+          </div>
         </div>
 
         {/* Stats row */}
         <div className="grid grid-cols-4 gap-4 mb-5">
           {[
-            { label: 'Active Clock-in', value: activeEntry ? '1 active' : 'None active', sub: activeEntry ? `Since ${fmtTime(activeEntry.clock_in)}` : 'No one clocked in', color: activeEntry ? 'text-[#1A6B45]' : 'text-[#9B978F]' },
-            { label: 'Total Hours Today', value: `${Math.round(todayHours * 10) / 10}h`, sub: `${timesheets.filter(t => t.date === today).length} entries`, color: 'text-gray-900' },
-            { label: 'Labour Cost Today', value: fmt(labourCostToday), sub: `@ £${LABOUR_RATE}/hr`, color: 'text-gray-900' },
-            { label: 'Overtime Flagged', value: `${overtimeEntries.length}`, sub: 'Over 8h', color: overtimeEntries.length > 0 ? 'text-[#96670A]' : 'text-[#9B978F]' },
+            { label: 'Active Clock-in', value: activeEntry ? '1 active' : 'None active', sub: activeEntry ? `Since ${fmtTime(activeEntry.clock_in)}` : 'No one clocked in', color: activeEntry ? 'text-success' : 'text-text-muted' },
+            { label: 'Total Hours Today', value: `${Math.round(todayHours * 10) / 10}h`, sub: `${timesheets.filter(t => t.date === today).length} entries`, color: 'text-text-primary' },
+            { label: 'Labour Cost Today', value: fmt(labourCostToday), sub: `@ £${LABOUR_RATE}/hr`, color: 'text-text-primary' },
+            { label: 'Overtime Flagged', value: `${overtimeEntries.length}`, sub: 'Over 8h', color: overtimeEntries.length > 0 ? 'text-warning' : 'text-text-muted' },
           ].map(s => (
-            <div key={s.label} className="bg-white border border-[#DDD9D0] rounded-[10px] shadow-[0_1px_2px_rgba(0,0,0,.05)] p-4">
-              <div className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold mb-1">{s.label}</div>
+            <div key={s.label} className="bg-surface border border-border rounded-xl p-4">
+              <div className="text-[10px] uppercase tracking-wide text-text-muted font-semibold mb-1">{s.label}</div>
               <div className={`text-2xl font-bold ${s.color}`}>{s.value}</div>
-              <div className="text-[11px] text-[#9B978F] mt-0.5">{s.sub}</div>
+              <div className="text-[11px] text-text-muted mt-0.5">{s.sub}</div>
             </div>
           ))}
         </div>
 
         {/* Clock in/out quick action */}
         {activeEntry ? (
-          <div className="bg-[#E8F5EE] border border-[#1A6B45]/20 rounded-[10px] p-4 mb-5 flex items-center justify-between">
+          <div className="bg-success/10 border border-success/20 rounded-xl p-4 mb-5 flex items-center justify-between">
             <div>
               <div className="flex items-center gap-3">
-                <span className="text-sm font-bold text-[#1A6B45]">Clocked in</span>
-                <span className="text-xl font-bold font-mono text-[#1A6B45] tabular-nums">
+                <span className="text-sm font-bold text-success">Clocked in</span>
+                <span className="text-xl font-bold font-mono text-success tabular-nums">
                   {(() => {
                     const ms = now.getTime() - new Date(activeEntry.clock_in!).getTime()
                     const h = Math.floor(ms / 3600000)
@@ -197,28 +183,28 @@ export default function TimesheetsPage() {
                     return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`
                   })()}
                 </span>
-                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#1A6B45] bg-[#1A6B45]/10 px-2 py-0.5 rounded-full">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#1A6B45] animate-pulse" />
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-success bg-success/10 px-2 py-0.5 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
                   Live
                 </span>
               </div>
-              <p className="text-xs text-[#1A6B45]/70 mt-0.5">Since {fmtTime(activeEntry.clock_in)} · {projName(activeEntry.project_id)}</p>
+              <p className="text-xs text-success/70 mt-0.5">Since {fmtTime(activeEntry.clock_in)} · {projName(activeEntry.project_id)}</p>
             </div>
-            <button onClick={clockOut} className="text-xs font-bold text-white bg-[#1A6B45] px-4 py-2 rounded-lg hover:bg-[#145538]">Clock Out</button>
+            <button onClick={clockOut} className="text-xs font-bold text-white bg-success px-4 py-2 rounded-lg hover:bg-success/80 transition-colors">Clock Out</button>
           </div>
         ) : (
-          <div className="bg-[#F7F6F2] border border-[#DDD9D0] rounded-[10px] p-4 mb-5 flex items-center justify-between">
+          <div className="bg-surface border border-border rounded-xl p-4 mb-5 flex items-center justify-between">
             <div>
-              <span className="text-sm font-semibold text-gray-900">Not clocked in</span>
-              <p className="text-xs text-[#9B978F] mt-0.5">Select a project to start tracking time</p>
+              <span className="text-sm font-semibold text-text-primary">Not clocked in</span>
+              <p className="text-xs text-text-muted mt-0.5">Select a project to start tracking time</p>
             </div>
             <div className="flex items-center gap-2">
-              <select className="border border-[#E5E2DB] rounded-lg px-3 py-1.5 text-xs focus:outline-none bg-white" id="ci-project">
+              <select className="bg-background border border-border rounded-lg px-3 py-1.5 text-xs text-text-primary focus:outline-none focus:border-accent" id="ci-project">
                 <option value="">Select project</option>
                 {projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
               </select>
               <button onClick={() => { const sel = document.getElementById('ci-project') as HTMLSelectElement; clockIn(sel?.value || '') }}
-                className="text-xs font-bold text-white bg-[#D4561A] px-4 py-2 rounded-lg hover:bg-[#BE4A16]">Clock In</button>
+                className="text-xs font-bold text-white bg-accent px-4 py-2 rounded-lg hover:bg-accent-hover transition-colors">Clock In</button>
             </div>
           </div>
         )}
@@ -226,47 +212,53 @@ export default function TimesheetsPage() {
         {/* Date range + table */}
         <div className="flex items-center gap-3 mb-3">
           <div className="flex items-center gap-2">
-            <label className="text-xs text-[#9B978F]">From</label>
-            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="border border-[#E5E2DB] rounded-lg px-3 py-1.5 text-xs focus:outline-none bg-white" />
+            <label className="text-xs text-text-muted">From</label>
+            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="bg-background border border-border rounded-lg px-3 py-1.5 text-xs text-text-primary focus:outline-none focus:border-accent" />
           </div>
           <div className="flex items-center gap-2">
-            <label className="text-xs text-[#9B978F]">To</label>
-            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="border border-[#E5E2DB] rounded-lg px-3 py-1.5 text-xs focus:outline-none bg-white" />
+            <label className="text-xs text-text-muted">To</label>
+            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="bg-background border border-border rounded-lg px-3 py-1.5 text-xs text-text-primary focus:outline-none focus:border-accent" />
           </div>
-          <span className="text-xs text-[#9B978F]">{Math.round(totalHours * 10) / 10}h total · {fmt(Math.round(totalHours * LABOUR_RATE))} labour cost</span>
+          <span className="text-xs text-text-muted">{Math.round(totalHours * 10) / 10}h total · {fmt(Math.round(totalHours * LABOUR_RATE))} labour cost</span>
         </div>
 
-        <div className="bg-white border border-[#DDD9D0] rounded-[10px] shadow-[0_1px_2px_rgba(0,0,0,.05)] overflow-hidden">
+        <div className="bg-surface border border-border rounded-xl overflow-hidden">
           <table className="w-full">
             <thead>
-              <tr className="bg-[#F7F6F2]">
+              <tr className="bg-background text-text-muted text-xs uppercase tracking-wider">
                 {['Worker', 'Date', 'Project', 'Clock In', 'Clock Out', 'Hours', 'OT', 'Daily Cost', 'GPS'].map(h => (
-                  <th key={h} className="px-4 py-2.5 text-[9px] uppercase tracking-wide text-[#9B978F] font-semibold text-left whitespace-nowrap">{h}</th>
+                  <th key={h} className="px-4 py-2.5 text-[9px] uppercase tracking-wide font-semibold text-left whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {loading ? <tr><td colSpan={9}><Skeleton /></td></tr> :
+              {loading ? <Skeleton /> :
                timesheets.length === 0 ? (
-                <tr><td colSpan={9} className="py-14 text-center">
-                  <p className="text-sm text-gray-400 font-semibold">No timesheets in this period</p>
+                <tr><td colSpan={9}>
+                  <div className="text-center py-16">
+                    <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="var(--color-accent)" strokeWidth="2"/><polyline points="12 7 12 12 15 15" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    </div>
+                    <p className="text-sm font-medium text-text-primary">No timesheets in this period</p>
+                    <p className="text-xs text-text-muted mt-1">Log hours or adjust the date range to see entries.</p>
+                  </div>
                 </td></tr>
                ) : timesheets.map(t => {
                 const overtime = (t.hours || 0) > 8
                 return (
-                  <tr key={t.id} className="border-t border-[#F0EDE8] hover:bg-[#F7F6F2] transition-colors">
-                    <td className="px-4 py-2.5 text-xs font-semibold text-gray-900">{t.user_name}</td>
-                    <td className="px-4 py-2.5 text-xs text-[#9B978F]">{t.date}</td>
-                    <td className="px-4 py-2.5 text-xs text-[#9B978F]">{projName(t.project_id)}</td>
-                    <td className="px-4 py-2.5 text-xs font-mono text-gray-900">{fmtTime(t.clock_in)}</td>
-                    <td className="px-4 py-2.5 text-xs font-mono text-gray-900">{fmtTime(t.clock_out)}</td>
-                    <td className="px-4 py-2.5 text-xs font-bold text-gray-900">{t.hours ? `${t.hours}h` : '—'}</td>
+                  <tr key={t.id} className="border-b border-border hover:bg-muted/30 transition-colors">
+                    <td className="px-4 py-2.5 text-xs font-semibold text-text-primary">{t.user_name}</td>
+                    <td className="px-4 py-2.5 text-xs text-text-secondary">{t.date}</td>
+                    <td className="px-4 py-2.5 text-xs text-text-secondary">{projName(t.project_id)}</td>
+                    <td className="px-4 py-2.5 text-xs font-mono text-text-primary">{fmtTime(t.clock_in)}</td>
+                    <td className="px-4 py-2.5 text-xs font-mono text-text-primary">{fmtTime(t.clock_out)}</td>
+                    <td className="px-4 py-2.5 text-xs font-bold text-text-primary">{t.hours ? `${t.hours}h` : '—'}</td>
                     <td className="px-4 py-2.5">
-                      {overtime && <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FEF6E4] text-[#96670A]">OT</span>}
+                      {overtime && <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-warning/10 text-warning border border-warning/20">OT</span>}
                     </td>
-                    <td className="px-4 py-2.5 text-xs font-mono text-gray-900">{t.hours ? fmt(Math.round(t.hours * LABOUR_RATE)) : '—'}</td>
+                    <td className="px-4 py-2.5 text-xs font-mono text-text-primary">{t.hours ? fmt(Math.round(t.hours * LABOUR_RATE)) : '—'}</td>
                     <td className="px-4 py-2.5">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold ${t.gps_verified ? 'bg-[#E8F5EE] text-[#1A6B45]' : 'bg-gray-100 text-[#9B978F]'}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold ${t.gps_verified ? 'bg-success/10 text-success border border-success/20' : 'bg-muted text-text-secondary'}`}>
                         {t.gps_verified ? 'Match' : 'N/A'}
                       </span>
                     </td>
@@ -280,48 +272,48 @@ export default function TimesheetsPage() {
 
       {showModal && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
-          <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl" onClick={e => e.stopPropagation()}>
-            <div className="px-6 py-4 border-b border-[#E5E2DB] flex items-center justify-between">
-              <h3 className="font-bold text-sm text-gray-900">Log Hours</h3>
-              <button onClick={() => setShowModal(false)} className="text-[#9B978F] hover:text-gray-700">
+          <div className="bg-surface border border-border rounded-2xl w-full max-w-lg shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h3 className="font-bold text-sm text-text-primary">Log Hours</h3>
+              <button onClick={() => setShowModal(false)} className="text-text-muted hover:text-text-primary">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
               </button>
             </div>
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1.5">Worker Name *</label>
-                  <input value={form.user_name} onChange={e => setForm(f => ({...f, user_name: e.target.value}))} className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A]" placeholder="Name" />
+                  <label className="text-[10px] uppercase tracking-wide text-text-muted font-semibold block mb-1.5">Worker Name *</label>
+                  <input value={form.user_name} onChange={e => setForm(f => ({...f, user_name: e.target.value}))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent" placeholder="Name" />
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1.5">Date</label>
-                  <input type="date" value={form.date} onChange={e => setForm(f => ({...f, date: e.target.value}))} className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A]" />
+                  <label className="text-[10px] uppercase tracking-wide text-text-muted font-semibold block mb-1.5">Date</label>
+                  <input type="date" value={form.date} onChange={e => setForm(f => ({...f, date: e.target.value}))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-accent" />
                 </div>
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1.5">Project</label>
-                <select value={form.project_id} onChange={e => setForm(f => ({...f, project_id: e.target.value}))} className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A]">
+                <label className="text-[10px] uppercase tracking-wide text-text-muted font-semibold block mb-1.5">Project</label>
+                <select value={form.project_id} onChange={e => setForm(f => ({...f, project_id: e.target.value}))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-accent">
                   <option value="">No project</option>
                   {projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1.5">Clock In *</label>
-                  <input type="time" value={form.clock_in} onChange={e => setForm(f => ({...f, clock_in: e.target.value}))} className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A]" />
+                  <label className="text-[10px] uppercase tracking-wide text-text-muted font-semibold block mb-1.5">Clock In *</label>
+                  <input type="time" value={form.clock_in} onChange={e => setForm(f => ({...f, clock_in: e.target.value}))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-accent" />
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1.5">Clock Out</label>
-                  <input type="time" value={form.clock_out} onChange={e => setForm(f => ({...f, clock_out: e.target.value}))} className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A]" />
+                  <label className="text-[10px] uppercase tracking-wide text-text-muted font-semibold block mb-1.5">Clock Out</label>
+                  <input type="time" value={form.clock_out} onChange={e => setForm(f => ({...f, clock_out: e.target.value}))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-accent" />
                 </div>
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1.5">Notes</label>
-                <input value={form.notes} onChange={e => setForm(f => ({...f, notes: e.target.value}))} className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4561A]" placeholder="Optional notes" />
+                <label className="text-[10px] uppercase tracking-wide text-text-muted font-semibold block mb-1.5">Notes</label>
+                <input value={form.notes} onChange={e => setForm(f => ({...f, notes: e.target.value}))} className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent" placeholder="Optional notes" />
               </div>
               <div className="flex gap-3 pt-2">
-                <button onClick={() => setShowModal(false)} className="flex-1 border border-[#E5E2DB] text-gray-500 text-xs font-semibold py-2.5 rounded-lg hover:bg-gray-50">Cancel</button>
-                <button onClick={handleCreate} disabled={saving || !form.user_name || !form.clock_in} className="flex-1 bg-[#D4561A] text-white text-xs font-semibold py-2.5 rounded-lg hover:bg-[#BE4A16] disabled:opacity-50">
+                <button onClick={() => setShowModal(false)} className="flex-1 bg-muted hover:bg-border text-text-primary text-xs font-semibold py-2.5 rounded-lg transition-colors">Cancel</button>
+                <button onClick={handleCreate} disabled={saving || !form.user_name || !form.clock_in} className="flex-1 bg-accent text-white text-xs font-semibold py-2.5 rounded-lg hover:bg-accent-hover disabled:opacity-50 transition-colors">
                   {saving ? 'Saving...' : 'Log Hours'}
                 </button>
               </div>

@@ -15,13 +15,84 @@
   --color-danger: #ef4444;
 }
 
+:root.dark {
+  --color-background: #0a0a0a;
+  --color-surface: #111111;
+  --color-border: #1f1f1f;
+  --color-muted: #2a2a2a;
+  --color-accent: #6366f1;
+  --color-accent-hover: #4f46e5;
+  --color-text-primary: #fafafa;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #52525b;
+
+  /* Warm palette — Field Ops / client-facing pages (Scan Tickets, Banking, Invoicing, etc.) */
+  --color-warm-bg: #18140f;
+  --color-warm-surface: #211c17;
+  --color-warm-elevated: #2b251f;
+  --color-warm-border: #3a322a;
+  --color-warm-border-strong: #4a4036;
+  --color-warm-text: #f5f1ec;
+  --color-warm-text-muted: #a39b8f;
+  --color-warm-accent: #e57b40;
+  --color-warm-accent-hover: #f08a52;
+  --color-warm-success: #4ade9b;
+  --color-warm-success-bg: rgba(74, 222, 155, 0.12);
+  --color-warm-success-bg-hover: rgba(74, 222, 155, 0.2);
+  --color-warm-success-soft: rgba(74, 222, 155, 0.08);
+  --color-warm-success-strong: #2f9d6c;
+  --color-warm-warning: #f0b94d;
+  --color-warm-warning-bg: rgba(240, 185, 77, 0.12);
+  --color-warm-danger: #f08a78;
+  --color-warm-danger-bg: rgba(240, 138, 120, 0.12);
+  --color-warm-danger-border: rgba(240, 138, 120, 0.35);
+  --color-warm-info: #8aa3f0;
+  --color-warm-info-bg: rgba(138, 163, 240, 0.12);
+}
+
+:root.light {
+  --color-background: #ffffff;
+  --color-surface: #f9f9f9;
+  --color-border: #e5e5e5;
+  --color-muted: #f0f0f0;
+  --color-accent: #6366f1;
+  --color-accent-hover: #4f46e5;
+  --color-text-primary: #0a0a0a;
+  --color-text-secondary: #525252;
+  --color-text-muted: #a3a3a3;
+
+  /* Warm palette — Field Ops / client-facing pages (Scan Tickets, Banking, Invoicing, etc.) */
+  --color-warm-bg: #f7f6f2;
+  --color-warm-surface: #ffffff;
+  --color-warm-elevated: #f0ede8;
+  --color-warm-border: #e5e2db;
+  --color-warm-border-strong: #ddd9d0;
+  --color-warm-text: #1a1916;
+  --color-warm-text-muted: #9b978f;
+  --color-warm-accent: #d4561a;
+  --color-warm-accent-hover: #be4a16;
+  --color-warm-success: #1a6b45;
+  --color-warm-success-bg: #e8f5ee;
+  --color-warm-success-bg-hover: #d0eddf;
+  --color-warm-success-soft: #f0faf4;
+  --color-warm-success-strong: #145538;
+  --color-warm-warning: #96670a;
+  --color-warm-warning-bg: #fef6e4;
+  --color-warm-danger: #b8301a;
+  --color-warm-danger-bg: #fceae8;
+  --color-warm-danger-border: #f5c0bc;
+  --color-warm-info: #1a3faa;
+  --color-warm-info-bg: #ebf0fd;
+}
+
 :root {
-  --background: #0a0a0a;
-  --foreground: #fafafa;
+  --background: var(--color-background);
+  --foreground: var(--color-text-primary);
 }
 
 * {
   box-sizing: border-box;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 html {
