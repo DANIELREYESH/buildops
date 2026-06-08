@@ -1,14 +1,20 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import AppLayout from '@/app/dashboard/layout'
 import { supabase } from '@/lib/supabase'
 import { useToast } from '@/lib/toast'
 import type { Cost, Project } from '@/lib/types'
+import { CHART_THEME } from '@/lib/chart-colors'
 
 const CATEGORIES: Cost['category'][] = ['materials', 'labour', 'subcontractors', 'equipment', 'other']
 const CAT_COLORS: Record<Cost['category'], string> = {
-  materials: 'var(--color-accent)', labour: 'var(--color-success)', subcontractors: 'var(--color-accent)', equipment: 'var(--color-warning)', other: 'var(--color-text-muted)',
+  materials: '#6366f1',
+  labour: '#22c55e',
+  subcontractors: '#06b6d4',
+  equipment: '#f59e0b',
+  other: '#71717a',
 }
 
 const fmt = (n: number) => `£${n.toLocaleString('en-GB', { maximumFractionDigits: 0 })}`
@@ -228,26 +234,77 @@ export default function CostsPage() {
             })}
           </div>
 
-          {/* Category breakdown */}
+          {/* Category donut */}
           <div className="space-y-4">
             <div className="bg-surface border border-border rounded-xl p-5">
               <div className="text-xs font-bold text-text-primary mb-4">Spend by Category</div>
-              {grandTotal > 0 && (
-                <div className="w-32 h-32 rounded-full mx-auto mb-4"
-                  style={{ background: `conic-gradient(${pieGradient})` }} />
-              )}
-              <div className="space-y-2">
-                {catTotals.filter(c => c.total > 0).map(({ cat, total }) => (
-                  <div key={cat} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: CAT_COLORS[cat] }} />
-                      <span className="text-xs capitalize text-text-secondary">{cat}</span>
+              {grandTotal > 0 ? (
+                <>
+                  <div className="relative">
+                    <ResponsiveContainer width="100%" height={200}>
+                      <PieChart>
+                        <defs>
+                          {catTotals.filter(c => c.total > 0).map(({ cat }) => (
+                            <radialGradient key={cat} id={`grad-${cat}`} cx="50%" cy="50%" r="50%">
+                              <stop offset="0%" stopColor={CAT_COLORS[cat]} stopOpacity={1} />
+                              <stop offset="100%" stopColor={CAT_COLORS[cat]} stopOpacity={0.7} />
+                            </radialGradient>
+                          ))}
+                        </defs>
+                        <Pie
+                          data={catTotals.filter(c => c.total > 0).map(({ cat, total }) => ({ name: cat, value: total }))}
+                          cx="50%" cy="50%"
+                          innerRadius="58%"
+                          outerRadius="78%"
+                          paddingAngle={3}
+                          dataKey="value"
+                          isAnimationActive={true}
+                          animationDuration={800}
+                        >
+                          {catTotals.filter(c => c.total > 0).map(({ cat }) => (
+                            <Cell key={cat} fill={`url(#grad-${cat})`} stroke="transparent" />
+                          ))}
+                        </Pie>
+                        <Tooltip
+                          content={({ active, payload }) => {
+                            if (!active || !payload?.length) return null
+                            const d = payload[0]
+                            const pct = grandTotal > 0 ? Math.round(((d.value as number) / grandTotal) * 100) : 0
+                            return (
+                              <div style={{ background: CHART_THEME.tooltipBg, border: `1px solid ${CHART_THEME.tooltipBorder}` }} className="rounded-lg px-3 py-2 shadow-xl">
+                                <div className="flex items-center gap-1.5 mb-0.5">
+                                  <span className="w-2 h-2 rounded-full" style={{ background: CAT_COLORS[d.name as Cost['category']] }} />
+                                  <span style={{ color: CHART_THEME.textColor }} className="text-[10px] capitalize">{d.name}</span>
+                                </div>
+                                <div style={{ color: CHART_THEME.tooltipText }} className="text-sm font-semibold">{fmt(d.value as number)}</div>
+                                <div style={{ color: CHART_THEME.textColor }} className="text-[10px]">{pct}% of total</div>
+                              </div>
+                            )
+                          }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                    {/* Center label */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                      <div className="text-base font-bold text-text-primary tabular-nums">{fmt(grandTotal)}</div>
+                      <div className="text-[10px] text-text-muted">Total Spend</div>
                     </div>
-                    <span className="text-xs font-mono font-bold text-text-primary">{fmt(total)}</span>
                   </div>
-                ))}
-                {grandTotal === 0 && <p className="text-xs text-text-muted text-center py-4">No costs logged yet.</p>}
-              </div>
+                  <div className="space-y-2 mt-2">
+                    {catTotals.filter(c => c.total > 0).map(({ cat, total }) => (
+                      <div key={cat} className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: CAT_COLORS[cat] }} />
+                          <span className="text-xs capitalize text-text-secondary">{cat}</span>
+                        </div>
+                        <span className="text-xs font-mono font-bold text-text-primary">{fmt(total)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <p className="text-xs text-text-muted text-center py-8">No costs logged yet.</p>
+              )}
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
 import {
   DndContext, useDraggable, useDroppable, type DragEndEvent, PointerSensor, useSensor, useSensors,
 } from '@dnd-kit/core'
@@ -420,6 +421,75 @@ export default function ProjectsPage() {
             </button>
           </div>
         </div>
+
+        {/* Status donut */}
+        {!loading && projects.length > 0 && (
+          <div className="flex items-center gap-5 mb-5 bg-surface border border-border rounded-xl p-4">
+            <div className="relative flex-shrink-0 w-[120px] h-[120px]">
+              <ResponsiveContainer width={120} height={120}>
+                <PieChart>
+                  <defs>
+                    <radialGradient id="projDelayed" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor="#f59e0b" stopOpacity={1} />
+                      <stop offset="100%" stopColor="#d97706" stopOpacity={0.8} />
+                    </radialGradient>
+                    <radialGradient id="projActive" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor="#6366f1" stopOpacity={1} />
+                      <stop offset="100%" stopColor="#4f46e5" stopOpacity={0.8} />
+                    </radialGradient>
+                    <radialGradient id="projOnHold" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor="#f97316" stopOpacity={1} />
+                      <stop offset="100%" stopColor="#ea580c" stopOpacity={0.8} />
+                    </radialGradient>
+                    <radialGradient id="projCompleted" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor="#22c55e" stopOpacity={1} />
+                      <stop offset="100%" stopColor="#16a34a" stopOpacity={0.8} />
+                    </radialGradient>
+                  </defs>
+                  <Pie
+                    data={[
+                      { name: 'Planning', value: projects.filter(p => p.status === 'delayed').length || 0.01 },
+                      { name: 'Active', value: projects.filter(p => p.status === 'active').length || 0.01 },
+                      { name: 'On Hold', value: projects.filter(p => p.status === 'on_hold').length || 0.01 },
+                      { name: 'Complete', value: projects.filter(p => p.status === 'completed').length || 0.01 },
+                    ]}
+                    cx="50%" cy="50%"
+                    innerRadius="55%" outerRadius="80%"
+                    paddingAngle={2}
+                    dataKey="value"
+                    isAnimationActive={true}
+                    animationDuration={800}
+                    startAngle={90}
+                    endAngle={-270}
+                  >
+                    <Cell fill="url(#projDelayed)" />
+                    <Cell fill="url(#projActive)" />
+                    <Cell fill="url(#projOnHold)" />
+                    <Cell fill="url(#projCompleted)" />
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <div className="text-xl font-bold text-text-primary">{projects.length}</div>
+                <div className="text-[9px] text-text-muted">total</div>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-2">
+              {[
+                { label: 'Planning', count: projects.filter(p => p.status === 'delayed').length, color: '#f59e0b' },
+                { label: 'Active', count: projects.filter(p => p.status === 'active').length, color: '#6366f1' },
+                { label: 'On Hold', count: projects.filter(p => p.status === 'on_hold').length, color: '#f97316' },
+                { label: 'Complete', count: projects.filter(p => p.status === 'completed').length, color: '#22c55e' },
+              ].map(item => (
+                <div key={item.label} className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
+                  <span className="text-[10px] text-text-muted">{item.label}</span>
+                  <span className="text-[10px] font-bold text-text-primary ml-auto">{item.count}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {view === 'table' ? (
           <div className="bg-surface border border-border rounded-xl overflow-hidden">

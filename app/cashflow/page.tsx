@@ -5,8 +5,9 @@ import { toast } from 'sonner'
 import { RefreshCw, TrendingUp, TrendingDown, AlertTriangle, Lightbulb } from 'lucide-react'
 import {
   ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid,
-  Tooltip, Legend, ResponsiveContainer,
+  Tooltip, Legend, ResponsiveContainer, ReferenceLine,
 } from 'recharts'
+import { CHART_COLORS, CHART_THEME } from '@/lib/chart-colors'
 import AppLayout from '@/app/dashboard/layout'
 import { supabase } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
@@ -246,42 +247,54 @@ export default function CashflowPage() {
 
             {/* Chart */}
             <div className="bg-surface border border-border rounded-xl p-5 mb-5">
-              <div className="text-xs font-semibold text-text-primary mb-4">13-Week Cashflow Forecast</div>
-              <ResponsiveContainer width="100%" height={280}>
-                <ComposedChart data={chartData} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                  <XAxis
-                    dataKey="name"
-                    tick={{ fill: 'var(--color-text-muted)', fontSize: 10 }}
-                    axisLine={{ stroke: 'var(--color-border)' }}
-                    tickLine={false}
-                  />
-                  <YAxis
-                    tick={{ fill: 'var(--color-text-muted)', fontSize: 10 }}
-                    axisLine={{ stroke: 'var(--color-border)' }}
-                    tickLine={false}
-                    tickFormatter={(v: number) => `£${(v / 1000).toFixed(0)}k`}
-                  />
+              <div className="flex items-center justify-between mb-4">
+                <div className="text-xs font-semibold text-text-primary">13-Week Cashflow Forecast</div>
+                <div className="flex items-center gap-4 text-[10px] text-text-muted">
+                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: CHART_COLORS.success }} />Money In</span>
+                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm" style={{ background: CHART_COLORS.danger }} />Money Out</span>
+                  <span className="flex items-center gap-1.5"><span className="w-4 h-0.5 rounded" style={{ background: CHART_COLORS.primary }} />Balance</span>
+                </div>
+              </div>
+              <ResponsiveContainer width="100%" height={300}>
+                <ComposedChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="moneyInGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={CHART_COLORS.success} stopOpacity={0.9} />
+                      <stop offset="100%" stopColor={CHART_COLORS.success} stopOpacity={0.5} />
+                    </linearGradient>
+                    <linearGradient id="moneyOutGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={CHART_COLORS.danger} stopOpacity={0.9} />
+                      <stop offset="100%" stopColor={CHART_COLORS.danger} stopOpacity={0.5} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.gridColor} vertical={false} />
+                  <XAxis dataKey="name" tick={{ fill: CHART_THEME.textColor, fontSize: 9 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: CHART_THEME.textColor, fontSize: 9 }} axisLine={false} tickLine={false} width={48} tickFormatter={(v: number) => `£${(v / 1000).toFixed(0)}k`} />
+                  <ReferenceLine y={0} stroke={CHART_THEME.gridColor} strokeWidth={1.5} />
                   <Tooltip
-                    contentStyle={{
-                      background: 'var(--color-surface)',
-                      border: '1px solid var(--color-border)',
-                      borderRadius: 10,
-                      fontSize: 11,
+                    content={({ active, payload, label }) => {
+                      if (!active || !payload?.length) return null
+                      return (
+                        <div style={{ background: CHART_THEME.tooltipBg, border: `1px solid ${CHART_THEME.tooltipBorder}` }} className="rounded-xl px-3 py-2.5 shadow-2xl text-xs">
+                          <div style={{ color: CHART_THEME.textColor }} className="mb-2 font-medium">{label}</div>
+                          {payload.map((p, i) => (
+                            <div key={i} className="flex items-center gap-2 mb-0.5">
+                              <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: p.color as string }} />
+                              <span style={{ color: CHART_THEME.tooltipText }}>{p.name}: <strong>£{Number(p.value).toLocaleString('en-GB')}</strong></span>
+                            </div>
+                          ))}
+                        </div>
+                      )
                     }}
-                    formatter={(value: unknown, name: unknown) => [`£${Number(value).toLocaleString('en-GB')}`, String(name)]}
-                    labelStyle={{ color: 'var(--color-text-primary)', fontWeight: 600, marginBottom: 4 }}
                   />
-                  <Legend
-                    wrapperStyle={{ fontSize: 11, color: 'var(--color-text-muted)', paddingTop: 12 }}
-                  />
-                  <Bar dataKey="Money In" fill="var(--color-success)" opacity={0.75} radius={[3, 3, 0, 0]} />
-                  <Bar dataKey="Money Out" fill="var(--color-danger)" opacity={0.75} radius={[3, 3, 0, 0]} />
+                  <Bar dataKey="Money In" fill="url(#moneyInGrad)" radius={[4, 4, 0, 0]} isAnimationActive={true} animationDuration={800} />
+                  <Bar dataKey="Money Out" fill="url(#moneyOutGrad)" radius={[4, 4, 0, 0]} isAnimationActive={true} animationDuration={800} />
                   <Line
                     type="monotone" dataKey="Balance"
-                    stroke="var(--color-accent)" strokeWidth={2.5}
-                    dot={{ r: 3, fill: 'var(--color-accent)', strokeWidth: 0 }}
-                    activeDot={{ r: 5 }}
+                    stroke={CHART_COLORS.primary} strokeWidth={2.5}
+                    dot={false}
+                    activeDot={{ r: 5, fill: CHART_COLORS.primary, strokeWidth: 0 }}
+                    isAnimationActive={true} animationDuration={1000}
                   />
                 </ComposedChart>
               </ResponsiveContainer>

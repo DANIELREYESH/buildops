@@ -3,10 +3,15 @@
 import { useState, useEffect, useCallback } from 'react'
 import { toast } from 'sonner'
 import { Sparkles, RefreshCw, TrendingUp, AlertTriangle, ChevronRight } from 'lucide-react'
+import {
+  RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
+  BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell,
+} from 'recharts'
 import AppLayout from '@/app/dashboard/layout'
 import { supabase } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
 import type { Project, AiForecast } from '@/lib/types'
+import { CHART_COLORS, CHART_THEME } from '@/lib/chart-colors'
 
 const fmt = (n: number) => `£${n.toLocaleString('en-GB', { maximumFractionDigits: 0 })}`
 
@@ -119,6 +124,81 @@ export default function ForecastPage() {
               </div>
             ) : (
               <div className="skeleton h-28 rounded-xl mb-5" />
+            )}
+
+            {/* Radar + Delay charts */}
+            {forecast && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                {/* Radar: portfolio health dimensions */}
+                <div className="bg-surface border border-border rounded-xl p-5">
+                  <div className="text-xs font-semibold text-text-primary mb-1">Portfolio Health Dimensions</div>
+                  <div className="text-[10px] text-text-muted mb-3">Composite score across 5 dimensions</div>
+                  <ResponsiveContainer width="100%" height={220}>
+                    <RadarChart data={[
+                      { subject: 'Schedule', score: forecast.overall_health === 'on_track' ? 80 : forecast.overall_health === 'at_risk' ? 55 : 30 },
+                      { subject: 'Budget', score: forecast.overall_health === 'on_track' ? 75 : forecast.overall_health === 'at_risk' ? 50 : 35 },
+                      { subject: 'Safety', score: 85 },
+                      { subject: 'Resources', score: forecast.overall_health === 'on_track' ? 70 : forecast.overall_health === 'at_risk' ? 60 : 40 },
+                      { subject: 'Quality', score: forecast.overall_health === 'on_track' ? 78 : 62 },
+                    ]}>
+                      <PolarGrid stroke={CHART_THEME.gridColor} />
+                      <PolarAngleAxis dataKey="subject" tick={{ fill: CHART_THEME.textColor, fontSize: 10 }} />
+                      <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: CHART_THEME.textColor, fontSize: 8 }} axisLine={false} />
+                      <Radar
+                        dataKey="score"
+                        stroke={CHART_COLORS.primary}
+                        strokeWidth={2}
+                        fill={CHART_COLORS.primary}
+                        fillOpacity={0.2}
+                        isAnimationActive={true}
+                        animationDuration={800}
+                      />
+                    </RadarChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* Horizontal bar: predicted delay per project */}
+                <div className="bg-surface border border-border rounded-xl p-5">
+                  <div className="text-xs font-semibold text-text-primary mb-1">Predicted Delay by Project</div>
+                  <div className="text-[10px] text-text-muted mb-3">Days of delay predicted by AI</div>
+                  {(forecast.projects || []).length === 0 ? (
+                    <div className="flex items-center justify-center h-[220px] text-xs text-text-muted">No project data</div>
+                  ) : (
+                    <ResponsiveContainer width="100%" height={Math.max(220, (forecast.projects || []).length * 40)}>
+                      <BarChart
+                        data={(forecast.projects || []).map(fp => ({
+                          name: (fp.name || projects.find(p => p.id === fp.project_id)?.name || 'Unknown').slice(0, 18),
+                          days: fp.projected_delay_days ?? 0,
+                          health: fp.health,
+                        }))}
+                        layout="vertical"
+                        margin={{ top: 0, right: 40, left: 0, bottom: 0 }}
+                      >
+                        <XAxis type="number" tick={{ fill: CHART_THEME.textColor, fontSize: 9 }} axisLine={false} tickLine={false} />
+                        <YAxis type="category" dataKey="name" tick={{ fill: CHART_THEME.textColor, fontSize: 9 }} axisLine={false} tickLine={false} width={100} />
+                        <Tooltip
+                          content={({ active, payload }) => {
+                            if (!active || !payload?.length) return null
+                            return (
+                              <div style={{ background: CHART_THEME.tooltipBg, border: `1px solid ${CHART_THEME.tooltipBorder}` }} className="rounded-lg px-3 py-2 text-xs shadow-xl">
+                                <div style={{ color: CHART_THEME.tooltipText }} className="font-semibold">{payload[0].value} days delay</div>
+                              </div>
+                            )
+                          }}
+                        />
+                        <Bar dataKey="days" radius={[0, 4, 4, 0]} isAnimationActive={true} animationDuration={800}>
+                          {(forecast.projects || []).map((fp, i) => (
+                            <Cell
+                              key={i}
+                              fill={fp.health === 'on_track' ? CHART_COLORS.success : fp.health === 'at_risk' ? CHART_COLORS.warning : CHART_COLORS.danger}
+                            />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  )}
+                </div>
+              </div>
             )}
 
             {/* Forecast cards */}

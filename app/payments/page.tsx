@@ -1,10 +1,12 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
 import AppLayout from '@/app/dashboard/layout'
 import { supabase } from '@/lib/supabase'
 import { useToast } from '@/lib/toast'
 import type { Subcontractor, SubPayment } from '@/lib/types'
+import { CHART_THEME } from '@/lib/chart-colors'
 
 const fmt = (n: number) => `£${n.toLocaleString('en-GB', { maximumFractionDigits: 0 })}`
 
@@ -95,19 +97,86 @@ export default function PaymentsPage() {
           </button>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-4 gap-4 mb-5">
-          {[
-            { label: 'Outstanding', value: fmt(outstanding), color: 'text-text-primary' },
-            { label: 'Overdue', value: fmt(overdue), color: overdue > 0 ? 'text-danger' : 'text-text-primary' },
-            { label: 'Paid this month', value: fmt(paidThisMonth), color: 'text-success' },
-            { label: 'Next due', value: nextDue ? `${nextDue.due_date}` : 'None', color: 'text-text-primary' },
-          ].map(s => (
-            <div key={s.label} className="bg-surface border border-border rounded-xl p-4">
-              <div className="text-[10px] uppercase tracking-wide text-text-muted font-semibold mb-1">{s.label}</div>
-              <div className={`text-lg font-bold font-mono ${s.color}`}>{s.value}</div>
+        {/* Stats + donut */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+          {/* Left: stat cards */}
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { label: 'Outstanding', value: fmt(outstanding), color: 'text-text-primary' },
+              { label: 'Overdue', value: fmt(overdue), color: overdue > 0 ? 'text-danger' : 'text-text-primary' },
+              { label: 'Paid this month', value: fmt(paidThisMonth), color: 'text-success' },
+              { label: 'Next due', value: nextDue ? `${nextDue.due_date}` : 'None', color: 'text-text-primary' },
+            ].map(s => (
+              <div key={s.label} className="bg-surface border border-border rounded-xl p-4">
+                <div className="text-[10px] uppercase tracking-wide text-text-muted font-semibold mb-1">{s.label}</div>
+                <div className={`text-lg font-bold font-mono ${s.color}`}>{s.value}</div>
+              </div>
+            ))}
+          </div>
+          {/* Right: mini donut */}
+          <div className="bg-surface border border-border rounded-xl p-5 flex items-center gap-6">
+            <div className="relative flex-shrink-0">
+              <ResponsiveContainer width={120} height={120}>
+                <PieChart>
+                  <defs>
+                    <radialGradient id="payPaid" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor="#22c55e" stopOpacity={1} />
+                      <stop offset="100%" stopColor="#16a34a" stopOpacity={0.8} />
+                    </radialGradient>
+                    <radialGradient id="payOutstanding" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor="#6366f1" stopOpacity={1} />
+                      <stop offset="100%" stopColor="#4f46e5" stopOpacity={0.8} />
+                    </radialGradient>
+                    <radialGradient id="payOverdue" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor="#ef4444" stopOpacity={1} />
+                      <stop offset="100%" stopColor="#dc2626" stopOpacity={0.8} />
+                    </radialGradient>
+                  </defs>
+                  <Pie
+                    data={[
+                      { name: 'Paid', value: paidThisMonth || 0.01 },
+                      { name: 'Outstanding', value: Math.max(0, outstanding - overdue) || 0.01 },
+                      { name: 'Overdue', value: overdue || 0.01 },
+                    ]}
+                    cx="50%" cy="50%"
+                    innerRadius="55%" outerRadius="78%"
+                    paddingAngle={3}
+                    dataKey="value"
+                    isAnimationActive={true}
+                    animationDuration={800}
+                  >
+                    <Cell fill="url(#payPaid)" />
+                    <Cell fill="url(#payOutstanding)" />
+                    <Cell fill="url(#payOverdue)" />
+                  </Pie>
+                  <Tooltip
+                    content={({ active, payload }) => {
+                      if (!active || !payload?.length) return null
+                      return (
+                        <div style={{ background: CHART_THEME.tooltipBg, border: `1px solid ${CHART_THEME.tooltipBorder}` }} className="rounded-lg px-3 py-2 text-xs shadow-xl">
+                          <div style={{ color: CHART_THEME.tooltipText }} className="font-semibold">{payload[0].name}</div>
+                          <div style={{ color: CHART_THEME.tooltipText }} className="font-mono">{fmt(payload[0].value as number)}</div>
+                        </div>
+                      )
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
             </div>
-          ))}
+            <div className="space-y-2.5">
+              {[
+                { label: 'Paid this month', value: fmt(paidThisMonth), color: '#22c55e' },
+                { label: 'Outstanding', value: fmt(Math.max(0, outstanding - overdue)), color: '#6366f1' },
+                { label: 'Overdue', value: fmt(overdue), color: '#ef4444' },
+              ].map(item => (
+                <div key={item.label} className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
+                  <span className="text-[10px] text-text-muted flex-1">{item.label}</span>
+                  <span className="text-[10px] font-mono font-semibold text-text-primary">{item.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Overdue alerts */}
@@ -155,9 +224,9 @@ export default function PaymentsPage() {
                       <div className="text-[11px] text-text-muted mt-0.5">{sub.payments.length} milestones · {fmt(subPaid)} paid of {fmt(subTotal)}</div>
                     </div>
                     <div className="flex-shrink-0">
-                      {/* Progress bar */}
-                      <div className="w-32 h-1.5 bg-muted rounded-full overflow-hidden">
-                        <div className="h-full bg-success rounded-full" style={{ width: `${subTotal > 0 ? (subPaid / subTotal) * 100 : 0}%` }} />
+                      <div className="text-[9px] text-text-muted text-right mb-1">{subTotal > 0 ? Math.round((subPaid / subTotal) * 100) : 0}%</div>
+                      <div className="w-32 h-2 rounded-full overflow-hidden" style={{ background: '#1f1f1f' }}>
+                        <div className="h-full rounded-full transition-all duration-700" style={{ width: `${subTotal > 0 ? (subPaid / subTotal) * 100 : 0}%`, background: 'linear-gradient(90deg, #6366f1, #a855f7)' }} />
                       </div>
                     </div>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className={`ml-2 transition-transform ${isOpen ? 'rotate-90' : ''}`}><polyline points="9 18 15 12 9 6" stroke="var(--color-text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>

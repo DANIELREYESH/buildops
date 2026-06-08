@@ -1,10 +1,12 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from 'recharts'
 import AppLayout from '@/app/dashboard/layout'
 import { supabase } from '@/lib/supabase'
 import { useToast } from '@/lib/toast'
 import type { Timesheet, Project } from '@/lib/types'
+import { CHART_COLORS, CHART_THEME } from '@/lib/chart-colors'
 
 function Skeleton() {
   return (
@@ -134,6 +136,24 @@ export default function TimesheetsPage() {
   const overtimeEntries = timesheets.filter(t => (t.hours || 0) > 8)
   const projName = (id: string | null) => projects.find(p => p.id === id)?.name || '—'
 
+  const weekDays = (() => {
+    const days: { date: string; label: string; hours: number; isWeekend: boolean }[] = []
+    const base = new Date(weekStart)
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(base); d.setDate(base.getDate() + i)
+      const iso = d.toISOString().split('T')[0]
+      const dayOfWeek = d.getDay()
+      days.push({
+        date: iso,
+        label: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dayOfWeek],
+        hours: timesheets.filter(t => t.date === iso).reduce((s, t) => s + (t.hours || 0), 0),
+        isWeekend: dayOfWeek === 0 || dayOfWeek === 6,
+      })
+    }
+    return days
+  })()
+  const weekTotalHours = weekDays.reduce((s, d) => s + d.hours, 0)
+
   const fmt = (n: number) => `£${n.toLocaleString('en-GB', { maximumFractionDigits: 0 })}`
 
   const fmtTime = (iso: string | null) => iso ? new Date(iso).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : '—'
@@ -166,6 +186,42 @@ export default function TimesheetsPage() {
               <div className="text-[11px] text-text-muted mt-0.5">{s.sub}</div>
             </div>
           ))}
+        </div>
+
+        {/* Weekly hours bar chart */}
+        <div className="bg-surface border border-border rounded-xl p-5 mb-5">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <div className="text-xs font-semibold text-text-primary">Hours This Week</div>
+              <div className="text-[10px] text-text-muted">Mon–Sun · {weekStart} to {today}</div>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl font-bold font-mono text-text-primary">{Math.round(weekTotalHours * 10) / 10}h</div>
+              <div className="text-[10px] text-text-muted">total this week</div>
+            </div>
+          </div>
+          <ResponsiveContainer width="100%" height={120}>
+            <BarChart data={weekDays} margin={{ top: 0, right: 0, left: -30, bottom: 0 }} barCategoryGap="30%">
+              <XAxis dataKey="label" tick={{ fill: CHART_THEME.textColor, fontSize: 10 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: CHART_THEME.textColor, fontSize: 9 }} axisLine={false} tickLine={false} />
+              <Tooltip
+                content={({ active, payload, label }) => {
+                  if (!active || !payload?.length) return null
+                  return (
+                    <div style={{ background: CHART_THEME.tooltipBg, border: `1px solid ${CHART_THEME.tooltipBorder}` }} className="rounded-lg px-3 py-2 text-xs shadow-xl">
+                      <div style={{ color: CHART_THEME.tooltipText }} className="font-semibold">{label}</div>
+                      <div style={{ color: CHART_THEME.tooltipText }} className="font-mono">{payload[0].value}h logged</div>
+                    </div>
+                  )
+                }}
+              />
+              <Bar dataKey="hours" radius={[4, 4, 0, 0]} isAnimationActive={true} animationDuration={800}>
+                {weekDays.map((d, i) => (
+                  <Cell key={i} fill={d.isWeekend ? '#2a2a2a' : d.date === today ? CHART_COLORS.primary : `${CHART_COLORS.primary}99`} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </div>
 
         {/* Clock in/out quick action */}

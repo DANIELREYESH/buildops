@@ -2,10 +2,11 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { useTheme } from 'next-themes'
+
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts'
+import { CHART_COLORS, CHART_THEME } from '@/lib/chart-colors'
 import {
   FolderKanban, CheckSquare, FileText, Users, X,
   TrendingUp, TrendingDown, Bot,
@@ -53,23 +54,17 @@ const REVENUE_DATA = [
   { month: 'Jun', revenue: 16900 },
 ]
 
-function RevenueTooltip({ active, payload, label }: { active?: boolean; payload?: { value: number }[]; label?: string }) {
+function RevenueTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number }>; label?: string }) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-surface border border-border rounded-lg px-3 py-2 shadow-xl">
-      <div className="text-[10px] text-text-muted mb-0.5">{label}</div>
-      <div className="text-sm font-semibold text-text-primary">{fmt(payload[0].value)}</div>
+    <div style={{ background: CHART_THEME.tooltipBg, border: `1px solid ${CHART_THEME.tooltipBorder}` }} className="rounded-lg px-3 py-2 shadow-xl">
+      <div style={{ color: CHART_THEME.textColor }} className="text-[10px] mb-0.5">{label}</div>
+      <div style={{ color: CHART_THEME.tooltipText }} className="text-sm font-semibold">{fmt(payload[0].value)}</div>
     </div>
   )
 }
 
 function RevenueChart() {
-  const { resolvedTheme } = useTheme()
-  const isDark = resolvedTheme === 'dark'
-  const gridColor = isDark ? '#1f1f1f' : '#e5e5e5'
-  const tickColor = isDark ? '#52525b' : '#a3a3a3'
-  const accent = '#6366f1'
-
   const last = REVENUE_DATA[REVENUE_DATA.length - 1].revenue
   const prev = REVENUE_DATA[REVENUE_DATA.length - 2].revenue
   const pct = Math.round(((last - prev) / prev) * 100)
@@ -86,19 +81,27 @@ function RevenueChart() {
           {pct >= 0 ? '+' : ''}{pct}% MoM
         </span>
       </div>
-      <ResponsiveContainer width="100%" height={180}>
-        <AreaChart data={REVENUE_DATA} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+      <ResponsiveContainer width="100%" height={200}>
+        <AreaChart data={REVENUE_DATA} margin={{ top: 8, right: 4, left: -20, bottom: 0 }}>
           <defs>
-            <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={accent} stopOpacity={0.35} />
-              <stop offset="100%" stopColor={accent} stopOpacity={0} />
+            <linearGradient id="dashRevenueGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={CHART_COLORS.primary} stopOpacity={0.4} />
+              <stop offset="100%" stopColor={CHART_COLORS.primary} stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
-          <XAxis dataKey="month" tick={{ fill: tickColor, fontSize: 10 }} axisLine={{ stroke: gridColor }} tickLine={false} />
-          <YAxis tick={{ fill: tickColor, fontSize: 10 }} axisLine={false} tickLine={false} width={48} tickFormatter={v => `£${v / 1000}k`} />
-          <Tooltip content={<RevenueTooltip />} cursor={{ stroke: accent, strokeWidth: 1, strokeDasharray: '3 3' }} />
-          <Area type="monotone" dataKey="revenue" stroke={accent} strokeWidth={2} fill="url(#revenueGradient)" />
+          <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.gridColor} vertical={false} />
+          <XAxis dataKey="month" tick={{ fill: CHART_THEME.textColor, fontSize: 10 }} axisLine={false} tickLine={false} />
+          <YAxis tick={{ fill: CHART_THEME.textColor, fontSize: 10 }} axisLine={false} tickLine={false} width={44} tickFormatter={(v: number) => `£${v / 1000}k`} />
+          <Tooltip content={<RevenueTooltip />} cursor={{ stroke: CHART_COLORS.primary, strokeWidth: 1, strokeDasharray: '4 2' }} />
+          <Area
+            type="monotone"
+            dataKey="revenue"
+            stroke={CHART_COLORS.primary}
+            strokeWidth={2}
+            fill="url(#dashRevenueGrad)"
+            isAnimationActive={true}
+            animationDuration={800}
+          />
         </AreaChart>
       </ResponsiveContainer>
     </div>

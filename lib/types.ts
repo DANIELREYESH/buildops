@@ -136,6 +136,7 @@ export interface AiForecast {
     health: 'on_track' | 'at_risk' | 'critical'
     projected_margin: number
     projected_completion: string
+    projected_delay_days?: number
     summary: string
   }[]
   executive_summary: string | null
