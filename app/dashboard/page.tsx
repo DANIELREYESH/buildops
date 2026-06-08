@@ -11,7 +11,7 @@ import {
   TrendingUp, TrendingDown, Bot,
 } from 'lucide-react'
 import { toast } from 'sonner'
-import AppLayout from '@/app/dashboard/layout'
+
 import { supabase } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
 import type { Project, Cost, Checkin, Task, Subcontractor } from '@/lib/types'
@@ -302,23 +302,21 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <AppLayout>
-        <div className="p-6 space-y-4">
-          <div className="grid grid-cols-4 gap-4">
-            {[...Array(4)].map((_, i) => <div key={i} className="skeleton h-28" />)}
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="skeleton h-56" />
-            <div className="skeleton h-56" />
-          </div>
+      <div className="p-6 space-y-4">
+        <div className="grid grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => <div key={i} className="skeleton h-28" />)}
         </div>
-      </AppLayout>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="skeleton h-56" />
+          <div className="skeleton h-56" />
+        </div>
+      </div>
     )
   }
 
   return (
-    <AppLayout>
-      <div className="p-6">
+    <>
+    <div className="p-6">
         {/* Stats row */}
         <div className="grid grid-cols-4 gap-4 mb-5">
           <StatCard icon={FolderKanban} label="Active Projects" value={String(activeProjects.length)} trend={{ value: '+12% vs last month', positive: true }} />
@@ -563,6 +561,6 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
-    </AppLayout>
+    </>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { toast } from 'sonner'
 import { RefreshCw, TrendingUp, TrendingDown, AlertTriangle, Lightbulb } from 'lucide-react'
 import {
@@ -78,11 +78,14 @@ Generate a realistic 90-day cashflow forecast based on this data. Assume outstan
 
 export default function CashflowPage() {
   const [forecast, setForecast] = useState<CashflowForecast | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [generatedAt, setGeneratedAt] = useState<string | null>(null)
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const hasFetched = useRef(false)
 
   const generate = useCallback(async () => {
     setLoading(true)
+    setErrorMsg(null)
     try {
       const [{ data: invoices }, { data: payments }, { data: timesheets }, { data: costs }] = await Promise.all([
         supabase.from('invoices').select('total, status, due_date'),
@@ -107,19 +110,40 @@ export default function CashflowPage() {
         }),
       })
 
-      const json = await res.json()
-      if (!res.ok) throw new Error(json.error || 'Forecast failed')
-      setForecast(json as CashflowForecast)
+      let json: unknown
+      try {
+        json = await res.json()
+      } catch {
+        throw new Error('Could not parse forecast response — try regenerating')
+      }
+
+      if (!res.ok) {
+        const errJson = json as { error?: string }
+        throw new Error(errJson?.error || `API error ${res.status}`)
+      }
+
+      const data = json as CashflowForecast
+      if (!data || !Array.isArray(data.forecast_periods)) {
+        throw new Error('Forecast response missing forecast_periods — try regenerating')
+      }
+
+      setForecast(data)
       setGeneratedAt(new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }))
       toast.success('Cashflow forecast generated')
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to generate forecast')
+      const msg = err instanceof Error ? err.message : 'Failed to generate forecast'
+      setErrorMsg(msg)
+      toast.error(msg)
     } finally {
       setLoading(false)
     }
   }, [])
 
-  useEffect(() => { generate() }, [generate])
+  useEffect(() => {
+    if (hasFetched.current) return
+    hasFetched.current = true
+    generate()
+  }, [generate])
 
   const tl = forecast?.traffic_light ? TRAFFIC_COLORS[forecast.traffic_light] : null
 
@@ -153,11 +177,24 @@ export default function CashflowPage() {
           </button>
         </div>
 
-        {loading && !forecast && (
+        {!forecast && !errorMsg && (
           <div className="space-y-4">
             <div className="skeleton h-20 rounded-xl" />
             <div className="skeleton h-12 rounded-xl" />
             <div className="skeleton h-72 rounded-xl" />
+          </div>
+        )}
+
+        {!forecast && errorMsg && (
+          <div className="bg-danger/10 border border-danger/30 text-danger rounded-xl p-5 text-sm">
+            <p className="font-medium mb-1">Failed to generate forecast</p>
+            <p className="text-xs opacity-80">{errorMsg}</p>
+            <button
+              onClick={generate}
+              className="mt-3 text-xs font-medium bg-danger text-white px-3 py-1.5 rounded-lg hover:opacity-90 transition-opacity"
+            >
+              Try again
+            </button>
           </div>
         )}
 
