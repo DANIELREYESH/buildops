@@ -302,8 +302,8 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="p-6 space-y-4">
-        <div className="grid grid-cols-4 gap-4">
+      <div className="p-4 md:p-6 space-y-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => <div key={i} className="skeleton h-28" />)}
         </div>
         <div className="grid grid-cols-2 gap-4">
@@ -316,9 +316,9 @@ export default function DashboardPage() {
 
   return (
     <>
-    <div className="p-6">
+    <div className="p-4 md:p-6">
         {/* Stats row */}
-        <div className="grid grid-cols-4 gap-4 mb-5">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
           <StatCard icon={FolderKanban} label="Active Projects" value={String(activeProjects.length)} trend={{ value: '+12% vs last month', positive: true }} />
           <StatCard icon={CheckSquare} label="Open Tasks" value={String(openTasks)} trend={{ value: '+4% vs last month', positive: false }} />
           <StatCard icon={FileText} label="Pending Invoices" value={fmt(pendingInvoiced)} trend={{ value: '+8% vs last month', positive: true }} />
@@ -326,12 +326,12 @@ export default function DashboardPage() {
         </div>
 
         {/* Charts row */}
-        <div className="grid grid-cols-2 gap-4 mb-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
           <RevenueChart />
           <ProjectTimeline projects={projects} />
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* AI Check-ins feed (2/3) */}
           <div className="col-span-2">
             <div className="flex items-center justify-between mb-3">

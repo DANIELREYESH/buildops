@@ -6,7 +6,7 @@ import { useTheme } from 'next-themes'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import {
   ChevronsLeft, ChevronsRight, ChevronDown, Search, Bell, Plus,
-  Settings, LogOut, FolderPlus, ListPlus, FileText, Sun, Moon,
+  Settings, LogOut, FolderPlus, ListPlus, FileText, Sun, Moon, Menu, Smartphone,
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { ToastProvider } from '@/lib/toast'
@@ -19,6 +19,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
   const [hovering, setHovering] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
   const [email, setEmail] = useState('')
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -49,13 +50,26 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <ToastProvider>
       <div className="h-screen bg-background flex overflow-hidden">
+        {/* Mobile overlay */}
+        {mobileOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-20 md:hidden"
+            onClick={() => setMobileOpen(false)}
+          />
+        )}
+
         {/* ── Sidebar ── */}
         <aside
           onMouseEnter={() => collapsed && setHovering(true)}
           onMouseLeave={() => setHovering(false)}
           className={cn(
-            'bg-surface border-r border-border flex flex-col fixed top-0 left-0 bottom-0 z-30 transition-[width] duration-200 overflow-hidden',
-            expanded ? 'w-60' : 'w-[60px]'
+            'bg-surface border-r border-border flex flex-col fixed top-0 left-0 bottom-0 overflow-hidden',
+            // Desktop: z-30, collapsible width
+            'md:z-30 md:transition-[width] md:duration-200',
+            expanded ? 'md:w-60' : 'md:w-[60px]',
+            // Mobile: full z-40, always w-60, slide in/out
+            'z-40 w-60 transition-transform duration-200',
+            mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
           )}
         >
           {/* Wordmark */}
@@ -105,7 +119,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                   return (
                     <button
                       key={href}
-                      onClick={() => router.push(href)}
+                      onClick={() => { router.push(href); setMobileOpen(false) }}
                       title={!expanded ? label : undefined}
                       className={cn(
                         'w-full flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg mb-0.5 text-left transition-all border-l-2',
@@ -122,6 +136,22 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               </div>
             ))}
           </nav>
+
+          {/* Field View link */}
+          <div className="px-3 pb-1 flex-shrink-0">
+            <button
+              onClick={() => { router.push('/field'); setMobileOpen(false) }}
+              className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg border border-accent/20 bg-accent/5 hover:bg-accent/10 transition-colors text-left"
+            >
+              <Smartphone size={13} className="text-accent flex-shrink-0" />
+              {expanded && (
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs font-medium text-accent">Field View</div>
+                  <div className="text-[9px] text-accent/60">For site workers</div>
+                </div>
+              )}
+            </button>
+          </div>
 
           {/* User footer */}
           <div className="border-t border-border p-3 flex-shrink-0">
@@ -156,19 +186,38 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </aside>
 
         {/* ── Main column ── */}
-        <div className={cn('flex-1 flex flex-col h-screen transition-[margin-left] duration-200', collapsed ? 'ml-[60px]' : 'ml-60')}>
+        <div className={cn(
+          'flex-1 flex flex-col h-screen',
+          // Mobile: no margin (sidebar overlays)
+          'ml-0',
+          // Desktop: margin based on collapsed state
+          collapsed ? 'md:ml-[60px]' : 'md:ml-60',
+          'transition-[margin-left] duration-200',
+        )}>
           {/* Top bar */}
           <header className="h-[52px] bg-background border-b border-border flex items-center px-4 gap-4 flex-shrink-0 z-20">
-            <span className="text-xs text-text-secondary whitespace-nowrap">{breadcrumb}</span>
+            {/* Hamburger — mobile only */}
+            <button
+              onClick={() => setMobileOpen(m => !m)}
+              className="md:hidden text-text-muted hover:text-text-primary transition-colors flex-shrink-0"
+            >
+              <Menu size={18} />
+            </button>
 
+            <span className="hidden md:block text-xs text-text-secondary whitespace-nowrap">{breadcrumb}</span>
+
+            {/* Search — hidden on mobile */}
             <button
               onClick={() => setPaletteOpen(true)}
-              className="flex-1 max-w-md mx-auto flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-surface hover:border-text-muted/40 transition-colors text-left"
+              className="hidden md:flex flex-1 max-w-md mx-auto items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-surface hover:border-text-muted/40 transition-colors text-left"
             >
               <Search size={13} className="text-text-muted" />
               <span className="text-xs text-text-muted flex-1">Search or jump to...</span>
               <kbd className="text-[10px] text-text-muted border border-border rounded px-1.5 py-0.5">⌘K</kbd>
             </button>
+
+            {/* Mobile: logo text */}
+            <span className="md:hidden text-sm font-bold text-text-primary flex-1">BuildOps</span>
 
             <div className="flex items-center gap-3 ml-auto">
               <button
