@@ -183,12 +183,12 @@ function InvoicePreview({ invoice, userEmail, onClose, onMarkSent, onMarkPaid }:
   return (
     <>
       <div className="fixed inset-0 bg-black/60 z-40 print:hidden" onClick={onClose} />
-      <div className="fixed top-0 right-0 h-full w-full sm:w-[560px] bg-white shadow-2xl z-50 flex flex-col print:static print:w-full print:shadow-none">
-        <div className="h-14 border-b border-[#e5e5e5] px-5 flex items-center justify-between flex-shrink-0 print:hidden">
-          <span className="font-semibold text-sm text-gray-900">{invoice.invoice_ref}</span>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-700"><X size={16} /></button>
+      <div className="fixed top-0 right-0 h-full w-full sm:w-[560px] bg-surface border-l border-border shadow-2xl z-50 flex flex-col print:static print:w-full print:shadow-none">
+        <div className="h-14 border-b border-border px-5 flex items-center justify-between flex-shrink-0 print:hidden">
+          <span className="font-semibold text-sm text-text-primary">{invoice.invoice_ref}</span>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary"><X size={16} /></button>
         </div>
-        <div className="flex-1 overflow-y-auto p-8 text-gray-900">
+        <div className="flex-1 overflow-y-auto p-8 bg-white text-gray-900">
           <div className="flex justify-between items-start mb-8">
             <div>
               <div className="w-8 h-8 bg-[#6366f1] rounded-lg flex items-center justify-center mb-2">
@@ -251,18 +251,18 @@ function InvoicePreview({ invoice, userEmail, onClose, onMarkSent, onMarkPaid }:
             </div>
           )}
         </div>
-        <div className="border-t border-[#e5e5e5] p-4 flex gap-3 flex-shrink-0 print:hidden">
+        <div className="border-t border-border p-4 flex gap-3 flex-shrink-0 print:hidden">
           {invoice.status === 'draft' && (
-            <button onClick={onMarkSent} className="flex items-center justify-center gap-1.5 flex-1 bg-[#6366f1] text-white text-xs font-medium py-2.5 rounded-lg hover:bg-[#4f46e5] transition-colors">
+            <button onClick={onMarkSent} className="flex items-center justify-center gap-1.5 flex-1 bg-accent text-white text-xs font-medium py-2.5 rounded-lg hover:bg-accent-hover transition-colors">
               <Send size={13} /> Mark as Sent
             </button>
           )}
           {invoice.status === 'sent' && (
-            <button onClick={onMarkPaid} className="flex items-center justify-center gap-1.5 flex-1 bg-[#22c55e] text-white text-xs font-medium py-2.5 rounded-lg hover:bg-[#16a34a] transition-colors">
+            <button onClick={onMarkPaid} className="flex items-center justify-center gap-1.5 flex-1 bg-success text-white text-xs font-medium py-2.5 rounded-lg hover:opacity-90 transition-colors">
               <CheckCircle2 size={13} /> Mark as Paid
             </button>
           )}
-          <button onClick={() => window.print()} className="flex items-center justify-center gap-1.5 flex-1 border border-gray-200 text-gray-600 text-xs font-medium py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
+          <button onClick={() => window.print()} className="flex items-center justify-center gap-1.5 flex-1 border border-border text-text-secondary text-xs font-medium py-2.5 rounded-lg hover:bg-muted transition-colors">
             <Download size={13} /> Download PDF
           </button>
         </div>

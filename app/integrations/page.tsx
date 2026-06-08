@@ -4,10 +4,6 @@ import { useState } from 'react'
 import AppLayout from '@/app/dashboard/layout'
 import { useToast } from '@/lib/toast'
 
-function Chevron() {
-  return <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><polyline points="9 18 15 12 9 6" stroke="#9B978F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-}
-
 type IntegrationStatus = 'connected' | 'not_connected' | 'coming_soon'
 
 type Integration = {
@@ -184,48 +180,45 @@ export default function IntegrationsPage() {
 
   return (
     <AppLayout>
-      <div className="sticky top-0 z-10 h-12 bg-white border-b border-[#E5E2DB] px-6 flex items-center justify-between">
-        <div className="flex items-center gap-1.5">
-          <span className="text-xs text-[#9B978F]">BuildOps</span>
-          <Chevron />
-          <span className="text-xs font-semibold text-gray-900">Integrations</span>
-        </div>
-        <div className="text-[10px] text-[#9B978F]">
-          {INTEGRATIONS.filter(i => i.status === 'connected').length + connected.size} of {INTEGRATIONS.length} connected
-        </div>
-      </div>
-
       <div className="p-6">
-        <div className="mb-5">
-          <h1 className="text-xl font-bold tracking-tight text-gray-900">Integrations</h1>
-          <p className="text-xs text-[#9B978F] mt-1">Connect BuildOps to the tools your team already uses.</p>
+        <div className="mb-5 flex items-start justify-between">
+          <div>
+            <h1 className="text-lg font-semibold text-text-primary">Integrations</h1>
+            <p className="text-xs text-text-muted mt-1">Connect BuildOps to the tools your team already uses.</p>
+          </div>
+          <div className="text-[10px] text-text-muted">
+            {INTEGRATIONS.filter(i => i.status === 'connected').length + connected.size} of {INTEGRATIONS.length} connected
+          </div>
         </div>
 
         {categories.map(cat => {
           const items = INTEGRATIONS.filter(i => i.category === cat)
           return (
             <div key={cat} className="mb-7">
-              <h2 className="text-[10px] uppercase tracking-widest font-bold text-[#9B978F] mb-3">{cat}</h2>
+              <h2 className="text-[10px] uppercase tracking-widest font-bold text-text-muted mb-3">{cat}</h2>
               <div className="grid grid-cols-1 gap-3">
                 {items.map(integration => {
                   const isConnected = integration.status === 'connected'
                   const isComingSoon = integration.status === 'coming_soon'
 
                   return (
-                    <div key={integration.id} className={`bg-white border rounded-[10px] shadow-[0_1px_2px_rgba(0,0,0,.05)] p-5 ${isComingSoon ? 'border-[#DDD9D0] opacity-75' : 'border-[#DDD9D0]'}`}>
+                    <div key={integration.id} className={`bg-surface border border-border rounded-xl p-5 ${isComingSoon ? 'opacity-75' : ''}`}>
                       <div className="flex items-start gap-4">
                         <div className="flex-shrink-0">{integration.logo}</div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-0.5">
-                            <span className="text-sm font-bold text-gray-900">{integration.name}</span>
+                            <span className="text-sm font-bold text-text-primary">{integration.name}</span>
                             {isConnected && (
-                              <span className="inline-flex px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#E8F5EE] text-[#1A6B45]">Connected</span>
+                              <span className="inline-flex px-2 py-0.5 rounded-full text-[9px] font-bold bg-success/10 text-success border border-success/20">Connected</span>
+                            )}
+                            {!isConnected && !isComingSoon && (
+                              <span className="inline-flex px-2 py-0.5 rounded-full text-[9px] font-bold bg-muted text-text-secondary">Not Connected</span>
                             )}
                             {isComingSoon && (
-                              <span className="inline-flex px-2 py-0.5 rounded-full text-[9px] font-bold bg-gray-100 text-[#9B978F]">Coming soon</span>
+                              <span className="inline-flex px-2 py-0.5 rounded-full text-[9px] font-bold bg-muted text-text-muted">Coming soon</span>
                             )}
                           </div>
-                          <p className="text-xs text-[#9B978F] mb-3">{integration.description}</p>
+                          <p className="text-xs text-text-muted mb-3">{integration.description}</p>
 
                           {/* Excel export shortcuts */}
                           {integration.id === 'excel' && (
@@ -234,7 +227,7 @@ export default function IntegrationsPage() {
                                 <button
                                   key={table}
                                   onClick={() => toast(`Export ${table} → navigate to /${table.toLowerCase()} and click Export Excel`)}
-                                  className="text-[10px] font-semibold border border-[#E5E2DB] px-2.5 py-1 rounded-lg text-gray-600 hover:bg-[#F7F6F2] flex items-center gap-1"
+                                  className="text-[10px] font-semibold border border-border px-2.5 py-1 rounded-lg text-text-secondary hover:bg-background flex items-center gap-1"
                                 >
                                   <svg width="9" height="9" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><polyline points="7 10 12 15 17 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
                                   {table}
@@ -247,24 +240,24 @@ export default function IntegrationsPage() {
                           {!isComingSoon && integration.id !== 'excel' && integration.inputLabel && (
                             <div className="flex gap-2 items-end">
                               <div className="flex-1">
-                                <label className="text-[9px] uppercase tracking-wide text-[#9B978F] font-semibold block mb-1">{integration.inputLabel}</label>
+                                <label className="text-[9px] uppercase tracking-wide text-text-muted font-semibold block mb-1">{integration.inputLabel}</label>
                                 <input
                                   type={integration.inputType || 'text'}
                                   value={values[integration.id] || ''}
                                   onChange={e => setValues(prev => ({ ...prev, [integration.id]: e.target.value }))}
                                   placeholder={integration.inputPlaceholder}
-                                  className="w-full border border-[#E5E2DB] rounded-lg px-3 py-2 text-xs font-mono focus:outline-none focus:border-[#D4561A]"
+                                  className="w-full bg-background border border-border rounded-lg px-3 py-2 text-xs font-mono text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent"
                                 />
                               </div>
                               <button
                                 onClick={() => handleSave(integration.id)}
                                 disabled={saving === integration.id}
-                                className="text-xs font-semibold bg-[#D4561A] text-white px-3.5 py-2 rounded-lg hover:bg-[#BE4A16] disabled:opacity-50 whitespace-nowrap"
+                                className="text-xs font-semibold bg-accent text-white px-3.5 py-2 rounded-lg hover:bg-accent-hover disabled:opacity-50 whitespace-nowrap"
                               >
                                 {saving === integration.id ? 'Saving...' : 'Save'}
                               </button>
                               {isConnected && (
-                                <button onClick={() => handleDisconnect(integration.id)} className="text-xs font-semibold text-[#9B978F] border border-[#E5E2DB] px-3 py-2 rounded-lg hover:text-[#B8301A] hover:border-[#B8301A]/30 whitespace-nowrap">
+                                <button onClick={() => handleDisconnect(integration.id)} className="text-xs font-semibold text-text-muted border border-border px-3 py-2 rounded-lg hover:text-danger hover:border-danger/30 whitespace-nowrap">
                                   Disconnect
                                 </button>
                               )}
@@ -273,7 +266,7 @@ export default function IntegrationsPage() {
 
                           {/* Already connected without input */}
                           {isConnected && !integration.inputLabel && (
-                            <button onClick={() => handleDisconnect(integration.id)} className="text-xs font-semibold text-[#9B978F] hover:text-[#B8301A]">Disconnect</button>
+                            <button onClick={() => handleDisconnect(integration.id)} className="text-xs font-semibold text-text-muted hover:text-danger transition-colors">Disconnect</button>
                           )}
                         </div>
                       </div>
