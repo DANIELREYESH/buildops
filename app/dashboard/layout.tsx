@@ -114,6 +114,26 @@ const IcoPermissions = () => (
     <path d="M7 11V7a5 5 0 0110 0v4" {...S} />
   </svg>
 )
+const IcoBanking = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+    <rect x="2" y="5" width="20" height="14" rx="2" {...S} />
+    <line x1="2" y1="10" x2="22" y2="10" {...S} />
+  </svg>
+)
+const IcoInvoicing = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" {...S} />
+    <polyline points="14 2 14 8 20 8" {...S} />
+    <line x1="9" y1="15" x2="15" y2="15" {...S} />
+    <line x1="9" y1="11" x2="11" y2="11" {...S} />
+  </svg>
+)
+const IcoIntegrations = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+    <circle cx="12" cy="12" r="3" {...S} />
+    <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" {...S} />
+  </svg>
+)
 const IcoLogOut = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
     <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" {...S} />
@@ -154,6 +174,8 @@ const SECTIONS: Section[] = [
     group: 'FINANCE',
     items: [
       { label: 'Budget vs Real', href: '/costs', Icon: IcoCosts },
+      { label: 'Invoicing', href: '/invoicing', Icon: IcoInvoicing },
+      { label: 'Open Banking', href: '/banking', Icon: IcoBanking },
       { label: 'Scan Tickets', href: '/tickets', Icon: IcoTickets, badge: 'AI' },
       { label: 'Suppliers & Prices', href: '/suppliers', Icon: IcoSuppliers },
       { label: 'Sub Payments', href: '/payments', Icon: IcoPayments, badge: '2' },
@@ -173,6 +195,7 @@ const SECTIONS: Section[] = [
     group: 'SETTINGS',
     items: [
       { label: 'Users & Billing', href: '/users', Icon: IcoUsers },
+      { label: 'Integrations', href: '/integrations', Icon: IcoIntegrations },
       { label: 'Permissions', href: '/permissions', Icon: IcoPermissions },
     ],
   },

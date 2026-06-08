@@ -31,6 +31,7 @@ const PERMISSIONS: { key: string; label: string; roles: Role[] }[] = [
 ]
 
 const BILLING_HISTORY = [
+  { date: '2026-06-01', amount: '£199.00', status: 'Paid', desc: 'BuildOps Pro — Jun 2026' },
   { date: '2026-05-01', amount: '£199.00', status: 'Paid', desc: 'BuildOps Pro — May 2026' },
   { date: '2026-04-01', amount: '£199.00', status: 'Paid', desc: 'BuildOps Pro — Apr 2026' },
   { date: '2026-03-01', amount: '£199.00', status: 'Paid', desc: 'BuildOps Pro — Mar 2026' },
@@ -41,7 +42,9 @@ export default function UsersPage() {
   const [members, setMembers] = useState<TeamMember[]>([])
   const [loading, setLoading] = useState(true)
   const [showInvite, setShowInvite] = useState(false)
+  const [showUpgrade, setShowUpgrade] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [checkoutLoading, setCheckoutLoading] = useState<'starter' | 'pro' | null>(null)
   const [userEmail, setUserEmail] = useState('')
   const [inviteForm, setInviteForm] = useState({ name: '', email: '', role: 'operative' as Role })
   const [inviteCode, setInviteCode] = useState('')
@@ -98,6 +101,30 @@ export default function UsersPage() {
     toast('Member removed')
   }
 
+  const handleUpgrade = async (plan: 'starter' | 'pro') => {
+    setCheckoutLoading(plan)
+    try {
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan, email: userEmail }),
+      })
+      const data = await res.json()
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        toast(data.error || 'Stripe not configured — add real keys to .env.local', 'warning')
+      }
+    } catch {
+      toast('Failed to start checkout', 'error')
+    }
+    setCheckoutLoading(null)
+  }
+
+  const handleManagePlan = async () => {
+    toast('Stripe portal requires a real customer ID — connect Stripe to enable', 'info')
+  }
+
   const roles: Role[] = ['admin', 'manager', 'supervisor', 'operative']
 
   return (
@@ -129,7 +156,14 @@ export default function UsersPage() {
               </div>
               <div className="text-xs text-[#9B978F]">£199 / month · Renews 1 Jul 2026 · Unlimited projects · All modules</div>
             </div>
-            <button className="text-xs font-semibold text-[#D4561A] hover:underline">Manage plan</button>
+            <div className="flex items-center gap-2">
+              <button onClick={() => setShowUpgrade(true)} className="text-xs font-semibold text-gray-500 border border-[#E5E2DB] px-3 py-1.5 rounded-lg hover:bg-gray-50">
+                Change plan
+              </button>
+              <button onClick={handleManagePlan} className="text-xs font-semibold text-[#D4561A] border border-[#D4561A]/30 px-3 py-1.5 rounded-lg hover:bg-[#FEF6E4]">
+                Manage billing
+              </button>
+            </div>
           </div>
           <div className="mt-4 pt-4 border-t border-[#F0EDE8]">
             <div className="flex items-center justify-between mb-1.5">
@@ -257,13 +291,72 @@ export default function UsersPage() {
                   <td className="px-4 py-3 text-xs text-[#9B978F]">{b.date}</td>
                   <td className="px-4 py-3 text-xs font-mono font-bold text-gray-900">{b.amount}</td>
                   <td className="px-4 py-3"><span className="inline-flex px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#E8F5EE] text-[#1A6B45]">{b.status}</span></td>
-                  <td className="px-4 py-3"><button className="text-[10px] text-[#9B978F] hover:text-[#D4561A] font-semibold">Download</button></td>
+                  <td className="px-4 py-3">
+                    <button onClick={() => {
+                      const content = `RECEIPT\n${b.desc}\nDate: ${b.date}\nAmount: ${b.amount}\nStatus: ${b.status}\nBuildOps Ltd`
+                      const blob = new Blob([content], { type: 'text/plain' })
+                      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `invoice-${b.date}.txt`; a.click()
+                    }} className="text-[10px] text-[#9B978F] hover:text-[#D4561A] font-semibold">Download</button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
+
+      {showUpgrade && (
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setShowUpgrade(false)}>
+          <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="px-6 py-4 border-b border-[#E5E2DB] flex items-center justify-between">
+              <h3 className="font-bold text-sm text-gray-900">Change Plan</h3>
+              <button onClick={() => setShowUpgrade(false)} className="text-[#9B978F] hover:text-gray-700">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+              </button>
+            </div>
+            <div className="p-6">
+              <div className="grid grid-cols-2 gap-4">
+                {/* Starter */}
+                <div className="border border-[#DDD9D0] rounded-xl p-5">
+                  <div className="text-xs font-bold text-[#9B978F] uppercase tracking-wide mb-1">Starter</div>
+                  <div className="text-2xl font-black text-gray-900 mb-0.5">£99<span className="text-sm font-normal text-[#9B978F]">/mo</span></div>
+                  <div className="text-[10px] text-[#9B978F] mb-4">Up to 5 projects · 3 team members</div>
+                  <ul className="space-y-1.5 mb-5">
+                    {['AI Check-ins', 'Timesheets & Costs', 'Basic Reports'].map(f => (
+                      <li key={f} className="flex items-center gap-2 text-xs text-gray-700">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12" stroke="#1A6B45" strokeWidth="2.5" strokeLinecap="round"/></svg>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <button onClick={() => handleUpgrade('starter')} disabled={checkoutLoading !== null} className="w-full border border-[#E5E2DB] text-gray-700 text-xs font-semibold py-2.5 rounded-lg hover:bg-gray-50 disabled:opacity-50">
+                    {checkoutLoading === 'starter' ? 'Redirecting...' : 'Downgrade to Starter'}
+                  </button>
+                </div>
+                {/* Pro */}
+                <div className="border-2 border-[#D4561A] rounded-xl p-5 relative">
+                  <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-[#D4561A] text-white text-[9px] font-bold px-2.5 py-0.5 rounded-full">Current Plan</span>
+                  <div className="text-xs font-bold text-[#D4561A] uppercase tracking-wide mb-1">Pro</div>
+                  <div className="text-2xl font-black text-gray-900 mb-0.5">£199<span className="text-sm font-normal text-[#9B978F]">/mo</span></div>
+                  <div className="text-[10px] text-[#9B978F] mb-4">Unlimited projects · All modules</div>
+                  <ul className="space-y-1.5 mb-5">
+                    {['Everything in Starter', 'Invoicing & Banking', 'Integrations & Zapier', 'Priority support'].map(f => (
+                      <li key={f} className="flex items-center gap-2 text-xs text-gray-700">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12" stroke="#1A6B45" strokeWidth="2.5" strokeLinecap="round"/></svg>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <button onClick={() => handleUpgrade('pro')} disabled={checkoutLoading !== null} className="w-full bg-[#D4561A] text-white text-xs font-semibold py-2.5 rounded-lg hover:bg-[#BE4A16] disabled:opacity-50">
+                    {checkoutLoading === 'pro' ? 'Redirecting...' : 'Continue with Pro'}
+                  </button>
+                </div>
+              </div>
+              <p className="text-[10px] text-[#9B978F] text-center mt-4">All prices ex. VAT · Billed monthly · Cancel anytime</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showInvite && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setShowInvite(false)}>

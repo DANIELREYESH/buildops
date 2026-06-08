@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import AppLayout from '@/app/dashboard/layout'
 import { supabase } from '@/lib/supabase'
 import { useToast } from '@/lib/toast'
-import type { Project, Cost, Checkin, Task } from '@/lib/types'
+import type { Project, Cost, Checkin, Task, Timesheet } from '@/lib/types'
 
 const fmt = (n: number) => `£${n.toLocaleString('en-GB', { maximumFractionDigits: 0 })}`
 
@@ -19,6 +19,94 @@ function StatCard({ label, value, sub, color = 'text-gray-900' }: { label: strin
   )
 }
 
+const MRR_DATA = [
+  { month: 'Jan', value: 8400 },
+  { month: 'Feb', value: 9200 },
+  { month: 'Mar', value: 11500 },
+  { month: 'Apr', value: 13800 },
+  { month: 'May', value: 15200 },
+  { month: 'Jun', value: 16900 },
+]
+
+function MRRChart() {
+  const max = Math.max(...MRR_DATA.map(d => d.value))
+  const chartH = 80
+  const barW = 28
+  const gap = 12
+
+  return (
+    <div className="bg-white border border-[#DDD9D0] rounded-[10px] shadow-[0_1px_2px_rgba(0,0,0,.05)] p-4">
+      <div className="flex items-center justify-between mb-3">
+        <div>
+          <div className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold">MRR — Last 6 Months</div>
+          <div className="text-lg font-bold text-gray-900 mt-0.5">{fmt(MRR_DATA[MRR_DATA.length - 1].value)}/mo</div>
+        </div>
+        <span className="text-[10px] font-bold text-[#1A6B45] bg-[#E8F5EE] px-2 py-0.5 rounded-full">+11% MoM</span>
+      </div>
+      <svg width="100%" viewBox={`0 0 ${MRR_DATA.length * (barW + gap) - gap} ${chartH + 20}`} className="overflow-visible">
+        {MRR_DATA.map((d, i) => {
+          const h = Math.max(4, (d.value / max) * chartH)
+          const x = i * (barW + gap)
+          const y = chartH - h
+          const isLast = i === MRR_DATA.length - 1
+          return (
+            <g key={d.month}>
+              <rect x={x} y={y} width={barW} height={h} rx={4} fill={isLast ? '#D4561A' : '#E5E2DB'} />
+              <text x={x + barW / 2} y={chartH + 14} textAnchor="middle" fontSize="9" fill="#9B978F" fontFamily="system-ui">{d.month}</text>
+            </g>
+          )
+        })}
+      </svg>
+    </div>
+  )
+}
+
+function GanttChart({ projects }: { projects: Project[] }) {
+  const today = new Date()
+  const start = new Date(today.getFullYear(), today.getMonth() - 2, 1)
+  const end = new Date(today.getFullYear(), today.getMonth() + 4, 0)
+  const totalDays = Math.ceil((end.getTime() - start.getTime()) / 86400000)
+
+  const toPercent = (d: Date) => Math.max(0, Math.min(100, ((d.getTime() - start.getTime()) / 86400000 / totalDays) * 100))
+  const todayPct = toPercent(today)
+
+  const withDates = projects.filter(p => p.deadline).slice(0, 5)
+  if (withDates.length === 0) return null
+
+  return (
+    <div className="bg-white border border-[#DDD9D0] rounded-[10px] shadow-[0_1px_2px_rgba(0,0,0,.05)] p-4">
+      <div className="text-[10px] uppercase tracking-wide text-[#9B978F] font-semibold mb-3">Project Timeline</div>
+      <div className="space-y-2.5">
+        {withDates.map(p => {
+          const pStart = new Date(p.created_at)
+          const pEnd = new Date(p.deadline!)
+          const leftPct = toPercent(pStart)
+          const widthPct = Math.max(2, toPercent(pEnd) - leftPct)
+          const isDelayed = p.status === 'delayed'
+          const isOver = pEnd < today && p.status !== 'completed'
+          const color = isOver ? '#B8301A' : isDelayed ? '#96670A' : '#D4561A'
+          return (
+            <div key={p.id}>
+              <div className="text-[10px] text-gray-700 truncate mb-1 max-w-[180px]">{p.name}</div>
+              <div className="relative h-4 bg-[#F0EDE8] rounded-full overflow-hidden">
+                <div
+                  className="absolute top-0 h-full rounded-full"
+                  style={{ left: `${leftPct}%`, width: `${widthPct}%`, backgroundColor: color, opacity: 0.8 }}
+                />
+                <div className="absolute top-0 bottom-0 w-px bg-gray-400 opacity-50" style={{ left: `${todayPct}%` }} />
+              </div>
+            </div>
+          )
+        })}
+      </div>
+      <div className="mt-2 flex items-center gap-1 text-[9px] text-[#9B978F]">
+        <div className="w-px h-3 bg-gray-400 opacity-50" />
+        <span>Today</span>
+      </div>
+    </div>
+  )
+}
+
 type ActivityItem = { type: 'project' | 'cost' | 'checkin' | 'task'; label: string; sub: string; time: string; href: string }
 
 export default function DashboardPage() {
@@ -28,6 +116,9 @@ export default function DashboardPage() {
   const [costs, setCosts] = useState<Cost[]>([])
   const [checkins, setCheckins] = useState<Checkin[]>([])
   const [tasks, setTasks] = useState<Task[]>([])
+  const [timesheets, setTimesheets] = useState<Timesheet[]>([])
+  const [invoicedThisMonth, setInvoicedThisMonth] = useState(0)
+  const [outstandingInvoices, setOutstandingInvoices] = useState(0)
   const [userEmail, setUserEmail] = useState('')
   const [loading, setLoading] = useState(true)
   const [showNewProject, setShowNewProject] = useState(false)
@@ -44,16 +135,26 @@ export default function DashboardPage() {
     if (!user) { router.push('/'); return }
     setUserEmail(user.email || '')
 
-    const [{ data: ps }, { data: cs }, { data: cis }, { data: ts }] = await Promise.all([
+    const [{ data: ps }, { data: cs }, { data: cis }, { data: ts }, { data: tss }, invoicesRes] = await Promise.all([
       supabase.from('projects').select('*').order('created_at', { ascending: false }),
       supabase.from('costs').select('*').order('created_at', { ascending: false }),
       supabase.from('checkins').select('*').order('created_at', { ascending: false }).limit(20),
       supabase.from('tasks').select('*').neq('status', 'done').order('due_date', { ascending: true }),
+      supabase.from('timesheets').select('*').order('clock_in', { ascending: false }).limit(50),
+      supabase.from('invoices').select('*'),
     ])
     setProjects((ps as Project[]) || [])
     setCosts((cs as Cost[]) || [])
     setCheckins((cis as Checkin[]) || [])
     setTasks((ts as Task[]) || [])
+    setTimesheets((tss as Timesheet[]) || [])
+
+    const monthPrefix = new Date().toISOString().slice(0, 7)
+    type InvoiceRow = { total: number; status: string; created_at: string }
+    const invoices = (invoicesRes.data as InvoiceRow[] | null) || []
+    setInvoicedThisMonth(invoices.filter(i => i.created_at?.startsWith(monthPrefix)).reduce((s, i) => s + i.total, 0))
+    setOutstandingInvoices(invoices.filter(i => i.status === 'sent' || i.status === 'overdue').reduce((s, i) => s + i.total, 0))
+
     setLoading(false)
   }, [router])
 
@@ -75,6 +176,17 @@ export default function DashboardPage() {
   const issueCheckins = checkins.filter(c => c.issue_flagged && c.status === 'issue')
   const todayCheckins = checkins.filter(c => c.checkin_date === today)
   const recentCheckins = checkins.slice(0, 5)
+
+  const activeWorkersToday = new Set(
+    timesheets.filter(t => t.date === today && t.clock_in && !t.clock_out).map(t => t.user_email)
+  ).size
+  const projectsWithBudget = projects.filter(p => (p.budget || 0) > 0)
+  const avgMargin = projectsWithBudget.length === 0 ? 0 : Math.round(
+    projectsWithBudget.reduce((s, p) => {
+      const spent = costs.filter(c => c.project_id === p.id).reduce((cs2, c) => cs2 + c.amount, 0)
+      return s + ((p.budget! - spent) / p.budget!) * 100
+    }, 0) / projectsWithBudget.length
+  )
 
   const projName = (id: string | null) => projects.find(p => p.id === id)?.name ?? '—'
 
@@ -250,6 +362,20 @@ export default function DashboardPage() {
           <StatCard label="Costs to Date" value={fmt(totalSpent)} sub={`${Math.round((totalSpent / (totalBudget || 1)) * 100)}% of budget`} color="text-[#D4561A]" />
           <StatCard label="Open Tasks" value={String(openTasks)} sub={`${overdueTasks.length} overdue`} color={overdueTasks.length > 0 ? 'text-[#B8301A]' : 'text-gray-900'} />
           <StatCard label="Issues Flagged" value={String(issueCheckins.length)} sub="Require attention" color={issueCheckins.length > 0 ? 'text-[#B8301A]' : 'text-[#1A6B45]'} />
+        </div>
+
+        {/* KPI row 2 — finance & ops */}
+        <div className="grid grid-cols-4 gap-4 mb-6">
+          <StatCard label="Invoiced This Month" value={fmt(invoicedThisMonth)} sub="From Invoicing module" />
+          <StatCard label="Outstanding Payments" value={fmt(outstandingInvoices)} sub="Sent & overdue invoices" color={outstandingInvoices > 0 ? 'text-[#1A3FAA]' : 'text-gray-900'} />
+          <StatCard label="Active Workers Today" value={String(activeWorkersToday)} sub="Currently clocked in" color="text-[#1A6B45]" />
+          <StatCard label="Avg. Margin" value={`${avgMargin}%`} sub="Across budgeted projects" color={avgMargin < 0 ? 'text-[#B8301A]' : avgMargin < 15 ? 'text-[#96670A]' : 'text-[#1A6B45]'} />
+        </div>
+
+        {/* Charts row */}
+        <div className="grid grid-cols-2 gap-5 mb-6">
+          <MRRChart />
+          <GanttChart projects={projects} />
         </div>
 
         <div className="grid grid-cols-3 gap-5">

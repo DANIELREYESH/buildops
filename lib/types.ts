@@ -150,3 +150,19 @@ export interface Supplier {
   notes: string | null
   created_at: string
 }
+
+export interface Invoice {
+  id: string
+  project_id: string | null
+  client_name: string
+  client_email: string | null
+  line_items: { description: string; qty: number; unit_price: number }[]
+  subtotal: number
+  vat: number
+  total: number
+  status: 'draft' | 'sent' | 'paid' | 'overdue'
+  due_date: string | null
+  invoice_ref: string | null
+  notes: string | null
+  created_at: string
+}
