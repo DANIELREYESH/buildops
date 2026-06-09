@@ -7,9 +7,9 @@ type Size = 'sm' | 'md' | 'lg'
 
 const VARIANT_STYLES: Record<Variant, string> = {
   primary:   'bg-[#6366f1] hover:bg-[#4f46e5] text-white border-transparent',
-  secondary: 'bg-[#1f1f1f] hover:bg-[#2a2a2a] text-[#fafafa] border border-[#2a2a2a]',
+  secondary: 'bg-muted hover:bg-muted/70 text-text-primary border border-border',
   danger:    'bg-[#ef4444]/10 hover:bg-[#ef4444]/20 text-[#ef4444] border border-[#ef4444]/20',
-  ghost:     'bg-transparent hover:bg-[#1f1f1f] text-[#a1a1aa] border-transparent',
+  ghost:     'bg-transparent hover:bg-muted text-text-secondary border-transparent',
 }
 
 const SIZE_STYLES: Record<Size, string> = {

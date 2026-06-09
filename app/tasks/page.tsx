@@ -359,8 +359,8 @@ function TasksPageInner() {
       <div className="pt-6 px-6 pb-12 max-w-full">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Tasks</h1>
-            <p className="text-sm text-[#a1a1aa] mt-0.5">{tasks.length} total · {open} open · {blocked} blocked</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-text-primary">Tasks</h1>
+            <p className="text-sm text-text-secondary mt-0.5">{tasks.length} total · {open} open · {blocked} blocked</p>
           </div>
           <div className="flex items-center gap-3">
             <input
@@ -382,7 +382,7 @@ function TasksPageInner() {
             </select>
           </div>
         </div>
-        <div className="border-b border-[#1f1f1f] mb-6" />
+        <div className="border-b border-border mb-6" />
 
         {loading ? (
           <div className="grid grid-cols-3 gap-3">{[...Array(3)].map((_, i) => <div key={i} className="skeleton h-72 rounded-xl" />)}</div>
@@ -392,7 +392,7 @@ function TasksPageInner() {
               <CheckSquare size={20} className="text-accent" />
             </div>
             <p className="text-sm font-medium text-text-primary">No tasks yet</p>
-            <p className="text-sm text-[#a1a1aa] mt-0.5">Add your first task to start tracking work.</p>
+            <p className="text-sm text-text-secondary mt-0.5">Add your first task to start tracking work.</p>
           </div>
         ) : (
           <DndContext sensors={sensors} onDragEnd={handleDragEnd}>

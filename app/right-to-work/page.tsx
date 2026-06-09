@@ -254,7 +254,7 @@ export default function RightToWorkPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Right to Work Checker</h1>
+            <h1 className="text-2xl font-semibold tracking-tight text-text-primary">Right to Work Checker</h1>
             <p className="text-xs text-text-muted mt-0.5">AI-powered UK right to work document verification</p>
           </div>
           <button onClick={exportCsv} className="flex items-center gap-1.5 text-xs font-medium text-text-secondary border border-border px-3 py-1.5 rounded-lg hover:bg-muted transition-colors">
@@ -298,7 +298,7 @@ export default function RightToWorkPage() {
                 <div className="text-center py-12">
                   <UserCheck size={24} className="text-text-muted mx-auto mb-2" />
                   <p className="text-sm text-text-muted">No checks yet</p>
-                  <p className="text-sm text-[#a1a1aa] mt-0.5">Use the form to run your first check</p>
+                  <p className="text-sm text-text-secondary mt-0.5">Use the form to run your first check</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">

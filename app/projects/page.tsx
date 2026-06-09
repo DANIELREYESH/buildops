@@ -71,7 +71,7 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
         <FolderKanban size={20} className="text-accent" />
       </div>
       <p className="text-sm font-medium text-text-primary">No projects yet</p>
-      <p className="text-sm text-[#a1a1aa] mt-0.5">Create your first project to start tracking work and costs.</p>
+      <p className="text-sm text-text-secondary mt-0.5">Create your first project to start tracking work and costs.</p>
       <button onClick={onCreate} className="mt-4 text-xs font-medium text-white bg-accent hover:bg-accent-hover active:scale-[0.98] px-3.5 py-2 rounded-lg transition-colors">
         Create your first project
       </button>
@@ -395,8 +395,8 @@ function ProjectsPageInner() {
       <div className="pt-6 px-6 pb-12 max-w-full">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Projects</h1>
-            <p className="text-sm text-[#a1a1aa] mt-0.5">{projects.length} total · {projects.filter(p => p.status === 'active').length} active</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-text-primary">Projects</h1>
+            <p className="text-sm text-text-secondary mt-0.5">{projects.length} total · {projects.filter(p => p.status === 'active').length} active</p>
           </div>
           <div className="flex items-center gap-3">
             <input
@@ -421,7 +421,7 @@ function ProjectsPageInner() {
             </button>
           </div>
         </div>
-        <div className="border-b border-[#1f1f1f] mb-6" />
+        <div className="border-b border-border mb-6" />
 
         {/* Status donut */}
         {!loading && projects.length > 0 && (

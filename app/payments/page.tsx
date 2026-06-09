@@ -89,14 +89,14 @@ export default function PaymentsPage() {
       <div className="pt-6 px-6 pb-12">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Sub Payments</h1>
-            <p className="text-sm text-[#a1a1aa] mt-0.5">Track milestone payments to all subcontractors on active projects.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-text-primary">Sub Payments</h1>
+            <p className="text-sm text-text-secondary mt-0.5">Track milestone payments to all subcontractors on active projects.</p>
           </div>
           <button onClick={() => setShowModal(true)} className="text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover active:scale-[0.98] transition-colors">
             + Add Milestone
           </button>
         </div>
-        <div className="border-b border-[#1f1f1f] mb-6" />
+        <div className="border-b border-border mb-6" />
 
         {/* Stats + donut */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
@@ -198,7 +198,7 @@ export default function PaymentsPage() {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="var(--color-accent)" strokeWidth="2"/><line x1="2" y1="10" x2="22" y2="10" stroke="var(--color-accent)" strokeWidth="2"/></svg>
             </div>
             <p className="text-sm font-medium text-text-primary">No payment milestones yet</p>
-            <p className="text-sm text-[#a1a1aa] mt-0.5">Add milestones to track payments to your subcontractors</p>
+            <p className="text-sm text-text-secondary mt-0.5">Add milestones to track payments to your subcontractors</p>
           </div>
         ) : (
           <div className="space-y-3">

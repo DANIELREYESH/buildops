@@ -104,14 +104,14 @@ export default function CostsPage() {
       <div className="pt-6 px-6 pb-12">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Budget vs Real</h1>
-            <p className="text-sm text-[#a1a1aa] mt-0.5">Real-time cost tracking across all active projects.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-text-primary">Budget vs Real</h1>
+            <p className="text-sm text-text-secondary mt-0.5">Real-time cost tracking across all active projects.</p>
           </div>
           <button onClick={() => setShowModal(true)} className="text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover active:scale-[0.98] transition-colors">
             + Add Cost
           </button>
         </div>
-        <div className="border-b border-[#1f1f1f] mb-6" />
+        <div className="border-b border-border mb-6" />
 
         {/* Alert banners */}
         {atRiskProjects.map(p => {
@@ -156,7 +156,7 @@ export default function CostsPage() {
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="var(--color-accent)" strokeWidth="2"/><path d="M3 9h18M9 21V9" stroke="var(--color-accent)" strokeWidth="2"/></svg>
                 </div>
                 <p className="text-sm text-text-secondary font-semibold">No projects yet</p>
-                <p className="text-sm text-[#a1a1aa] mt-0.5">Create a project to start tracking costs against budget.</p>
+                <p className="text-sm text-text-secondary mt-0.5">Create a project to start tracking costs against budget.</p>
               </div>
             ) : projects.map(p => {
               const isExpanded = expanded.has(p.id)

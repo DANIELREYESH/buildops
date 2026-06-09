@@ -183,14 +183,14 @@ export default function IntegrationsPage() {
       <div className="pt-6 px-6 pb-12">
         <div className="mb-5 flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Integrations</h1>
-            <p className="text-sm text-[#a1a1aa] mt-0.5">Connect BuildOps to the tools your team already uses.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-text-primary">Integrations</h1>
+            <p className="text-sm text-text-secondary mt-0.5">Connect BuildOps to the tools your team already uses.</p>
           </div>
           <div className="text-[10px] text-text-muted">
             {INTEGRATIONS.filter(i => i.status === 'connected').length + connected.size} of {INTEGRATIONS.length} connected
           </div>
         </div>
-        <div className="border-b border-[#1f1f1f] mb-6" />
+        <div className="border-b border-border mb-6" />
 
         {categories.map(cat => {
           const items = INTEGRATIONS.filter(i => i.category === cat)

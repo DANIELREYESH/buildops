@@ -238,8 +238,8 @@ GRANT ALL ON sub_contracts TO anon, authenticated, service_role;`}</pre>
     <AppLayout>
       <div className="p-6 h-full">
         <div className="mb-5">
-          <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Smart Contract Generator</h1>
-          <p className="text-sm text-[#a1a1aa] mt-0.5">AI-generated UK Construction Act compliant subcontractor agreements</p>
+          <h1 className="text-2xl font-semibold tracking-tight text-text-primary">Smart Contract Generator</h1>
+          <p className="text-sm text-text-secondary mt-0.5">AI-generated UK Construction Act compliant subcontractor agreements</p>
         </div>
 
         <div className="flex gap-5 h-full">
@@ -258,7 +258,7 @@ GRANT ALL ON sub_contracts TO anon, authenticated, service_role;`}</pre>
                     <FileText size={20} className="text-accent" />
                   </div>
                   <p className="text-sm font-medium text-text-primary">No contracts yet</p>
-                  <p className="text-sm text-[#a1a1aa] mt-0.5">Fill in the form to generate your first AI contract</p>
+                  <p className="text-sm text-text-secondary mt-0.5">Fill in the form to generate your first AI contract</p>
                 </div>
               ) : (
                 <table className="w-full min-w-[600px]">

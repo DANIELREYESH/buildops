@@ -7,7 +7,7 @@ const VARIANTS: Record<Variant, string> = {
   warning: 'bg-[#f59e0b]/10 text-[#f59e0b] border-[#f59e0b]/20',
   danger:  'bg-[#ef4444]/10 text-[#ef4444] border-[#ef4444]/20',
   info:    'bg-[#6366f1]/10 text-[#6366f1] border-[#6366f1]/20',
-  neutral: 'bg-[#2a2a2a] text-[#a1a1aa] border-[#1f1f1f]',
+  neutral: 'bg-muted text-text-secondary border-border',
 }
 
 interface StatusBadgeProps {

@@ -163,8 +163,8 @@ export default function TimesheetsPage() {
       <div className="pt-6 px-6 pb-12">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Timesheets</h1>
-            <p className="text-sm text-[#a1a1aa] mt-0.5">Log and review hours worked across all projects and trades.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-text-primary">Timesheets</h1>
+            <p className="text-sm text-text-secondary mt-0.5">Log and review hours worked across all projects and trades.</p>
           </div>
           <div className="flex items-center gap-2">
             <button onClick={exportCSV} className="text-xs font-medium text-text-secondary border border-border px-3 py-1.5 rounded-lg hover:bg-muted transition-colors">Export CSV</button>
@@ -296,7 +296,7 @@ export default function TimesheetsPage() {
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="var(--color-accent)" strokeWidth="2"/><polyline points="12 7 12 12 15 15" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                     </div>
                     <p className="text-sm font-medium text-text-primary">No timesheets in this period</p>
-                    <p className="text-sm text-[#a1a1aa] mt-0.5">Log hours or adjust the date range to see entries.</p>
+                    <p className="text-sm text-text-secondary mt-0.5">Log hours or adjust the date range to see entries.</p>
                   </div>
                 </td></tr>
                ) : timesheets.map(t => {

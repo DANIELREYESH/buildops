@@ -133,8 +133,8 @@ export default function TicketsPage() {
       <div className="pt-6 px-6 pb-12">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Scan Tickets</h1>
-            <p className="text-sm text-[#a1a1aa] mt-0.5">Photograph a receipt and AI extracts the data instantly. Never lose a cost again.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-text-primary">Scan Tickets</h1>
+            <p className="text-sm text-text-secondary mt-0.5">Photograph a receipt and AI extracts the data instantly. Never lose a cost again.</p>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-xs text-text-muted">{fmt(weeklyTotal)} logged this week via scan</span>
@@ -158,7 +158,7 @@ export default function TicketsPage() {
                   <circle cx="12" cy="13" r="4" stroke="var(--color-text-muted)" strokeWidth="1.5"/>
                 </svg>
                 <p className="text-sm font-semibold text-text-primary">Drop receipt or click to scan</p>
-                <p className="text-sm text-[#a1a1aa] mt-0.5">JPG, PNG or PDF — AI extracts supplier, amount and VAT</p>
+                <p className="text-sm text-text-secondary mt-0.5">JPG, PNG or PDF — AI extracts supplier, amount and VAT</p>
                 <input ref={fileRef} type="file" accept="image/*,application/pdf" className="hidden" onChange={e => { if (e.target.files?.[0]) handleFile(e.target.files[0]) }} />
               </div>
             ) : (
@@ -262,7 +262,7 @@ export default function TicketsPage() {
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" stroke="var(--color-accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><circle cx="12" cy="13" r="4" stroke="var(--color-accent)" strokeWidth="1.5"/></svg>
                   </div>
                   <p className="text-xs font-medium text-text-primary">No scans yet</p>
-                  <p className="text-sm text-[#a1a1aa] mt-0.5">Scanned receipts will appear here.</p>
+                  <p className="text-sm text-text-secondary mt-0.5">Scanned receipts will appear here.</p>
                 </div>
               ) : recentScans.map(c => (
                 <div key={c.id} className="px-4 py-3 hover:bg-muted/60 transition-colors">

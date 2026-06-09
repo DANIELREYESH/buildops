@@ -152,8 +152,8 @@ export default function RequestsPage() {
       <div className="pt-6 px-6 pb-12">
         <div className="mb-5 flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Client Requests</h1>
-            <p className="text-sm text-[#a1a1aa] mt-0.5">
+            <h1 className="text-2xl font-semibold tracking-tight text-text-primary">Client Requests</h1>
+            <p className="text-sm text-text-secondary mt-0.5">
               {thisMonth.length} this month · {quoted.length} quoted · {won.length} won · {convRate}% conversion · {fmt(totalWon)} won value
             </p>
           </div>
@@ -161,7 +161,7 @@ export default function RequestsPage() {
             + Log Request
           </button>
         </div>
-        <div className="border-b border-[#1f1f1f] mb-6" />
+        <div className="border-b border-border mb-6" />
 
         {/* Pipeline board */}
         <div className="overflow-x-auto pb-4">

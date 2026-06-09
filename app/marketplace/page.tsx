@@ -75,12 +75,12 @@ export default function MarketplacePage() {
       <div className="pt-6 px-6 pb-12">
         <div className="mb-5 flex items-end justify-between">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Subcontractor Marketplace</h1>
-            <p className="text-sm text-[#a1a1aa] mt-0.5">Verified tradespeople ready to work on your sites. Invite directly to any active project.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-text-primary">Subcontractor Marketplace</h1>
+            <p className="text-sm text-text-secondary mt-0.5">Verified tradespeople ready to work on your sites. Invite directly to any active project.</p>
           </div>
           <span className="text-xs text-text-muted">{filtered.length} subcontractors</span>
         </div>
-        <div className="border-b border-[#1f1f1f] mb-6" />
+        <div className="border-b border-border mb-6" />
 
         {/* Filters */}
         <div className="flex flex-wrap items-end gap-3 mb-5">
@@ -114,7 +114,7 @@ export default function MarketplacePage() {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="var(--color-accent)" strokeWidth="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round"/></svg>
             </div>
             <p className="text-sm font-medium text-text-primary">No subcontractors match your filters</p>
-            <p className="text-sm text-[#a1a1aa] mt-0.5">Try adjusting the trade or rate range</p>
+            <p className="text-sm text-text-secondary mt-0.5">Try adjusting the trade or rate range</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-4">

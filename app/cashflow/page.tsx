@@ -165,8 +165,8 @@ export default function CashflowPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Cashflow Predictor</h1>
-            <p className="text-sm text-[#a1a1aa] mt-0.5">AI-powered 90-day cashflow forecast from your live financial data</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-text-primary">Cashflow Predictor</h1>
+            <p className="text-sm text-text-secondary mt-0.5">AI-powered 90-day cashflow forecast from your live financial data</p>
           </div>
           <button
             onClick={generate}
@@ -177,7 +177,7 @@ export default function CashflowPage() {
             {loading ? 'Generating...' : 'Regenerate Forecast'}
           </button>
         </div>
-        <div className="border-b border-[#1f1f1f] mb-6" />
+        <div className="border-b border-border mb-6" />
 
         {!forecast && !errorMsg && (
           <div className="space-y-4">

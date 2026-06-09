@@ -20,13 +20,13 @@ export function PageHeader({ title, subtitle, actions, icon: Icon, className }: 
             </div>
           )}
           <div className="min-w-0">
-            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa] leading-tight">{title}</h1>
-            {subtitle && <p className="text-sm text-[#a1a1aa] mt-0.5">{subtitle}</p>}
+            <h1 className="text-2xl font-semibold tracking-tight text-text-primary leading-tight">{title}</h1>
+            {subtitle && <p className="text-sm text-text-secondary mt-0.5">{subtitle}</p>}
           </div>
         </div>
         {actions && <div className="flex items-center gap-2 flex-shrink-0">{actions}</div>}
       </div>
-      <div className="border-b border-[#1f1f1f] mt-4" />
+      <div className="border-b border-border mt-4" />
     </div>
   )
 }

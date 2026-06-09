@@ -126,12 +126,12 @@ input[type="range"] {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2a2a2a;
+  background: var(--color-muted);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3f3f3f;
+  background: var(--color-border);
 }
 
 @keyframes pulse-skeleton {
@@ -140,7 +140,7 @@ input[type="range"] {
 }
 
 .skeleton {
-  background: #1f1f1f;
+  background: var(--color-muted);
   border-radius: 6px;
   animation: pulse-skeleton 1.6s ease-in-out infinite;
 }

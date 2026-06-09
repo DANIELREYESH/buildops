@@ -128,14 +128,14 @@ export default function UsersPage() {
       <div className="pt-6 px-6 pb-12 max-w-4xl">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Users & Billing</h1>
-            <p className="text-sm text-[#a1a1aa] mt-0.5">Manage your team access and subscription.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-text-primary">Users & Billing</h1>
+            <p className="text-sm text-text-secondary mt-0.5">Manage your team access and subscription.</p>
           </div>
           <button onClick={openInvite} className="text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover active:scale-[0.98] transition-colors">
             + Invite User
           </button>
         </div>
-        <div className="border-b border-[#1f1f1f] mb-6" />
+        <div className="border-b border-border mb-6" />
 
         {/* Plan card */}
         <div className="bg-surface border border-border rounded-xl p-5 mb-5">

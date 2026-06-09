@@ -62,8 +62,8 @@ export default function PermissionsPage() {
     <AppLayout>
       <div className="pt-6 px-6 pb-12">
         <div className="mb-5">
-          <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Role Permissions</h1>
-          <p className="text-sm text-[#a1a1aa] mt-0.5">Access levels by role. Assign roles to team members in Users &amp; Billing.</p>
+          <h1 className="text-2xl font-semibold tracking-tight text-text-primary">Role Permissions</h1>
+          <p className="text-sm text-text-secondary mt-0.5">Access levels by role. Assign roles to team members in Users &amp; Billing.</p>
         </div>
 
         {/* Role cards */}

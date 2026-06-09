@@ -82,14 +82,14 @@ export default function SuppliersPage() {
       <div className="pt-6 px-6 pb-12">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Suppliers & Prices</h1>
-            <p className="text-sm text-[#a1a1aa] mt-0.5">{suppliers.length} suppliers on record. Click any row to view contact details.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-text-primary">Suppliers & Prices</h1>
+            <p className="text-sm text-text-secondary mt-0.5">{suppliers.length} suppliers on record. Click any row to view contact details.</p>
           </div>
           <button onClick={() => setShowNew(true)} className="text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover active:scale-[0.98] transition-colors">
             + Add Supplier
           </button>
         </div>
-        <div className="border-b border-[#1f1f1f] mb-6" />
+        <div className="border-b border-border mb-6" />
 
         <div className="mb-4">
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name, trade or contact..." className="w-full max-w-sm bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent" />
@@ -103,7 +103,7 @@ export default function SuppliersPage() {
               <Building2 size={20} className="text-accent" />
             </div>
             <p className="text-sm font-medium text-text-primary">{search ? 'No suppliers match your search' : 'No suppliers yet'}</p>
-            <p className="text-sm text-[#a1a1aa] mt-0.5">{search ? 'Try a different search term' : 'Add your first supplier to start tracking contact details and pricing'}</p>
+            <p className="text-sm text-text-secondary mt-0.5">{search ? 'Try a different search term' : 'Add your first supplier to start tracking contact details and pricing'}</p>
             {!search && (
               <button onClick={() => setShowNew(true)} className="mt-4 text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover active:scale-[0.98] transition-colors">
                 + Add Supplier

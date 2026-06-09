@@ -378,8 +378,8 @@ function InvoicingPageInner() {
       <div className="pt-6 px-6 pb-12 max-w-full">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Invoicing</h1>
-            <p className="text-sm text-[#a1a1aa] mt-0.5">Generate, send and track invoices for all your projects.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-text-primary">Invoicing</h1>
+            <p className="text-sm text-text-secondary mt-0.5">Generate, send and track invoices for all your projects.</p>
           </div>
           <div className="flex items-center gap-2">
             <button onClick={exportExcel} className="flex items-center gap-1.5 text-xs font-medium text-text-secondary border border-border px-3 py-1.5 rounded-lg hover:bg-muted transition-colors">

@@ -92,8 +92,8 @@ export default function BankingPage() {
       <div className="pt-6 px-6 pb-12">
         <div className="mb-5 flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Open Banking</h1>
-            <p className="text-sm text-[#a1a1aa] mt-0.5">Connect your bank accounts and automatically match transactions to project costs.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-text-primary">Open Banking</h1>
+            <p className="text-sm text-text-secondary mt-0.5">Connect your bank accounts and automatically match transactions to project costs.</p>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-[10px] text-text-muted flex items-center gap-1">
@@ -107,7 +107,7 @@ export default function BankingPage() {
             )}
           </div>
         </div>
-        <div className="border-b border-[#1f1f1f] mb-6" />
+        <div className="border-b border-border mb-6" />
 
         {/* Summary KPIs */}
         <div className="grid grid-cols-3 gap-4 mb-6">

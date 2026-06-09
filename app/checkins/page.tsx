@@ -307,8 +307,8 @@ export default function CheckinsPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">AI Site Intelligence</h1>
-            <p className="text-sm text-[#a1a1aa] mt-0.5">AI-powered analysis of daily site check-ins with pattern detection</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-text-primary">AI Site Intelligence</h1>
+            <p className="text-sm text-text-secondary mt-0.5">AI-powered analysis of daily site check-ins with pattern detection</p>
           </div>
           <div className="flex items-center gap-2">
             <select
@@ -400,7 +400,7 @@ export default function CheckinsPage() {
                   <Bot size={20} className="text-accent" />
                 </div>
                 <p className="text-sm font-medium text-text-primary">No check-ins yet</p>
-                <p className="text-sm text-[#a1a1aa] mt-0.5">Workers submit daily reports from the mobile app.</p>
+                <p className="text-sm text-text-secondary mt-0.5">Workers submit daily reports from the mobile app.</p>
                 <button onClick={() => setShowModal(true)} className="mt-4 text-xs font-medium text-white bg-accent hover:bg-accent-hover active:scale-[0.98] px-3.5 py-2 rounded-lg transition-colors">
                   + Submit Check-in
                 </button>
