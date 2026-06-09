@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { Sparkles, X, Send } from 'lucide-react'
+import { X, Send } from 'lucide-react'
 import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
@@ -18,17 +18,29 @@ interface ChatMessage {
 }
 
 const SUGGESTED_PROMPTS = [
-  'What projects are at risk?',
-  'Show my overdue invoices',
-  'Generate a contract for a subcontractor',
-  "What's my cashflow looking like?",
-  'Which subs need Right to Work checks?',
+  'What needs my attention today?',
+  'Any invoices I should chase?',
+  'Draft a contract for a subcontractor',
+  "How's my cashflow looking?",
 ]
 
 const WELCOME: ChatMessage = {
   id: 'welcome',
   role: 'assistant',
-  content: "Hi 👋 I'm your BuildOps AI. Ask me anything — project status, invoices, cashflow, contracts, or just tell me what you need done.",
+  content: "Hi, I'm Aria 👋 I know your projects, your finances, and your compliance status inside out. What do you need?",
+}
+
+function AriaAvatar({ size = 28 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="10" r="5" fill="white" opacity="0.95"/>
+      <path d="M9 10 Q9 5 14 4.5 Q19 5 19 10" fill="white" opacity="0.7"/>
+      <path d="M6 24 Q6 18 14 17 Q22 18 22 24" fill="white" opacity="0.9"/>
+      <path d="M12 11.5 Q14 13 16 11.5" stroke="#6366f1" strokeWidth="0.8" strokeLinecap="round" fill="none"/>
+      <circle cx="12" cy="9.5" r="0.8" fill="#6366f1"/>
+      <circle cx="16" cy="9.5" r="0.8" fill="#6366f1"/>
+    </svg>
+  )
 }
 
 function ThreeDots() {
@@ -169,10 +181,10 @@ export default function AIAssistant() {
           <div className="absolute inset-0 rounded-full bg-[#6366f1]/25 animate-ping" style={{ animationDuration: '2s' }} />
           <button
             onClick={() => setOpen(true)}
-            aria-label="Open AI Assistant"
+            aria-label="Open Aria"
             className="relative w-14 h-14 rounded-full bg-[#6366f1] hover:bg-[#4f46e5] shadow-2xl shadow-[#6366f1]/40 flex items-center justify-center transition-all active:scale-95"
           >
-            <Sparkles size={22} className="text-white" />
+            <AriaAvatar size={28} />
           </button>
         </div>
       )}
@@ -186,12 +198,16 @@ export default function AIAssistant() {
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 flex-shrink-0" style={{ borderBottom: '1px solid #1f1f1f' }}>
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-full bg-[#6366f1] flex items-center justify-center">
-                <Sparkles size={13} className="text-white" />
+              <div className="w-8 h-8 rounded-full bg-[#6366f1] flex items-center justify-center flex-shrink-0">
+                <AriaAvatar size={22} />
               </div>
-              <span className="text-sm font-bold text-white">BuildOps AI</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e]" />
-              <span className="text-[10px] text-[#22c55e]">Online</span>
+              <div>
+                <div className="text-sm font-bold text-white leading-tight">Aria</div>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e]" />
+                  <span className="text-[10px] text-[#22c55e]">Your BuildOps assistant · Online</span>
+                </div>
+              </div>
             </div>
             <button onClick={() => setOpen(false)} className="text-[#52525b] hover:text-white transition-colors">
               <X size={16} />
