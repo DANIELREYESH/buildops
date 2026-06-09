@@ -11,6 +11,7 @@ import {
   FolderKanban, CheckSquare, FileText, Users, X,
   TrendingUp, TrendingDown, Bot,
 } from 'lucide-react'
+import DailyBriefing from '@/components/DailyBriefing'
 import { toast } from 'sonner'
 
 import { supabase } from '@/lib/supabase'
@@ -203,10 +204,6 @@ export default function DashboardPage() {
   const [showNewCost, setShowNewCost] = useState(false)
   const [showNewCheckin, setShowNewCheckin] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [briefing, setBriefing] = useState<string | null>(null)
-  const [briefingStats, setBriefingStats] = useState<{ activeProjects: number; overdueTasks: number; overduePayments: number; flaggedCheckins: number; weeklySpend: number } | null>(null)
-  const [briefingLoading, setBriefingLoading] = useState(false)
-
   const [projectForm, setProjectForm] = useState({ name: '', client_name: '', budget: '', deadline: '' })
   const [costForm, setCostForm] = useState({ project_id: '', category: 'materials', supplier: '', amount: '', date: '' })
   const [checkinForm, setCheckinForm] = useState({ project_id: '', worker_name: '', message: '' })
@@ -306,21 +303,6 @@ export default function DashboardPage() {
     load()
   }
 
-  const generateBriefing = async () => {
-    setBriefingLoading(true)
-    try {
-      const res = await fetch('/api/ai-briefing', { method: 'POST' })
-      const json = await res.json()
-      if (!res.ok) throw new Error(json.error)
-      setBriefing(json.briefing)
-      setBriefingStats(json.stats)
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Briefing failed')
-    } finally {
-      setBriefingLoading(false)
-    }
-  }
-
   if (loading) {
     return (
       <div className="p-4 md:p-6 space-y-4">
@@ -338,6 +320,8 @@ export default function DashboardPage() {
   return (
     <>
     <div className="p-4 md:p-6">
+        <DailyBriefing />
+
         {/* Stats row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
           <StatCard icon={FolderKanban} label="Active Projects" value={String(activeProjects.length)} trend={{ value: '+12% vs last month', positive: true }} />
@@ -350,60 +334,6 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
           <RevenueChart />
           <ProjectTimeline projects={projects} />
-        </div>
-
-        {/* AI Daily Briefing */}
-        <div className="mb-5 bg-surface border border-border rounded-xl p-5">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center">
-                <Bot size={14} className="text-accent" />
-              </div>
-              <div>
-                <div className="text-xs font-semibold text-text-primary flex items-center gap-1.5">
-                  AI Morning Briefing
-                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-accent/10 text-accent border border-accent/20">Claude</span>
-                </div>
-                <div className="text-[10px] text-text-muted">Analyses all live data to surface what needs attention today</div>
-              </div>
-            </div>
-            <button
-              onClick={generateBriefing}
-              disabled={briefingLoading}
-              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-accent text-white hover:bg-accent-hover disabled:opacity-50 transition-colors"
-            >
-              {briefingLoading ? (
-                <span className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <TrendingUp size={12} />
-              )}
-              {briefingLoading ? 'Generating...' : briefing ? 'Refresh' : 'Generate Briefing'}
-            </button>
-          </div>
-          {briefing ? (
-            <>
-              {briefingStats && (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                  {[
-                    { label: 'Active Projects', value: briefingStats.activeProjects, color: 'text-accent' },
-                    { label: 'Overdue Tasks', value: briefingStats.overdueTasks, color: briefingStats.overdueTasks > 0 ? 'text-danger' : 'text-success' },
-                    { label: 'Overdue Payments', value: briefingStats.overduePayments, color: briefingStats.overduePayments > 0 ? 'text-danger' : 'text-success' },
-                    { label: 'Flagged Check-ins', value: briefingStats.flaggedCheckins, color: briefingStats.flaggedCheckins > 0 ? 'text-warning' : 'text-success' },
-                  ].map(s => (
-                    <div key={s.label} className="bg-background border border-border rounded-lg px-3 py-2">
-                      <div className="text-[9px] uppercase tracking-wide text-text-muted font-semibold mb-0.5">{s.label}</div>
-                      <div className={`text-lg font-bold font-mono ${s.color}`}>{s.value}</div>
-                    </div>
-                  ))}
-                </div>
-              )}
-              <p className="text-xs text-text-secondary leading-relaxed whitespace-pre-wrap">{briefing}</p>
-            </>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-6 text-center">
-              <p className="text-xs text-text-muted">Click &ldquo;Generate Briefing&rdquo; to get a Claude-powered summary of your portfolio, overdue items, and priorities for today.</p>
-            </div>
-          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

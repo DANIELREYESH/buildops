@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { ThemedToaster } from "@/components/themed-toaster";
+import AIAssistant from "@/components/AIAssistant";
 import "./globals.css";
 
 const inter = Inter({
@@ -29,6 +30,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           {children}
           <ThemedToaster />
+          <AIAssistant />
         </ThemeProvider>
       </body>
     </html>
