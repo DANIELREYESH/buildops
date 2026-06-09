@@ -84,7 +84,7 @@ ${(cashflow && cashflow[0]) ? `Overall health: ${cashflow[0].overall_health}. ${
 
     const msg = await client.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 600,
+      max_tokens: 300,
       system: `You are BuildOps AI generating a daily morning briefing for a UK construction business owner/manager. Based on the data provided, write a concise, intelligent daily briefing.
 
 Format your response EXACTLY like this (use these exact header names):
@@ -109,7 +109,9 @@ One sentence — the single most important thing they need to deal with today.
 - Small action 2
 - Small action 3
 
-Keep total under 220 words. Be specific, not generic. Use real names and numbers. Sound like a sharp EA who knows the business inside out.`,
+IMPORTANT: Keep the entire briefing under 120 words total. Maximum 1 sentence per bullet point. Today's Priority: 1 sentence. Projects: max 2 bullets. Finance: max 2 bullets. Compliance: max 1 bullet. Quick Wins: max 2 bullets. Be brutally concise.
+
+Be specific, not generic. Use real names and numbers. Sound like a sharp EA who knows the business inside out.`,
       messages: [{ role: 'user', content: `Generate my morning briefing:\n${context}` }],
     })
 
