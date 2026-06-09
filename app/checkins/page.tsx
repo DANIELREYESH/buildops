@@ -303,12 +303,12 @@ export default function CheckinsPage() {
 
   return (
     <AppLayout>
-      <div className="p-6">
+      <div className="pt-6 px-6 pb-12">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-lg font-semibold text-text-primary">AI Site Intelligence</h1>
-            <p className="text-xs text-text-muted mt-1">AI-powered analysis of daily site check-ins with pattern detection</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">AI Site Intelligence</h1>
+            <p className="text-sm text-[#a1a1aa] mt-0.5">AI-powered analysis of daily site check-ins with pattern detection</p>
           </div>
           <div className="flex items-center gap-2">
             <select
@@ -400,8 +400,8 @@ export default function CheckinsPage() {
                   <Bot size={20} className="text-accent" />
                 </div>
                 <p className="text-sm font-medium text-text-primary">No check-ins yet</p>
-                <p className="text-xs text-text-muted mt-1">Workers submit daily reports from the mobile app.</p>
-                <button onClick={() => setShowModal(true)} className="mt-4 text-xs font-medium text-white bg-accent hover:bg-accent-hover px-3.5 py-2 rounded-lg transition-colors">
+                <p className="text-sm text-[#a1a1aa] mt-0.5">Workers submit daily reports from the mobile app.</p>
+                <button onClick={() => setShowModal(true)} className="mt-4 text-xs font-medium text-white bg-accent hover:bg-accent-hover active:scale-[0.98] px-3.5 py-2 rounded-lg transition-colors">
                   + Submit Check-in
                 </button>
               </div>
@@ -569,7 +569,7 @@ export default function CheckinsPage() {
 
       {/* Submit modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
           <div className="bg-surface border border-border rounded-2xl w-full max-w-lg shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h3 className="font-semibold text-sm text-text-primary">Submit Check-in</h3>

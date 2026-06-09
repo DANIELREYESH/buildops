@@ -1,23 +1,18 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { X, FileText, Plus, Trash2, Download, Send, CheckCircle2 } from 'lucide-react'
 import AppLayout from '@/app/dashboard/layout'
 import { supabase } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
+import { StatusBadge, statusVariant } from '@/components/StatusBadge'
+import { formatDate } from '@/lib/format'
 import type { Invoice, Project } from '@/lib/types'
 import * as XLSX from 'xlsx'
 
 const fmt = (n: number) => `£${n.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-
-const STATUS_STYLES: Record<Invoice['status'], string> = {
-  draft: 'bg-muted text-text-secondary',
-  sent: 'bg-accent/10 text-accent',
-  paid: 'bg-success/10 text-success',
-  overdue: 'bg-danger/10 text-danger',
-}
 
 type LineItem = { description: string; qty: number; unit_price: number }
 const DEFAULT_ITEMS: LineItem[] = [{ description: '', qty: 1, unit_price: 0 }]
@@ -84,7 +79,7 @@ function NewInvoiceDrawer({ open, onClose, projects, nextRef, onCreated }: {
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/60 z-40" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onClick={onClose} />
       <div className="fixed top-0 right-0 h-full w-full sm:w-[520px] bg-surface border-l border-border shadow-2xl z-50 flex flex-col">
         <div className="h-14 border-b border-border px-5 flex items-center justify-between flex-shrink-0">
           <span className="font-semibold text-sm text-text-primary">New Invoice</span>
@@ -273,7 +268,7 @@ function InvoicePreview({ invoice, userEmail, onClose, onMarkSent, onMarkPaid }:
 
 // ── Page ────────────────────────────────────────────────────────────────────────
 
-export default function InvoicingPage() {
+function InvoicingPageInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [invoices, setInvoices] = useState<Invoice[]>([])
@@ -380,11 +375,11 @@ export default function InvoicingPage() {
 
   return (
     <AppLayout>
-      <div className="p-6 max-w-full">
+      <div className="pt-6 px-6 pb-12 max-w-full">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-lg font-semibold text-text-primary">Invoicing</h1>
-            <p className="text-xs text-text-muted mt-1">Generate, send and track invoices for all your projects.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Invoicing</h1>
+            <p className="text-sm text-[#a1a1aa] mt-0.5">Generate, send and track invoices for all your projects.</p>
           </div>
           <div className="flex items-center gap-2">
             <button onClick={exportExcel} className="flex items-center gap-1.5 text-xs font-medium text-text-secondary border border-border px-3 py-1.5 rounded-lg hover:bg-muted transition-colors">
@@ -424,28 +419,28 @@ export default function InvoicingPage() {
                 <FileText size={20} className="text-accent" />
               </div>
               <p className="text-sm font-medium text-text-primary">No invoices{filter !== 'all' ? ` with status "${filter}"` : ''}</p>
-              <button onClick={() => setShowDrawer(true)} className="mt-4 text-xs font-medium text-white bg-accent hover:bg-accent-hover px-3.5 py-2 rounded-lg transition-colors">+ Create Invoice</button>
+              <button onClick={() => setShowDrawer(true)} className="mt-4 text-xs font-medium text-white bg-accent hover:bg-accent-hover active:scale-[0.98] px-3.5 py-2 rounded-lg transition-colors">+ Create Invoice</button>
             </div>
           ) : (
-            <table className="w-full">
+            <table className="w-full min-w-[600px]">
               <thead>
                 <tr className="border-b border-border">
                   {['Ref', 'Client', 'Total', 'Due', 'Status', ''].map(h => (
-                    <th key={h} className="px-4 py-2.5 text-[10px] uppercase tracking-wider text-text-muted font-medium text-left">{h}</th>
+                    <th key={h} className="px-4 h-10 text-[10px] uppercase tracking-wider text-[#52525b] font-medium text-left bg-[#0a0a0a]">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {filtered.map(inv => (
-                  <tr key={inv.id} onClick={() => setPreview(inv)} className="border-t border-border hover:bg-muted/30 cursor-pointer transition-colors">
+                  <tr key={inv.id} onClick={() => setPreview(inv)} className="border-t border-border cursor-pointer hover:bg-[#111111]/60 transition-colors transition-colors">
                     <td className="px-4 py-2.5 text-xs font-mono font-medium text-text-primary">{inv.invoice_ref || '—'}</td>
                     <td className="px-4 py-2.5">
                       <div className="text-xs font-medium text-text-primary">{inv.client_name}</div>
                       {inv.client_email && <div className="text-[10px] text-text-muted">{inv.client_email}</div>}
                     </td>
                     <td className="px-4 py-2.5 text-xs font-mono font-medium text-text-primary">{fmt(inv.total)}</td>
-                    <td className="px-4 py-2.5 text-xs text-text-muted">{inv.due_date ? new Date(inv.due_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '—'}</td>
-                    <td className="px-4 py-2.5"><span className={cn('inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium capitalize', STATUS_STYLES[inv.status])}>{inv.status}</span></td>
+                    <td className="px-4 py-2.5 text-xs text-text-muted">{formatDate(inv.due_date)}</td>
+                    <td className="px-4 py-2.5"><StatusBadge label={inv.status.charAt(0).toUpperCase() + inv.status.slice(1)} variant={statusVariant(inv.status)} /></td>
                     <td className="px-4 py-2.5 text-right" onClick={e => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-3">
                         {inv.status === 'draft' && <button onClick={() => updateStatus(inv.id, 'sent')} className="text-[11px] font-medium text-accent hover:text-accent-hover">Send</button>}
@@ -466,5 +461,13 @@ export default function InvoicingPage() {
         onMarkSent={() => preview && updateStatus(preview.id, 'sent')}
         onMarkPaid={() => preview && updateStatus(preview.id, 'paid')} />
     </AppLayout>
+  )
+}
+
+export default function InvoicingPage() {
+  return (
+    <Suspense>
+      <InvoicingPageInner />
+    </Suspense>
   )
 }

@@ -86,16 +86,17 @@ export default function PaymentsPage() {
 
   return (
     <AppLayout>
-      <div className="p-6">
+      <div className="pt-6 px-6 pb-12">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-lg font-semibold text-text-primary">Sub Payments</h1>
-            <p className="text-xs text-text-muted mt-1">Track milestone payments to all subcontractors on active projects.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Sub Payments</h1>
+            <p className="text-sm text-[#a1a1aa] mt-0.5">Track milestone payments to all subcontractors on active projects.</p>
           </div>
-          <button onClick={() => setShowModal(true)} className="text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover transition-colors">
+          <button onClick={() => setShowModal(true)} className="text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover active:scale-[0.98] transition-colors">
             + Add Milestone
           </button>
         </div>
+        <div className="border-b border-[#1f1f1f] mb-6" />
 
         {/* Stats + donut */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
@@ -197,7 +198,7 @@ export default function PaymentsPage() {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="var(--color-accent)" strokeWidth="2"/><line x1="2" y1="10" x2="22" y2="10" stroke="var(--color-accent)" strokeWidth="2"/></svg>
             </div>
             <p className="text-sm font-medium text-text-primary">No payment milestones yet</p>
-            <p className="text-xs text-text-muted mt-1">Add milestones to track payments to your subcontractors</p>
+            <p className="text-sm text-[#a1a1aa] mt-0.5">Add milestones to track payments to your subcontractors</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -209,7 +210,7 @@ export default function PaymentsPage() {
               return (
                 <div key={sub.id} className="bg-surface border border-border rounded-xl overflow-hidden">
                   <button
-                    className="w-full px-5 py-4 flex items-center gap-3 hover:bg-muted/30 transition-colors text-left"
+                    className="w-full px-5 py-4 flex items-center gap-3 hover:bg-[#111111]/60 transition-colors text-left"
                     onClick={() => setExpanded(prev => { const n = new Set(prev); if (n.has(sub.id)) n.delete(sub.id); else n.add(sub.id); return n })}
                   >
                     <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
@@ -278,7 +279,7 @@ export default function PaymentsPage() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
           <div className="bg-surface border border-border rounded-2xl w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h3 className="font-bold text-sm text-text-primary">Add Payment Milestone</h3>

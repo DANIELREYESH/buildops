@@ -236,7 +236,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger asChild>
-                  <button className="flex items-center gap-1.5 bg-accent hover:bg-accent-hover text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors">
+                  <button className="flex items-center gap-1.5 bg-accent hover:bg-accent-hover active:scale-[0.98] text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors">
                     <Plus size={13} />
                     New
                   </button>
@@ -275,8 +275,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             </div>
           </header>
 
-          <main className="flex-1 overflow-y-auto">
-            {children}
+          <main className="flex-1 overflow-y-auto overflow-x-hidden">
+            <div className="animate-in fade-in duration-200">
+              {children}
+            </div>
           </main>
         </div>
       </div>

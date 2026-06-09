@@ -89,11 +89,11 @@ export default function BankingPage() {
 
   return (
     <AppLayout>
-      <div className="p-6">
+      <div className="pt-6 px-6 pb-12">
         <div className="mb-5 flex items-start justify-between">
           <div>
-            <h1 className="text-lg font-semibold text-text-primary">Open Banking</h1>
-            <p className="text-xs text-text-muted mt-1">Connect your bank accounts and automatically match transactions to project costs.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Open Banking</h1>
+            <p className="text-sm text-[#a1a1aa] mt-0.5">Connect your bank accounts and automatically match transactions to project costs.</p>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-[10px] text-text-muted flex items-center gap-1">
@@ -107,6 +107,7 @@ export default function BankingPage() {
             )}
           </div>
         </div>
+        <div className="border-b border-[#1f1f1f] mb-6" />
 
         {/* Summary KPIs */}
         <div className="grid grid-cols-3 gap-4 mb-6">
@@ -168,13 +169,13 @@ export default function BankingPage() {
             Refresh feed
           </button>
         </div>
-        <div className="bg-surface border border-border rounded-xl overflow-hidden">
+        <div className="bg-surface border border-border rounded-xl overflow-x-auto">
           {transactions.length === 0 ? (
             <div className="py-12 text-center">
               <p className="text-sm text-text-muted font-semibold">No transactions for this account</p>
             </div>
           ) : (
-            <table className="w-full">
+            <table className="w-full min-w-[600px]">
               <thead>
                 <tr className="bg-background border-b border-border">
                   <th className="px-5 py-2.5 text-[9px] uppercase tracking-wide text-text-muted font-semibold text-left">Date</th>
@@ -232,7 +233,7 @@ export default function BankingPage() {
 
       {/* Connect bank modal */}
       {showConnect && connectingBank && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setShowConnect(false)}>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowConnect(false)}>
           <div className="bg-surface border border-border rounded-2xl w-full max-w-sm shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h3 className="font-bold text-sm text-text-primary">Connect {connectingBank.name}</h3>

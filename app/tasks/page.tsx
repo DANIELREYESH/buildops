@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import {
@@ -153,7 +153,7 @@ function TaskDrawer({ task, projects, onClose, onUpdate, onDelete, onComment }: 
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/60 z-40" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onClick={onClose} />
       <div className="fixed top-0 right-0 h-full w-full sm:w-[480px] bg-surface border-l border-border shadow-2xl z-50 flex flex-col">
         <div className="h-14 border-b border-border px-5 flex items-center justify-between flex-shrink-0">
           <span className="font-semibold text-sm text-text-primary truncate">Task Details</span>
@@ -258,7 +258,7 @@ function TaskDrawer({ task, projects, onClose, onUpdate, onDelete, onComment }: 
 
 // ── Page ────────────────────────────────────────────────────────────────────────
 
-export default function TasksPage() {
+function TasksPageInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [tasks, setTasks] = useState<Task[]>([])
@@ -356,11 +356,11 @@ export default function TasksPage() {
 
   return (
     <AppLayout>
-      <div className="p-6 max-w-full">
+      <div className="pt-6 px-6 pb-12 max-w-full">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-lg font-semibold text-text-primary">Tasks</h1>
-            <p className="text-xs text-text-muted mt-1">{tasks.length} total · {open} open · {blocked} blocked</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Tasks</h1>
+            <p className="text-sm text-[#a1a1aa] mt-0.5">{tasks.length} total · {open} open · {blocked} blocked</p>
           </div>
           <div className="flex items-center gap-3">
             <input
@@ -382,6 +382,7 @@ export default function TasksPage() {
             </select>
           </div>
         </div>
+        <div className="border-b border-[#1f1f1f] mb-6" />
 
         {loading ? (
           <div className="grid grid-cols-3 gap-3">{[...Array(3)].map((_, i) => <div key={i} className="skeleton h-72 rounded-xl" />)}</div>
@@ -391,7 +392,7 @@ export default function TasksPage() {
               <CheckSquare size={20} className="text-accent" />
             </div>
             <p className="text-sm font-medium text-text-primary">No tasks yet</p>
-            <p className="text-xs text-text-muted mt-1">Add your first task to start tracking work.</p>
+            <p className="text-sm text-[#a1a1aa] mt-0.5">Add your first task to start tracking work.</p>
           </div>
         ) : (
           <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
@@ -406,5 +407,13 @@ export default function TasksPage() {
 
       <TaskDrawer task={selected} projects={projects} onClose={() => setSelected(null)} onUpdate={handleUpdate} onDelete={handleDelete} onComment={handleComment} />
     </AppLayout>
+  )
+}
+
+export default function TasksPage() {
+  return (
+    <Suspense>
+      <TasksPageInner />
+    </Suspense>
   )
 }

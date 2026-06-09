@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
@@ -71,8 +71,8 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
         <FolderKanban size={20} className="text-accent" />
       </div>
       <p className="text-sm font-medium text-text-primary">No projects yet</p>
-      <p className="text-xs text-text-muted mt-1">Create your first project to start tracking work and costs.</p>
-      <button onClick={onCreate} className="mt-4 text-xs font-medium text-white bg-accent hover:bg-accent-hover px-3.5 py-2 rounded-lg transition-colors">
+      <p className="text-sm text-[#a1a1aa] mt-0.5">Create your first project to start tracking work and costs.</p>
+      <button onClick={onCreate} className="mt-4 text-xs font-medium text-white bg-accent hover:bg-accent-hover active:scale-[0.98] px-3.5 py-2 rounded-lg transition-colors">
         Create your first project
       </button>
     </div>
@@ -154,7 +154,7 @@ function NewProjectDrawer({ open, onClose, onCreated }: { open: boolean; onClose
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/60 z-40" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onClick={onClose} />
       <div className="fixed top-0 right-0 h-full w-full sm:w-[480px] bg-surface border-l border-border shadow-2xl z-50 flex flex-col">
         <div className="h-14 border-b border-border px-5 flex items-center justify-between flex-shrink-0">
           <span className="font-semibold text-sm text-text-primary">New Project</span>
@@ -227,7 +227,7 @@ function ProjectDetailDrawer({ project, costs, onClose, onUpdate, onDelete }: {
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/60 z-40" onClick={() => { onClose(); setConfirmDelete(false) }} />
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onClick={() => { onClose(); setConfirmDelete(false) }} />
       <div className="fixed top-0 right-0 h-full w-full sm:w-[480px] bg-surface border-l border-border shadow-2xl z-50 flex flex-col">
         <div className="h-14 border-b border-border px-5 flex items-center justify-between flex-shrink-0">
           <span className="font-semibold text-sm text-text-primary truncate">{project.name}</span>
@@ -311,7 +311,7 @@ function ProjectDetailDrawer({ project, costs, onClose, onUpdate, onDelete }: {
 
 // ── Page ────────────────────────────────────────────────────────────────────────
 
-export default function ProjectsPage() {
+function ProjectsPageInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [projects, setProjects] = useState<Project[]>([])
@@ -392,11 +392,11 @@ export default function ProjectsPage() {
 
   return (
     <AppLayout>
-      <div className="p-6 max-w-full">
+      <div className="pt-6 px-6 pb-12 max-w-full">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-lg font-semibold text-text-primary">Projects</h1>
-            <p className="text-xs text-text-muted mt-1">{projects.length} total · {projects.filter(p => p.status === 'active').length} active</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Projects</h1>
+            <p className="text-sm text-[#a1a1aa] mt-0.5">{projects.length} total · {projects.filter(p => p.status === 'active').length} active</p>
           </div>
           <div className="flex items-center gap-3">
             <input
@@ -421,6 +421,7 @@ export default function ProjectsPage() {
             </button>
           </div>
         </div>
+        <div className="border-b border-[#1f1f1f] mb-6" />
 
         {/* Status donut */}
         {!loading && projects.length > 0 && (
@@ -493,7 +494,7 @@ export default function ProjectsPage() {
 
         {view === 'table' ? (
           <div className="bg-surface border border-border rounded-xl overflow-hidden">
-            <table className="w-full">
+            <table className="w-full min-w-[600px]">
               <thead>
                 <tr className="border-b border-border">
                   {['Project', 'Client', 'Status', 'Budget', 'Start Date', 'Progress', ''].map(h => (
@@ -507,7 +508,7 @@ export default function ProjectsPage() {
                 ) : filtered.length === 0 ? (
                   <tr><td colSpan={7}><EmptyState onCreate={() => setShowDrawer(true)} /></td></tr>
                 ) : filtered.map(p => (
-                  <tr key={p.id} onClick={() => openPanel(p)} className="border-t border-border hover:bg-muted/30 cursor-pointer transition-colors">
+                  <tr key={p.id} onClick={() => openPanel(p)} className="border-t border-border cursor-pointer hover:bg-[#111111]/60 transition-colors transition-colors">
                     <td className="px-4 py-2.5 text-xs font-medium text-text-primary max-w-[200px] truncate">{p.name}</td>
                     <td className="px-4 py-2.5 text-xs text-text-muted">{p.client_name || '—'}</td>
                     <td className="px-4 py-2.5"><StatusDot status={p.status} /></td>
@@ -562,5 +563,13 @@ export default function ProjectsPage() {
         onDelete={handleDelete}
       />
     </AppLayout>
+  )
+}
+
+export default function ProjectsPage() {
+  return (
+    <Suspense>
+      <ProjectsPageInner />
+    </Suspense>
   )
 }

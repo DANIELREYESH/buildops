@@ -101,16 +101,17 @@ export default function CostsPage() {
 
   return (
     <AppLayout>
-      <div className="p-6">
+      <div className="pt-6 px-6 pb-12">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-lg font-semibold text-text-primary">Budget vs Real</h1>
-            <p className="text-xs text-text-muted mt-1">Real-time cost tracking across all active projects.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Budget vs Real</h1>
+            <p className="text-sm text-[#a1a1aa] mt-0.5">Real-time cost tracking across all active projects.</p>
           </div>
-          <button onClick={() => setShowModal(true)} className="text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover transition-colors">
+          <button onClick={() => setShowModal(true)} className="text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover active:scale-[0.98] transition-colors">
             + Add Cost
           </button>
         </div>
+        <div className="border-b border-[#1f1f1f] mb-6" />
 
         {/* Alert banners */}
         {atRiskProjects.map(p => {
@@ -155,7 +156,7 @@ export default function CostsPage() {
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="var(--color-accent)" strokeWidth="2"/><path d="M3 9h18M9 21V9" stroke="var(--color-accent)" strokeWidth="2"/></svg>
                 </div>
                 <p className="text-sm text-text-secondary font-semibold">No projects yet</p>
-                <p className="text-xs text-text-muted mt-1">Create a project to start tracking costs against budget.</p>
+                <p className="text-sm text-[#a1a1aa] mt-0.5">Create a project to start tracking costs against budget.</p>
               </div>
             ) : projects.map(p => {
               const isExpanded = expanded.has(p.id)
@@ -163,8 +164,8 @@ export default function CostsPage() {
               const over = (p.budget || 0) > 0 && p.spent > p.budget!
               const margin = (p.budget || 0) > 0 ? Math.round(((p.budget! - p.spent) / p.budget!) * 100) : 0
               return (
-                <div key={p.id} className="bg-surface border border-border rounded-xl overflow-hidden">
-                  <div className="px-4 py-3 flex items-center gap-4 cursor-pointer hover:bg-muted/30 transition-colors"
+                <div key={p.id} className="bg-surface border border-border rounded-xl overflow-x-auto">
+                  <div className="px-4 py-3 flex items-center gap-4 cursor-pointer hover:bg-[#111111]/60 transition-colors"
                     onClick={() => setExpanded(prev => { const n = new Set(prev); n.has(p.id) ? n.delete(p.id) : n.add(p.id); return n })}>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-2">
@@ -201,7 +202,7 @@ export default function CostsPage() {
                       {p.costs.length === 0 ? (
                         <p className="text-xs text-text-muted text-center py-6">No costs logged for this project.</p>
                       ) : (
-                        <table className="w-full">
+                        <table className="w-full min-w-[600px]">
                           <thead><tr className="bg-muted/30">
                             <th className="px-4 py-2 text-[9px] uppercase tracking-wide text-text-muted font-semibold text-left">Date</th>
                             <th className="px-4 py-2 text-[9px] uppercase tracking-wide text-text-muted font-semibold text-left">Category</th>
@@ -311,7 +312,7 @@ export default function CostsPage() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
           <div className="bg-surface border border-border rounded-2xl w-full max-w-lg shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h3 className="font-bold text-sm text-text-primary">Log Cost</h3>

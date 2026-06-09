@@ -79,16 +79,17 @@ export default function SuppliersPage() {
 
   return (
     <AppLayout>
-      <div className="p-6">
+      <div className="pt-6 px-6 pb-12">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-lg font-semibold text-text-primary">Suppliers & Prices</h1>
-            <p className="text-xs text-text-muted mt-1">{suppliers.length} suppliers on record. Click any row to view contact details.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Suppliers & Prices</h1>
+            <p className="text-sm text-[#a1a1aa] mt-0.5">{suppliers.length} suppliers on record. Click any row to view contact details.</p>
           </div>
-          <button onClick={() => setShowNew(true)} className="text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover transition-colors">
+          <button onClick={() => setShowNew(true)} className="text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover active:scale-[0.98] transition-colors">
             + Add Supplier
           </button>
         </div>
+        <div className="border-b border-[#1f1f1f] mb-6" />
 
         <div className="mb-4">
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name, trade or contact..." className="w-full max-w-sm bg-background border border-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent" />
@@ -102,16 +103,16 @@ export default function SuppliersPage() {
               <Building2 size={20} className="text-accent" />
             </div>
             <p className="text-sm font-medium text-text-primary">{search ? 'No suppliers match your search' : 'No suppliers yet'}</p>
-            <p className="text-xs text-text-muted mt-1">{search ? 'Try a different search term' : 'Add your first supplier to start tracking contact details and pricing'}</p>
+            <p className="text-sm text-[#a1a1aa] mt-0.5">{search ? 'Try a different search term' : 'Add your first supplier to start tracking contact details and pricing'}</p>
             {!search && (
-              <button onClick={() => setShowNew(true)} className="mt-4 text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover transition-colors">
+              <button onClick={() => setShowNew(true)} className="mt-4 text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover active:scale-[0.98] transition-colors">
                 + Add Supplier
               </button>
             )}
           </div>
         ) : (
-          <div className="bg-surface border border-border rounded-xl overflow-hidden">
-            <table className="w-full">
+          <div className="bg-surface border border-border rounded-xl overflow-x-auto">
+            <table className="w-full min-w-[600px]">
               <thead><tr className="bg-background text-text-muted text-xs uppercase tracking-wider">
                 <th className="px-5 py-2.5 font-semibold text-left">Supplier</th>
                 <th className="px-4 py-2.5 font-semibold text-left">Trade / Category</th>
@@ -122,7 +123,7 @@ export default function SuppliersPage() {
               </tr></thead>
               <tbody>
                 {filtered.map(s => (
-                  <tr key={s.id} onClick={() => setPanel(s)} className="border-b border-border last:border-b-0 hover:bg-muted/30 cursor-pointer transition-colors">
+                  <tr key={s.id} onClick={() => setPanel(s)} className="border-b border-border last:border-b-0 cursor-pointer hover:bg-[#111111]/60 transition-colors transition-colors">
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-2.5">
                         <div className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center text-[10px] font-bold text-text-muted flex-shrink-0">
@@ -213,7 +214,7 @@ export default function SuppliersPage() {
       )}
 
       {showNew && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setShowNew(false)}>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowNew(false)}>
           <div className="bg-surface border border-border rounded-2xl w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h3 className="font-bold text-sm text-text-primary">Add Supplier</h3>

@@ -125,16 +125,17 @@ export default function UsersPage() {
 
   return (
     <AppLayout>
-      <div className="p-6 max-w-4xl">
+      <div className="pt-6 px-6 pb-12 max-w-4xl">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-lg font-semibold text-text-primary">Users & Billing</h1>
-            <p className="text-xs text-text-muted mt-1">Manage your team access and subscription.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Users & Billing</h1>
+            <p className="text-sm text-[#a1a1aa] mt-0.5">Manage your team access and subscription.</p>
           </div>
-          <button onClick={openInvite} className="text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover transition-colors">
+          <button onClick={openInvite} className="text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover active:scale-[0.98] transition-colors">
             + Invite User
           </button>
         </div>
+        <div className="border-b border-[#1f1f1f] mb-6" />
 
         {/* Plan card */}
         <div className="bg-surface border border-border rounded-xl p-5 mb-5">
@@ -178,7 +179,7 @@ export default function UsersPage() {
                 {[1,2,3].map(i => <div key={i} className="skeleton h-10 rounded-lg" />)}
               </div>
             ) : (
-              <table className="w-full">
+              <table className="w-full min-w-[600px]">
                 <thead><tr className="bg-background border-b border-border">
                   <th className="px-5 py-2 text-[9px] uppercase tracking-wide text-text-muted font-semibold text-left">Member</th>
                   <th className="px-4 py-2 text-[9px] uppercase tracking-wide text-text-muted font-semibold text-left">Role</th>
@@ -187,7 +188,7 @@ export default function UsersPage() {
                 </tr></thead>
                 <tbody>
                   {/* Account owner row */}
-                  <tr className="border-b border-border hover:bg-muted/30 transition-colors">
+                  <tr className="border-b border-border hover:bg-[#111111]/60 transition-colors">
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-2">
                         <div className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-white text-[10px] font-bold">
@@ -204,7 +205,7 @@ export default function UsersPage() {
                     <td />
                   </tr>
                   {members.map(m => (
-                    <tr key={m.id} className="border-b border-border hover:bg-muted/30 transition-colors">
+                    <tr key={m.id} className="border-b border-border hover:bg-[#111111]/60 transition-colors">
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-2">
                           <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center text-text-secondary text-[10px] font-bold">
@@ -239,11 +240,11 @@ export default function UsersPage() {
           </div>
 
           {/* Permissions grid */}
-          <div className="bg-surface border border-border rounded-xl overflow-hidden">
+          <div className="bg-surface border border-border rounded-xl overflow-x-auto">
             <div className="px-4 py-3 border-b border-border">
               <span className="text-xs font-bold text-text-primary">Permissions</span>
             </div>
-            <table className="w-full">
+            <table className="w-full min-w-[600px]">
               <thead><tr className="bg-background border-b border-border">
                 <th className="px-4 py-2 text-[9px] uppercase tracking-wide text-text-muted font-semibold text-left"></th>
                 {roles.map(r => <th key={r} className="px-2 py-2 text-[9px] uppercase tracking-wide text-text-muted font-semibold text-center capitalize">{r.slice(0, 3)}</th>)}
@@ -273,10 +274,10 @@ export default function UsersPage() {
           <div className="px-5 py-3 border-b border-border">
             <span className="text-xs font-bold text-text-primary">Billing History</span>
           </div>
-          <table className="w-full">
+          <table className="w-full min-w-[600px]">
             <tbody>
               {BILLING_HISTORY.map(b => (
-                <tr key={b.date} className="border-t border-border hover:bg-muted/30 transition-colors">
+                <tr key={b.date} className="border-t border-border hover:bg-[#111111]/60 transition-colors">
                   <td className="px-5 py-3 text-xs text-text-primary">{b.desc}</td>
                   <td className="px-4 py-3 text-xs text-text-muted">{b.date}</td>
                   <td className="px-4 py-3 text-xs font-mono font-bold text-text-primary">{b.amount}</td>
@@ -296,7 +297,7 @@ export default function UsersPage() {
       </div>
 
       {showUpgrade && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setShowUpgrade(false)}>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowUpgrade(false)}>
           <div className="bg-surface border border-border rounded-2xl w-full max-w-lg shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h3 className="font-bold text-sm text-text-primary">Change Plan</h3>
@@ -349,7 +350,7 @@ export default function UsersPage() {
       )}
 
       {showInvite && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setShowInvite(false)}>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowInvite(false)}>
           <div className="bg-surface border border-border rounded-2xl w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h3 className="font-bold text-sm text-text-primary">Invite Team Member</h3>

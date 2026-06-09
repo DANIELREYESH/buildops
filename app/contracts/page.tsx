@@ -6,6 +6,8 @@ import { X, Sparkles, Download, Copy, CheckCircle2, FileText } from 'lucide-reac
 import AppLayout from '@/app/dashboard/layout'
 import { supabase } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
+import { StatusBadge, statusVariant } from '@/components/StatusBadge'
+import { formatDate, formatCurrency } from '@/lib/format'
 import type { SubContract, Project } from '@/lib/types'
 
 // SQL to run in Supabase:
@@ -28,14 +30,7 @@ import type { SubContract, Project } from '@/lib/types'
 // ALTER TABLE sub_contracts DISABLE ROW LEVEL SECURITY;
 // GRANT ALL ON sub_contracts TO anon, authenticated, service_role;
 
-const fmt = (n: number) => `£${n.toLocaleString('en-GB', { maximumFractionDigits: 0 })}`
 
-const STATUS_COLORS: Record<SubContract['status'], string> = {
-  draft: 'bg-muted text-text-secondary',
-  active: 'bg-success/10 text-success border border-success/20',
-  signed: 'bg-accent/10 text-accent border border-accent/20',
-  expired: 'bg-danger/10 text-danger border border-danger/20',
-}
 
 const TRADES = [
   'Electrical', 'Plumbing', 'Scaffolding', 'Tiling', 'Carpentry',
@@ -64,7 +59,7 @@ function ContractPreviewModal({
   return (
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/80 z-40 print:hidden" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 print:hidden" onClick={onClose} />
 
       {/* Modal */}
       <div className="fixed inset-4 bg-surface border border-border rounded-2xl shadow-2xl z-50 flex flex-col print:static print:inset-0 print:rounded-none print:border-none">
@@ -72,14 +67,12 @@ function ContractPreviewModal({
         <div className="h-14 border-b border-border px-5 flex items-center gap-3 flex-shrink-0 print:hidden">
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <span className="font-bold text-sm text-text-primary">{contract.contract_number}</span>
-            <span className={cn('inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold', STATUS_COLORS[contract.status])}>
-              {contract.status}
-            </span>
+            <StatusBadge label={contract.status} variant={statusVariant(contract.status)} />
             {contract.subcontractor_name && (
               <span className="text-xs text-text-muted truncate">· {contract.subcontractor_name}</span>
             )}
             {contract.contract_value && (
-              <span className="text-xs font-mono font-semibold text-text-primary ml-auto">{fmt(contract.contract_value)}</span>
+              <span className="text-xs font-mono font-semibold text-text-primary ml-auto">{formatCurrency(contract.contract_value)}</span>
             )}
           </div>
           <button onClick={onClose} className="text-text-muted hover:text-text-primary flex-shrink-0"><X size={16} /></button>
@@ -245,14 +238,14 @@ GRANT ALL ON sub_contracts TO anon, authenticated, service_role;`}</pre>
     <AppLayout>
       <div className="p-6 h-full">
         <div className="mb-5">
-          <h1 className="text-lg font-semibold text-text-primary">Smart Contract Generator</h1>
-          <p className="text-xs text-text-muted mt-1">AI-generated UK Construction Act compliant subcontractor agreements</p>
+          <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Smart Contract Generator</h1>
+          <p className="text-sm text-[#a1a1aa] mt-0.5">AI-generated UK Construction Act compliant subcontractor agreements</p>
         </div>
 
         <div className="flex gap-5 h-full">
           {/* Left 60%: Contract list */}
           <div className="flex-[3] min-w-0">
-            <div className="bg-surface border border-border rounded-xl overflow-hidden">
+            <div className="bg-surface border border-border rounded-xl overflow-x-auto">
               <div className="px-4 py-3 border-b border-border flex items-center justify-between">
                 <span className="text-xs font-semibold text-text-primary">Contracts ({contracts.length})</span>
               </div>
@@ -265,10 +258,10 @@ GRANT ALL ON sub_contracts TO anon, authenticated, service_role;`}</pre>
                     <FileText size={20} className="text-accent" />
                   </div>
                   <p className="text-sm font-medium text-text-primary">No contracts yet</p>
-                  <p className="text-xs text-text-muted mt-1">Fill in the form to generate your first AI contract</p>
+                  <p className="text-sm text-[#a1a1aa] mt-0.5">Fill in the form to generate your first AI contract</p>
                 </div>
               ) : (
-                <table className="w-full">
+                <table className="w-full min-w-[600px]">
                   <thead>
                     <tr className="border-b border-border bg-background">
                       {['Contract #', 'Subcontractor', 'Project', 'Trade', 'Value', 'Status', 'Created', ''].map(h => (
@@ -278,19 +271,17 @@ GRANT ALL ON sub_contracts TO anon, authenticated, service_role;`}</pre>
                   </thead>
                   <tbody>
                     {contracts.map(c => (
-                      <tr key={c.id} onClick={() => setPreview(c)} className="border-t border-border hover:bg-muted/30 cursor-pointer transition-colors">
+                      <tr key={c.id} onClick={() => setPreview(c)} className="border-t border-border cursor-pointer hover:bg-[#111111]/60 transition-colors transition-colors">
                         <td className="px-3 py-2.5 text-xs font-mono font-semibold text-accent">{c.contract_number}</td>
                         <td className="px-3 py-2.5 text-xs font-medium text-text-primary">{c.subcontractor_name}</td>
                         <td className="px-3 py-2.5 text-xs text-text-muted">{projects.find(p => p.id === c.project_id)?.name || '—'}</td>
                         <td className="px-3 py-2.5 text-xs text-text-secondary">{c.trade}</td>
-                        <td className="px-3 py-2.5 text-xs font-mono text-text-primary">{c.contract_value ? fmt(c.contract_value) : '—'}</td>
+                        <td className="px-3 py-2.5 text-xs font-mono text-text-primary">{c.contract_value ? formatCurrency(c.contract_value) : '—'}</td>
                         <td className="px-3 py-2.5">
-                          <span className={cn('inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium capitalize', STATUS_COLORS[c.status])}>
-                            {c.status}
-                          </span>
+                          <StatusBadge label={c.status} variant={statusVariant(c.status)} />
                         </td>
                         <td className="px-3 py-2.5 text-xs text-text-muted whitespace-nowrap">
-                          {new Date(c.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
+                          {formatDate(c.created_at)}
                         </td>
                         <td className="px-3 py-2.5" onClick={e => e.stopPropagation()}>
                           {c.status === 'draft' && (
@@ -400,7 +391,7 @@ GRANT ALL ON sub_contracts TO anon, authenticated, service_role;`}</pre>
                 <button
                   onClick={handleGenerate}
                   disabled={generating || !form.subcontractor_name || !form.description_of_works}
-                  className="w-full flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-white text-xs font-semibold py-3 rounded-lg disabled:opacity-50 transition-colors"
+                  className="w-full flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover active:scale-[0.98] text-white text-xs font-semibold py-3 rounded-lg disabled:opacity-50 transition-colors"
                 >
                   {generating ? (
                     <>

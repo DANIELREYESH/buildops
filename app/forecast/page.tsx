@@ -81,20 +81,21 @@ export default function ForecastPage() {
 
   return (
     <AppLayout>
-      <div className="p-6">
+      <div className="pt-6 px-6 pb-12">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-lg font-semibold text-text-primary flex items-center gap-2">
+            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa] flex items-center gap-2">
               AI Forecast
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-accent/10 text-accent"><Sparkles size={10} /> Claude</span>
             </h1>
-            <p className="text-xs text-text-muted mt-1">Portfolio health, margin and completion predictions powered by Claude.</p>
+            <p className="text-sm text-[#a1a1aa] mt-0.5">Portfolio health, margin and completion predictions powered by Claude.</p>
           </div>
           <button onClick={() => generate(true)} disabled={generating || projects.length === 0}
             className="flex items-center gap-1.5 text-xs font-medium text-text-secondary border border-border px-3 py-1.5 rounded-lg hover:bg-muted disabled:opacity-50 transition-colors">
             <RefreshCw size={12} className={generating ? 'animate-spin' : ''} /> {generating ? 'Analysing...' : 'Regenerate'}
           </button>
         </div>
+        <div className="border-b border-[#1f1f1f] mb-6" />
 
         {loading ? (
           <div className="space-y-3">{[1, 2, 3].map(i => <div key={i} className="skeleton h-24 rounded-xl" />)}</div>
@@ -104,7 +105,7 @@ export default function ForecastPage() {
               <TrendingUp size={20} className="text-accent" />
             </div>
             <p className="text-sm font-medium text-text-primary">No active projects to forecast</p>
-            <p className="text-xs text-text-muted mt-1">Create projects and log costs to see AI predictions.</p>
+            <p className="text-sm text-[#a1a1aa] mt-0.5">Create projects and log costs to see AI predictions.</p>
           </div>
         ) : (
           <>
@@ -215,7 +216,7 @@ export default function ForecastPage() {
                 const style = healthStyle(fp.health)
                 return (
                   <div key={fp.project_id} className="bg-surface border border-border rounded-xl overflow-hidden w-full">
-                    <button onClick={() => toggle(fp.project_id)} className="w-full px-5 py-4 flex items-center gap-4 hover:bg-muted/30 transition-colors text-left overflow-hidden">
+                    <button onClick={() => toggle(fp.project_id)} className="w-full px-5 py-4 flex items-center gap-4 hover:bg-[#111111]/60 transition-colors text-left overflow-hidden">
                       <span className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', style.dot)} />
                       <div className="flex-1 min-w-0 overflow-hidden">
                         <div className="text-xs font-medium text-text-primary truncate mb-0.5">{fp.name || projName(fp.project_id)}</div>

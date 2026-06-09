@@ -305,7 +305,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="p-4 md:p-6 space-y-4">
+      <div className="p-4 pb-12 md:pt-6 md:px-6 md:pb-12 space-y-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => <div key={i} className="skeleton h-28" />)}
         </div>
@@ -319,7 +319,7 @@ export default function DashboardPage() {
 
   return (
     <>
-    <div className="p-4 md:p-6">
+    <div className="p-4 pb-12 md:pt-6 md:px-6 md:pb-12">
         <DailyBriefing />
 
         {/* Stats row */}
@@ -366,24 +366,24 @@ export default function DashboardPage() {
               <table className="w-full min-w-[480px]">
                 <thead>
                   <tr className="border-b border-border">
-                    <th className="px-4 py-2.5 text-[10px] uppercase tracking-wider text-text-muted font-medium text-left">Project</th>
-                    <th className="px-4 py-2.5 text-[10px] uppercase tracking-wider text-text-muted font-medium text-left">Client</th>
-                    <th className="px-4 py-2.5 text-[10px] uppercase tracking-wider text-text-muted font-medium text-left">Budget</th>
-                    <th className="px-4 py-2.5 text-[10px] uppercase tracking-wider text-text-muted font-medium text-left">Progress</th>
-                    <th className="px-4 py-2.5 text-[10px] uppercase tracking-wider text-text-muted font-medium text-left">Status</th>
+                    <th className="px-4 h-10 text-[10px] uppercase tracking-wider text-[#52525b] font-medium text-left bg-[#0a0a0a]">Project</th>
+                    <th className="px-4 h-10 text-[10px] uppercase tracking-wider text-[#52525b] font-medium text-left bg-[#0a0a0a]">Client</th>
+                    <th className="px-4 h-10 text-[10px] uppercase tracking-wider text-[#52525b] font-medium text-left bg-[#0a0a0a]">Budget</th>
+                    <th className="px-4 h-10 text-[10px] uppercase tracking-wider text-[#52525b] font-medium text-left bg-[#0a0a0a]">Progress</th>
+                    <th className="px-4 h-10 text-[10px] uppercase tracking-wider text-[#52525b] font-medium text-left bg-[#0a0a0a]">Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {projects.length === 0 ? (
                     <tr><td colSpan={5} className="py-12 text-center">
                       <p className="text-sm text-text-muted">No projects yet</p>
-                      <button onClick={() => setShowNewProject(true)} className="mt-3 text-xs font-medium text-white bg-accent hover:bg-accent-hover px-3.5 py-2 rounded-lg transition-colors">+ New Project</button>
+                      <button onClick={() => setShowNewProject(true)} className="mt-3 text-xs font-medium text-white bg-accent hover:bg-accent-hover active:scale-[0.98] px-3.5 py-2 rounded-lg transition-colors">+ New Project</button>
                     </td></tr>
                   ) : projects.slice(0, 8).map(p => {
                     const spent = costs.filter(c => c.project_id === p.id).reduce((s, c) => s + c.amount, 0)
                     const over = (p.budget || 0) > 0 && spent > p.budget!
                     return (
-                      <tr key={p.id} onClick={() => router.push('/projects')} className="border-t border-border hover:bg-muted/30 cursor-pointer transition-colors">
+                      <tr key={p.id} onClick={() => router.push('/projects')} className="border-t border-border cursor-pointer hover:bg-[#111111]/60 transition-colors transition-colors">
                         <td className="px-4 py-2.5 text-xs font-medium text-text-primary max-w-[160px] truncate">{p.name}</td>
                         <td className="px-4 py-2.5 text-xs text-text-muted">{p.client_name || '—'}</td>
                         <td className="px-4 py-2.5 text-xs font-mono text-text-secondary">{p.budget ? fmt(p.budget) : '—'}</td>
@@ -445,7 +445,7 @@ export default function DashboardPage() {
 
       {/* New Project modal */}
       {showNewProject && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setShowNewProject(false)}>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowNewProject(false)}>
           <div className="bg-surface border border-border rounded-2xl w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h3 className="font-semibold text-sm text-text-primary">New Project</h3>
@@ -483,7 +483,7 @@ export default function DashboardPage() {
 
       {/* Log Cost modal */}
       {showNewCost && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setShowNewCost(false)}>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowNewCost(false)}>
           <div className="bg-surface border border-border rounded-2xl w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h3 className="font-semibold text-sm text-text-primary">Log Cost</h3>
@@ -532,7 +532,7 @@ export default function DashboardPage() {
 
       {/* Submit Check-in modal */}
       {showNewCheckin && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setShowNewCheckin(false)}>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowNewCheckin(false)}>
           <div className="bg-surface border border-border rounded-2xl w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h3 className="font-semibold text-sm text-text-primary">Submit Check-in</h3>

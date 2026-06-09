@@ -161,12 +161,12 @@ export default function CashflowPage() {
 
   return (
     <AppLayout>
-      <div className="p-6">
+      <div className="pt-6 px-6 pb-12">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-lg font-semibold text-text-primary">Cashflow Predictor</h1>
-            <p className="text-xs text-text-muted mt-1">AI-powered 90-day cashflow forecast from your live financial data</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Cashflow Predictor</h1>
+            <p className="text-sm text-[#a1a1aa] mt-0.5">AI-powered 90-day cashflow forecast from your live financial data</p>
           </div>
           <button
             onClick={generate}
@@ -177,6 +177,7 @@ export default function CashflowPage() {
             {loading ? 'Generating...' : 'Regenerate Forecast'}
           </button>
         </div>
+        <div className="border-b border-[#1f1f1f] mb-6" />
 
         {!forecast && !errorMsg && (
           <div className="space-y-4">
@@ -342,22 +343,22 @@ export default function CashflowPage() {
             </div>
 
             {/* Weekly breakdown table */}
-            <div className="bg-surface border border-border rounded-xl overflow-hidden">
+            <div className="bg-surface border border-border rounded-xl overflow-x-auto">
               <div className="px-4 py-3 border-b border-border">
                 <span className="text-xs font-semibold text-text-primary">Weekly Breakdown</span>
               </div>
-              <table className="w-full">
+              <table className="w-full min-w-[600px]">
                 <thead>
                   <tr className="border-b border-border bg-background">
                     {['Week', 'Money In', 'Money Out', 'Net', 'Cumulative Balance', 'Confidence'].map(h => (
-                      <th key={h} className="px-4 py-2.5 text-[10px] uppercase tracking-wider text-text-muted font-medium text-left">{h}</th>
+                      <th key={h} className="px-4 h-10 text-[10px] uppercase tracking-wider text-[#52525b] font-medium text-left bg-[#0a0a0a]">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {forecast.forecast_periods.map((period, i) => (
                     <tr key={i} className={cn(
-                      'border-t border-border hover:bg-muted/30 transition-colors',
+                      'border-t border-border hover:bg-[#111111]/60 transition-colors',
                       period.cumulative_balance < 0 && 'bg-danger/5'
                     )}>
                       <td className="px-4 py-2.5 text-xs text-text-primary font-medium">{period.week_label}</td>

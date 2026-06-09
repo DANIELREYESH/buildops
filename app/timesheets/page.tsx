@@ -160,15 +160,15 @@ export default function TimesheetsPage() {
 
   return (
     <AppLayout>
-      <div className="p-6">
+      <div className="pt-6 px-6 pb-12">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-lg font-semibold text-text-primary">Timesheets</h1>
-            <p className="text-xs text-text-muted mt-1">Log and review hours worked across all projects and trades.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Timesheets</h1>
+            <p className="text-sm text-[#a1a1aa] mt-0.5">Log and review hours worked across all projects and trades.</p>
           </div>
           <div className="flex items-center gap-2">
             <button onClick={exportCSV} className="text-xs font-medium text-text-secondary border border-border px-3 py-1.5 rounded-lg hover:bg-muted transition-colors">Export CSV</button>
-            <button onClick={() => setShowModal(true)} className="text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover transition-colors">+ Log Hours</button>
+            <button onClick={() => setShowModal(true)} className="text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover active:scale-[0.98] transition-colors">+ Log Hours</button>
           </div>
         </div>
 
@@ -278,8 +278,8 @@ export default function TimesheetsPage() {
           <span className="text-xs text-text-muted">{Math.round(totalHours * 10) / 10}h total · {fmt(Math.round(totalHours * LABOUR_RATE))} labour cost</span>
         </div>
 
-        <div className="bg-surface border border-border rounded-xl overflow-hidden">
-          <table className="w-full">
+        <div className="bg-surface border border-border rounded-xl overflow-x-auto">
+          <table className="w-full min-w-[600px]">
             <thead>
               <tr className="bg-background text-text-muted text-xs uppercase tracking-wider">
                 {['Worker', 'Date', 'Project', 'Clock In', 'Clock Out', 'Hours', 'OT', 'Daily Cost', 'GPS'].map(h => (
@@ -296,13 +296,13 @@ export default function TimesheetsPage() {
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="var(--color-accent)" strokeWidth="2"/><polyline points="12 7 12 12 15 15" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                     </div>
                     <p className="text-sm font-medium text-text-primary">No timesheets in this period</p>
-                    <p className="text-xs text-text-muted mt-1">Log hours or adjust the date range to see entries.</p>
+                    <p className="text-sm text-[#a1a1aa] mt-0.5">Log hours or adjust the date range to see entries.</p>
                   </div>
                 </td></tr>
                ) : timesheets.map(t => {
                 const overtime = (t.hours || 0) > 8
                 return (
-                  <tr key={t.id} className="border-b border-border hover:bg-muted/30 transition-colors">
+                  <tr key={t.id} className="border-b border-border hover:bg-[#111111]/60 transition-colors">
                     <td className="px-4 py-2.5 text-xs font-semibold text-text-primary">{t.user_name}</td>
                     <td className="px-4 py-2.5 text-xs text-text-secondary">{t.date}</td>
                     <td className="px-4 py-2.5 text-xs text-text-secondary">{projName(t.project_id)}</td>
@@ -327,7 +327,7 @@ export default function TimesheetsPage() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
           <div className="bg-surface border border-border rounded-2xl w-full max-w-lg shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h3 className="font-bold text-sm text-text-primary">Log Hours</h3>

@@ -149,18 +149,19 @@ export default function RequestsPage() {
 
   return (
     <AppLayout>
-      <div className="p-6">
+      <div className="pt-6 px-6 pb-12">
         <div className="mb-5 flex items-start justify-between">
           <div>
-            <h1 className="text-lg font-semibold text-text-primary">Client Requests</h1>
-            <p className="text-xs text-text-muted mt-1">
+            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Client Requests</h1>
+            <p className="text-sm text-[#a1a1aa] mt-0.5">
               {thisMonth.length} this month · {quoted.length} quoted · {won.length} won · {convRate}% conversion · {fmt(totalWon)} won value
             </p>
           </div>
-          <button onClick={() => setShowNew(true)} className="text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover transition-colors">
+          <button onClick={() => setShowNew(true)} className="text-xs font-semibold text-white bg-accent px-3.5 py-1.5 rounded-lg hover:bg-accent-hover active:scale-[0.98] transition-colors">
             + Log Request
           </button>
         </div>
+        <div className="border-b border-[#1f1f1f] mb-6" />
 
         {/* Pipeline board */}
         <div className="overflow-x-auto pb-4">
@@ -283,7 +284,7 @@ export default function RequestsPage() {
 
       {/* Quote builder */}
       {showQuote && panel && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setShowQuote(false)}>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowQuote(false)}>
           <div className="bg-surface border border-border rounded-2xl w-full max-w-2xl shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h3 className="font-bold text-sm text-text-primary">Quote Builder — {panel.client_name}</h3>
@@ -350,7 +351,7 @@ export default function RequestsPage() {
       )}
 
       {showNew && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setShowNew(false)}>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowNew(false)}>
           <div className="bg-surface border border-border rounded-2xl w-full max-w-lg shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h3 className="font-bold text-sm text-text-primary">Log New Request</h3>
