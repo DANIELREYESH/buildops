@@ -128,13 +128,13 @@ export default function ForecastPage() {
 
             {/* Radar + Delay charts */}
             {forecast && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-5">
                 {/* Radar: portfolio health dimensions */}
-                <div className="bg-surface border border-border rounded-xl p-5">
+                <div className="bg-surface border border-border rounded-xl p-5 h-[280px] overflow-hidden">
                   <div className="text-xs font-semibold text-text-primary mb-1">Portfolio Health Dimensions</div>
                   <div className="text-[10px] text-text-muted mb-3">Composite score across 5 dimensions</div>
                   <ResponsiveContainer width="100%" height={220}>
-                    <RadarChart data={[
+                    <RadarChart outerRadius={80} data={[
                       { subject: 'Schedule', score: forecast.overall_health === 'on_track' ? 80 : forecast.overall_health === 'at_risk' ? 55 : 30 },
                       { subject: 'Budget', score: forecast.overall_health === 'on_track' ? 75 : forecast.overall_health === 'at_risk' ? 50 : 35 },
                       { subject: 'Safety', score: 85 },
@@ -158,16 +158,16 @@ export default function ForecastPage() {
                 </div>
 
                 {/* Horizontal bar: predicted delay per project */}
-                <div className="bg-surface border border-border rounded-xl p-5">
+                <div className="bg-surface border border-border rounded-xl p-5 h-[280px] overflow-hidden">
                   <div className="text-xs font-semibold text-text-primary mb-1">Predicted Delay by Project</div>
                   <div className="text-[10px] text-text-muted mb-3">Days of delay predicted by AI</div>
                   {(forecast.projects || []).length === 0 ? (
                     <div className="flex items-center justify-center h-[220px] text-xs text-text-muted">No project data</div>
                   ) : (
-                    <ResponsiveContainer width="100%" height={Math.max(220, (forecast.projects || []).length * 40)}>
+                    <ResponsiveContainer width="100%" height={220}>
                       <BarChart
                         data={(forecast.projects || []).map(fp => ({
-                          name: (fp.name || projects.find(p => p.id === fp.project_id)?.name || 'Unknown').slice(0, 18),
+                          name: (fp.name || projects.find(p => p.id === fp.project_id)?.name || 'Unknown').slice(0, 14),
                           days: fp.projected_delay_days ?? 0,
                           health: fp.health,
                         }))}
@@ -175,7 +175,7 @@ export default function ForecastPage() {
                         margin={{ top: 0, right: 40, left: 0, bottom: 0 }}
                       >
                         <XAxis type="number" tick={{ fill: CHART_THEME.textColor, fontSize: 9 }} axisLine={false} tickLine={false} />
-                        <YAxis type="category" dataKey="name" tick={{ fill: CHART_THEME.textColor, fontSize: 9 }} axisLine={false} tickLine={false} width={100} />
+                        <YAxis type="category" dataKey="name" tick={{ fill: CHART_THEME.textColor, fontSize: 10 }} axisLine={false} tickLine={false} width={90} />
                         <Tooltip
                           content={({ active, payload }) => {
                             if (!active || !payload?.length) return null
