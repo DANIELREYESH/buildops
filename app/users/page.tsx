@@ -180,7 +180,7 @@ export default function UsersPage() {
               </div>
             ) : (
               <table className="w-full min-w-[600px]">
-                <thead><tr className="bg-background border-b border-border">
+                <thead><tr className="bg-muted border-b border-border">
                   <th className="px-5 py-2 text-[9px] uppercase tracking-wide text-text-muted font-semibold text-left">Member</th>
                   <th className="px-4 py-2 text-[9px] uppercase tracking-wide text-text-muted font-semibold text-left">Role</th>
                   <th className="px-4 py-2 text-[9px] uppercase tracking-wide text-text-muted font-semibold text-left">Status</th>
@@ -188,7 +188,7 @@ export default function UsersPage() {
                 </tr></thead>
                 <tbody>
                   {/* Account owner row */}
-                  <tr className="border-b border-border hover:bg-[#111111]/60 transition-colors">
+                  <tr className="border-b border-border hover:bg-muted/60 transition-colors">
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-2">
                         <div className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-white text-[10px] font-bold">
@@ -205,7 +205,7 @@ export default function UsersPage() {
                     <td />
                   </tr>
                   {members.map(m => (
-                    <tr key={m.id} className="border-b border-border hover:bg-[#111111]/60 transition-colors">
+                    <tr key={m.id} className="border-b border-border hover:bg-muted/60 transition-colors">
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-2">
                           <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center text-text-secondary text-[10px] font-bold">
@@ -245,7 +245,7 @@ export default function UsersPage() {
               <span className="text-xs font-bold text-text-primary">Permissions</span>
             </div>
             <table className="w-full min-w-[600px]">
-              <thead><tr className="bg-background border-b border-border">
+              <thead><tr className="bg-muted border-b border-border">
                 <th className="px-4 py-2 text-[9px] uppercase tracking-wide text-text-muted font-semibold text-left"></th>
                 {roles.map(r => <th key={r} className="px-2 py-2 text-[9px] uppercase tracking-wide text-text-muted font-semibold text-center capitalize">{r.slice(0, 3)}</th>)}
               </tr></thead>
@@ -277,7 +277,7 @@ export default function UsersPage() {
           <table className="w-full min-w-[600px]">
             <tbody>
               {BILLING_HISTORY.map(b => (
-                <tr key={b.date} className="border-t border-border hover:bg-[#111111]/60 transition-colors">
+                <tr key={b.date} className="border-t border-border hover:bg-muted/60 transition-colors">
                   <td className="px-5 py-3 text-xs text-text-primary">{b.desc}</td>
                   <td className="px-4 py-3 text-xs text-text-muted">{b.date}</td>
                   <td className="px-4 py-3 text-xs font-mono font-bold text-text-primary">{b.amount}</td>

@@ -210,7 +210,7 @@ export default function PaymentsPage() {
               return (
                 <div key={sub.id} className="bg-surface border border-border rounded-xl overflow-hidden">
                   <button
-                    className="w-full px-5 py-4 flex items-center gap-3 hover:bg-[#111111]/60 transition-colors text-left"
+                    className="w-full px-5 py-4 flex items-center gap-3 hover:bg-muted/60 transition-colors text-left"
                     onClick={() => setExpanded(prev => { const n = new Set(prev); if (n.has(sub.id)) n.delete(sub.id); else n.add(sub.id); return n })}
                   >
                     <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-white text-xs font-bold flex-shrink-0">

@@ -308,7 +308,7 @@ export default function RequestsPage() {
             </div>
             <div className="p-6">
               <table className="w-full mb-3">
-                <thead><tr className="bg-background">
+                <thead><tr className="bg-muted border-b border-border">
                   <th className="px-3 py-2 text-[9px] uppercase tracking-wide text-text-muted font-semibold text-left">Description</th>
                   <th className="px-3 py-2 text-[9px] uppercase tracking-wide text-text-muted font-semibold text-left w-16">Qty</th>
                   <th className="px-3 py-2 text-[9px] uppercase tracking-wide text-text-muted font-semibold text-left w-20">Unit</th>

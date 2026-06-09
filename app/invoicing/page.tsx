@@ -426,13 +426,13 @@ function InvoicingPageInner() {
               <thead>
                 <tr className="border-b border-border">
                   {['Ref', 'Client', 'Total', 'Due', 'Status', ''].map(h => (
-                    <th key={h} className="px-4 h-10 text-[10px] uppercase tracking-wider text-[#52525b] font-medium text-left bg-[#0a0a0a]">{h}</th>
+                    <th key={h} className="px-4 h-10 text-[10px] uppercase tracking-wider text-text-muted font-medium text-left bg-muted">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {filtered.map(inv => (
-                  <tr key={inv.id} onClick={() => setPreview(inv)} className="border-t border-border cursor-pointer hover:bg-[#111111]/60 transition-colors transition-colors">
+                  <tr key={inv.id} onClick={() => setPreview(inv)} className="border-t border-border cursor-pointer hover:bg-muted/60 transition-colors transition-colors">
                     <td className="px-4 py-2.5 text-xs font-mono font-medium text-text-primary">{inv.invoice_ref || '—'}</td>
                     <td className="px-4 py-2.5">
                       <div className="text-xs font-medium text-text-primary">{inv.client_name}</div>

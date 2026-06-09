@@ -60,10 +60,10 @@ function Check({ has }: { has: boolean }) {
 export default function PermissionsPage() {
   return (
     <AppLayout>
-      <div className="p-6">
+      <div className="pt-6 px-6 pb-12">
         <div className="mb-5">
-          <h1 className="text-lg font-semibold text-text-primary">Role Permissions</h1>
-          <p className="text-xs text-text-muted mt-1">Access levels by role. Assign roles to team members in Users &amp; Billing.</p>
+          <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Role Permissions</h1>
+          <p className="text-sm text-[#a1a1aa] mt-0.5">Access levels by role. Assign roles to team members in Users &amp; Billing.</p>
         </div>
 
         {/* Role cards */}
@@ -77,10 +77,10 @@ export default function PermissionsPage() {
         </div>
 
         {/* Permissions grid */}
-        <div className="bg-surface border border-border rounded-xl overflow-hidden">
-          <table className="w-full">
+        <div className="bg-surface border border-border rounded-xl overflow-x-auto">
+          <table className="w-full min-w-[600px]">
             <thead>
-              <tr className="bg-background text-text-muted border-b border-border">
+              <tr className="bg-muted text-text-muted border-b border-border">
                 <th className="px-5 py-3 text-[9px] uppercase tracking-wide font-semibold text-left w-[44%]">Permission</th>
                 {ROLES.map(r => (
                   <th key={r.key} className="px-3 py-3 text-center w-[14%]">
@@ -93,7 +93,7 @@ export default function PermissionsPage() {
               {SECTIONS.map(section => {
                 const rows = PERMISSIONS.filter(p => p.section === section)
                 return rows.map((perm, i) => (
-                  <tr key={perm.label} className="border-t border-border hover:bg-muted/30 transition-colors">
+                  <tr key={perm.label} className="border-t border-border hover:bg-muted/60 transition-colors">
                     <td className="px-5 py-2.5">
                       {i === 0 && (
                         <div className="text-[9px] uppercase tracking-widest font-bold text-text-muted mb-1">{section}</div>

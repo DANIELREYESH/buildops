@@ -349,16 +349,16 @@ export default function CashflowPage() {
               </div>
               <table className="w-full min-w-[600px]">
                 <thead>
-                  <tr className="border-b border-border bg-background">
+                  <tr className="border-b border-border bg-muted">
                     {['Week', 'Money In', 'Money Out', 'Net', 'Cumulative Balance', 'Confidence'].map(h => (
-                      <th key={h} className="px-4 h-10 text-[10px] uppercase tracking-wider text-[#52525b] font-medium text-left bg-[#0a0a0a]">{h}</th>
+                      <th key={h} className="px-4 h-10 text-[10px] uppercase tracking-wider text-text-muted font-medium text-left bg-muted">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {forecast.forecast_periods.map((period, i) => (
                     <tr key={i} className={cn(
-                      'border-t border-border hover:bg-[#111111]/60 transition-colors',
+                      'border-t border-border hover:bg-muted/60 transition-colors',
                       period.cumulative_balance < 0 && 'bg-danger/5'
                     )}>
                       <td className="px-4 py-2.5 text-xs text-text-primary font-medium">{period.week_label}</td>

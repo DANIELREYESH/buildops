@@ -281,7 +281,7 @@ export default function TimesheetsPage() {
         <div className="bg-surface border border-border rounded-xl overflow-x-auto">
           <table className="w-full min-w-[600px]">
             <thead>
-              <tr className="bg-background text-text-muted text-xs uppercase tracking-wider">
+              <tr className="bg-muted text-text-muted text-xs uppercase tracking-wider border-b border-border">
                 {['Worker', 'Date', 'Project', 'Clock In', 'Clock Out', 'Hours', 'OT', 'Daily Cost', 'GPS'].map(h => (
                   <th key={h} className="px-4 py-2.5 text-[9px] uppercase tracking-wide font-semibold text-left whitespace-nowrap">{h}</th>
                 ))}
@@ -302,7 +302,7 @@ export default function TimesheetsPage() {
                ) : timesheets.map(t => {
                 const overtime = (t.hours || 0) > 8
                 return (
-                  <tr key={t.id} className="border-b border-border hover:bg-[#111111]/60 transition-colors">
+                  <tr key={t.id} className="border-b border-border hover:bg-muted/60 transition-colors">
                     <td className="px-4 py-2.5 text-xs font-semibold text-text-primary">{t.user_name}</td>
                     <td className="px-4 py-2.5 text-xs text-text-secondary">{t.date}</td>
                     <td className="px-4 py-2.5 text-xs text-text-secondary">{projName(t.project_id)}</td>

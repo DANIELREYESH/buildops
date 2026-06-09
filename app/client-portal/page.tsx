@@ -57,11 +57,11 @@ export default function ClientPortalPage() {
 
   return (
     <AppLayout>
-      <div className="p-6">
+      <div className="pt-6 px-6 pb-12">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-semibold text-text-primary">Client Portal</h1>
-            <p className="text-xs text-text-muted mt-1">Live project progress shared with clients. Select a project to view the full status report.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Client Portal</h1>
+            <p className="text-sm text-[#a1a1aa] mt-0.5">Live project progress shared with clients. Select a project to view the full status report.</p>
           </div>
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-muted text-[10px] font-bold text-text-muted">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" strokeWidth="2"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" strokeWidth="2"/></svg>
@@ -133,7 +133,7 @@ export default function ClientPortalPage() {
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round"/></svg>
                     </div>
                     <p className="text-sm text-text-primary font-semibold">No site updates yet</p>
-                    <p className="text-xs text-text-muted mt-1">Check-ins from your site team will appear here</p>
+                    <p className="text-sm text-[#a1a1aa] mt-0.5">Check-ins from your site team will appear here</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -270,7 +270,7 @@ export default function ClientPortalPage() {
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round"/></svg>
                 </div>
                 <p className="text-sm font-semibold text-text-primary">No projects yet</p>
-                <p className="text-xs text-text-muted mt-1">Create a project first to use the client portal</p>
+                <p className="text-sm text-[#a1a1aa] mt-0.5">Create a project first to use the client portal</p>
               </div>
             ) : (
               <div className="grid grid-cols-3 gap-4">

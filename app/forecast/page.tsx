@@ -216,7 +216,7 @@ export default function ForecastPage() {
                 const style = healthStyle(fp.health)
                 return (
                   <div key={fp.project_id} className="bg-surface border border-border rounded-xl overflow-hidden w-full">
-                    <button onClick={() => toggle(fp.project_id)} className="w-full px-5 py-4 flex items-center gap-4 hover:bg-[#111111]/60 transition-colors text-left overflow-hidden">
+                    <button onClick={() => toggle(fp.project_id)} className="w-full px-5 py-4 flex items-center gap-4 hover:bg-muted/60 transition-colors text-left overflow-hidden">
                       <span className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', style.dot)} />
                       <div className="flex-1 min-w-0 overflow-hidden">
                         <div className="text-xs font-medium text-text-primary truncate mb-0.5">{fp.name || projName(fp.project_id)}</div>

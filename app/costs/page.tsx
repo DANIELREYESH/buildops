@@ -165,7 +165,7 @@ export default function CostsPage() {
               const margin = (p.budget || 0) > 0 ? Math.round(((p.budget! - p.spent) / p.budget!) * 100) : 0
               return (
                 <div key={p.id} className="bg-surface border border-border rounded-xl overflow-x-auto">
-                  <div className="px-4 py-3 flex items-center gap-4 cursor-pointer hover:bg-[#111111]/60 transition-colors"
+                  <div className="px-4 py-3 flex items-center gap-4 cursor-pointer hover:bg-muted/60 transition-colors"
                     onClick={() => setExpanded(prev => { const n = new Set(prev); n.has(p.id) ? n.delete(p.id) : n.add(p.id); return n })}>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-2">

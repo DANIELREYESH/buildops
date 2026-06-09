@@ -366,11 +366,11 @@ export default function DashboardPage() {
               <table className="w-full min-w-[480px]">
                 <thead>
                   <tr className="border-b border-border">
-                    <th className="px-4 h-10 text-[10px] uppercase tracking-wider text-[#52525b] font-medium text-left bg-[#0a0a0a]">Project</th>
-                    <th className="px-4 h-10 text-[10px] uppercase tracking-wider text-[#52525b] font-medium text-left bg-[#0a0a0a]">Client</th>
-                    <th className="px-4 h-10 text-[10px] uppercase tracking-wider text-[#52525b] font-medium text-left bg-[#0a0a0a]">Budget</th>
-                    <th className="px-4 h-10 text-[10px] uppercase tracking-wider text-[#52525b] font-medium text-left bg-[#0a0a0a]">Progress</th>
-                    <th className="px-4 h-10 text-[10px] uppercase tracking-wider text-[#52525b] font-medium text-left bg-[#0a0a0a]">Status</th>
+                    <th className="px-4 h-10 text-[10px] uppercase tracking-wider text-text-muted font-medium text-left bg-muted">Project</th>
+                    <th className="px-4 h-10 text-[10px] uppercase tracking-wider text-text-muted font-medium text-left bg-muted">Client</th>
+                    <th className="px-4 h-10 text-[10px] uppercase tracking-wider text-text-muted font-medium text-left bg-muted">Budget</th>
+                    <th className="px-4 h-10 text-[10px] uppercase tracking-wider text-text-muted font-medium text-left bg-muted">Progress</th>
+                    <th className="px-4 h-10 text-[10px] uppercase tracking-wider text-text-muted font-medium text-left bg-muted">Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -383,7 +383,7 @@ export default function DashboardPage() {
                     const spent = costs.filter(c => c.project_id === p.id).reduce((s, c) => s + c.amount, 0)
                     const over = (p.budget || 0) > 0 && spent > p.budget!
                     return (
-                      <tr key={p.id} onClick={() => router.push('/projects')} className="border-t border-border cursor-pointer hover:bg-[#111111]/60 transition-colors transition-colors">
+                      <tr key={p.id} onClick={() => router.push('/projects')} className="border-t border-border cursor-pointer hover:bg-muted/60 transition-colors transition-colors">
                         <td className="px-4 py-2.5 text-xs font-medium text-text-primary max-w-[160px] truncate">{p.name}</td>
                         <td className="px-4 py-2.5 text-xs text-text-muted">{p.client_name || '—'}</td>
                         <td className="px-4 py-2.5 text-xs font-mono text-text-secondary">{p.budget ? fmt(p.budget) : '—'}</td>
@@ -410,7 +410,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Recent activity (1/3) */}
-          <div>
+          <div className="min-w-0 overflow-hidden">
             <h2 className="text-xs font-medium text-text-secondary mb-3">Recent Activity</h2>
             <div className="bg-surface border border-border rounded-xl divide-y divide-border overflow-hidden">
               {activity.length === 0 ? (

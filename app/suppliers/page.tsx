@@ -113,7 +113,7 @@ export default function SuppliersPage() {
         ) : (
           <div className="bg-surface border border-border rounded-xl overflow-x-auto">
             <table className="w-full min-w-[600px]">
-              <thead><tr className="bg-background text-text-muted text-xs uppercase tracking-wider">
+              <thead><tr className="bg-muted text-text-muted text-xs uppercase tracking-wider border-b border-border">
                 <th className="px-5 py-2.5 font-semibold text-left">Supplier</th>
                 <th className="px-4 py-2.5 font-semibold text-left">Trade / Category</th>
                 <th className="px-4 py-2.5 font-semibold text-left">Contact</th>
@@ -123,7 +123,7 @@ export default function SuppliersPage() {
               </tr></thead>
               <tbody>
                 {filtered.map(s => (
-                  <tr key={s.id} onClick={() => setPanel(s)} className="border-b border-border last:border-b-0 cursor-pointer hover:bg-[#111111]/60 transition-colors transition-colors">
+                  <tr key={s.id} onClick={() => setPanel(s)} className="border-b border-border last:border-b-0 cursor-pointer hover:bg-muted/60 transition-colors transition-colors">
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-2.5">
                         <div className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center text-[10px] font-bold text-text-muted flex-shrink-0">

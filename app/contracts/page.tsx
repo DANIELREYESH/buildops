@@ -263,7 +263,7 @@ GRANT ALL ON sub_contracts TO anon, authenticated, service_role;`}</pre>
               ) : (
                 <table className="w-full min-w-[600px]">
                   <thead>
-                    <tr className="border-b border-border bg-background">
+                    <tr className="border-b border-border bg-muted">
                       {['Contract #', 'Subcontractor', 'Project', 'Trade', 'Value', 'Status', 'Created', ''].map(h => (
                         <th key={h} className="px-3 py-2.5 text-[10px] uppercase tracking-wider text-text-muted font-medium text-left whitespace-nowrap">{h}</th>
                       ))}
@@ -271,7 +271,7 @@ GRANT ALL ON sub_contracts TO anon, authenticated, service_role;`}</pre>
                   </thead>
                   <tbody>
                     {contracts.map(c => (
-                      <tr key={c.id} onClick={() => setPreview(c)} className="border-t border-border cursor-pointer hover:bg-[#111111]/60 transition-colors transition-colors">
+                      <tr key={c.id} onClick={() => setPreview(c)} className="border-t border-border cursor-pointer hover:bg-muted/60 transition-colors transition-colors">
                         <td className="px-3 py-2.5 text-xs font-mono font-semibold text-accent">{c.contract_number}</td>
                         <td className="px-3 py-2.5 text-xs font-medium text-text-primary">{c.subcontractor_name}</td>
                         <td className="px-3 py-2.5 text-xs text-text-muted">{projects.find(p => p.id === c.project_id)?.name || '—'}</td>

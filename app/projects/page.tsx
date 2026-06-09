@@ -496,7 +496,7 @@ function ProjectsPageInner() {
           <div className="bg-surface border border-border rounded-xl overflow-hidden">
             <table className="w-full min-w-[600px]">
               <thead>
-                <tr className="border-b border-border">
+                <tr className="border-b border-border bg-muted">
                   {['Project', 'Client', 'Status', 'Budget', 'Start Date', 'Progress', ''].map(h => (
                     <th key={h} className="px-4 py-2.5 text-[10px] uppercase tracking-wider text-text-muted font-medium text-left whitespace-nowrap">{h}</th>
                   ))}
@@ -508,7 +508,7 @@ function ProjectsPageInner() {
                 ) : filtered.length === 0 ? (
                   <tr><td colSpan={7}><EmptyState onCreate={() => setShowDrawer(true)} /></td></tr>
                 ) : filtered.map(p => (
-                  <tr key={p.id} onClick={() => openPanel(p)} className="border-t border-border cursor-pointer hover:bg-[#111111]/60 transition-colors transition-colors">
+                  <tr key={p.id} onClick={() => openPanel(p)} className="border-t border-border cursor-pointer hover:bg-muted/60 transition-colors transition-colors">
                     <td className="px-4 py-2.5 text-xs font-medium text-text-primary max-w-[200px] truncate">{p.name}</td>
                     <td className="px-4 py-2.5 text-xs text-text-muted">{p.client_name || '—'}</td>
                     <td className="px-4 py-2.5"><StatusDot status={p.status} /></td>

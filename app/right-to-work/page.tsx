@@ -250,11 +250,11 @@ export default function RightToWorkPage() {
 
   return (
     <AppLayout>
-      <div className="p-4 md:p-6">
+      <div className="p-4 pb-12 md:pt-6 md:px-6 md:pb-12">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-lg font-semibold text-text-primary">Right to Work Checker</h1>
+            <h1 className="text-2xl font-semibold tracking-tight text-[#fafafa]">Right to Work Checker</h1>
             <p className="text-xs text-text-muted mt-0.5">AI-powered UK right to work document verification</p>
           </div>
           <button onClick={exportCsv} className="flex items-center gap-1.5 text-xs font-medium text-text-secondary border border-border px-3 py-1.5 rounded-lg hover:bg-muted transition-colors">
@@ -298,13 +298,13 @@ export default function RightToWorkPage() {
                 <div className="text-center py-12">
                   <UserCheck size={24} className="text-text-muted mx-auto mb-2" />
                   <p className="text-sm text-text-muted">No checks yet</p>
-                  <p className="text-xs text-text-muted mt-1">Use the form to run your first check</p>
+                  <p className="text-sm text-[#a1a1aa] mt-0.5">Use the form to run your first check</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full min-w-[640px]">
                     <thead>
-                      <tr className="border-b border-border">
+                      <tr className="border-b border-border bg-muted">
                         {['Worker', 'Nationality', 'Document', 'Status', 'Valid Until', 'Follow-up', 'Checked'].map(h => (
                           <th key={h} className="px-3 py-2.5 text-[10px] uppercase tracking-wider text-text-muted font-medium text-left">{h}</th>
                         ))}
@@ -314,7 +314,7 @@ export default function RightToWorkPage() {
                       {checks.map(c => {
                         const s = STATUS_CONFIG[c.right_to_work_status]
                         return (
-                          <tr key={c.id} className="border-t border-border hover:bg-muted/30 transition-colors">
+                          <tr key={c.id} className="border-t border-border hover:bg-muted/60 transition-colors">
                             <td className="px-3 py-2.5 text-xs font-medium text-text-primary whitespace-nowrap">{c.worker_name}</td>
                             <td className="px-3 py-2.5 text-xs text-text-muted">{c.nationality}</td>
                             <td className="px-3 py-2.5 text-xs text-text-muted">{c.document_type}</td>

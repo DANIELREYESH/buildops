@@ -177,7 +177,7 @@ export default function BankingPage() {
           ) : (
             <table className="w-full min-w-[600px]">
               <thead>
-                <tr className="bg-background border-b border-border">
+                <tr className="bg-muted border-b border-border">
                   <th className="px-5 py-2.5 text-[9px] uppercase tracking-wide text-text-muted font-semibold text-left">Date</th>
                   <th className="px-4 py-2.5 text-[9px] uppercase tracking-wide text-text-muted font-semibold text-left">Description</th>
                   <th className="px-4 py-2.5 text-[9px] uppercase tracking-wide text-text-muted font-semibold text-left">Category</th>
