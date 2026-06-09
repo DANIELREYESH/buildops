@@ -9,7 +9,7 @@ import type { Cost, Project } from '@/lib/types'
 const fmt = (n: number) => `£${n.toLocaleString('en-GB', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}`
 
 type ExtractedData = {
-  supplier: string; amount_ex_vat: string; vat: string; total: string; date: string
+  supplier: string; amount_ex_vat: string; vat: string; total: string; date: string; description?: string
 }
 
 export default function TicketsPage() {
@@ -48,29 +48,58 @@ export default function TicketsPage() {
 
   useEffect(() => { load() }, [load])
 
-  const mockExtract = (file: File) => {
+  const scanWithAI = async (file: File) => {
     setPreview(URL.createObjectURL(file))
     setAnalysing(true)
-    setTimeout(() => {
-      const today = new Date().toISOString().split('T')[0]
-      const mock: ExtractedData = {
-        supplier: 'Travis Perkins Ltd',
-        amount_ex_vat: '340.80',
-        vat: '68.16',
-        total: '408.96',
-        date: today,
+    try {
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve((reader.result as string).split(',')[1])
+        reader.onerror = reject
+        reader.readAsDataURL(file)
+      })
+      const res = await fetch('/api/scan-ticket', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image_base64: base64, media_type: file.type }),
+      })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error || 'Scan failed')
+      const extracted: ExtractedData = {
+        supplier: json.supplier || '',
+        amount_ex_vat: json.amount_ex_vat || '',
+        vat: json.vat || '',
+        total: json.total || '',
+        date: json.date || new Date().toISOString().split('T')[0],
+        description: json.description || '',
       }
-      setExtracted(mock)
-      setForm(f => ({ ...f, supplier: mock.supplier, amount: mock.amount_ex_vat, vat: mock.vat, total: mock.total, date: mock.date }))
+      setExtracted(extracted)
+      setForm(f => ({
+        ...f,
+        supplier: extracted.supplier,
+        amount: extracted.amount_ex_vat,
+        vat: extracted.vat,
+        total: extracted.total,
+        date: extracted.date,
+        category: (json.category as Cost['category']) || f.category,
+        notes: json.description ? `${json.description}` : f.notes,
+      }))
+    } catch (err) {
+      toast(err instanceof Error ? err.message : 'AI scan failed', 'error')
+      setPreview(null)
+    } finally {
       setAnalysing(false)
-    }, 2000)
+    }
   }
 
   const handleFile = (file: File) => {
     if (!file.type.startsWith('image/') && file.type !== 'application/pdf') {
       toast('Please upload an image or PDF', 'error'); return
     }
-    mockExtract(file)
+    if (file.type === 'application/pdf') {
+      toast('PDF scanning coming soon — use an image for now', 'error'); return
+    }
+    scanWithAI(file)
   }
 
   const onDrop = (e: React.DragEvent) => {
@@ -158,9 +187,10 @@ export default function TicketsPage() {
                           { label: 'VAT (20%)', val: `£${extracted.vat}` },
                           { label: 'Total inc. VAT', val: `£${extracted.total}` },
                           { label: 'Date', val: extracted.date },
+                          ...(extracted.description ? [{ label: 'Items', val: extracted.description }] : []),
                         ].map(r => (
-                          <div key={r.label} className="flex items-center gap-2">
-                            <span className="text-[10px] text-text-muted w-28">{r.label}</span>
+                          <div key={r.label} className="flex items-start gap-2">
+                            <span className="text-[10px] text-text-muted w-28 flex-shrink-0 pt-0.5">{r.label}</span>
                             <span className="text-xs font-semibold text-text-primary">{r.val}</span>
                           </div>
                         ))}
