@@ -109,7 +109,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <div key={section.group} className={idx > 0 ? 'mt-4' : ''}>
                 {expanded && (
                   <div className="px-2.5 mb-1">
-                    <span className="text-[10px] font-semibold tracking-wider text-text-muted uppercase select-none">
+                    <span className="text-[10px] font-semibold tracking-wider text-text-muted/80 uppercase select-none">
                       {section.group}
                     </span>
                   </div>
@@ -129,7 +129,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                       )}
                     >
                       <Icon size={14} className="flex-shrink-0" />
-                      {expanded && <span className="text-xs font-medium flex-1 truncate">{label}</span>}
+                      {expanded && <span className="text-xs font-medium flex-1 truncate leading-none">{label}</span>}
                     </button>
                   )
                 })}
