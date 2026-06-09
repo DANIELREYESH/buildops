@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, FolderKanban, CheckSquare, Clock, ScanLine, Bot,
   FileSignature, Wallet, FileText, Landmark, Banknote, TrendingUp,
-  Inbox, Users, Store, BarChart2, Plug, CreditCard, UserCheck, Smartphone,
+  Inbox, Users, Store, BarChart2, Plug, CreditCard, UserCheck, Smartphone, Building2,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -50,6 +50,7 @@ export const NAV: NavGroup[] = [
     group: 'NETWORK',
     items: [
       { label: 'Sub Marketplace', href: '/marketplace', icon: Store },
+      { label: 'Suppliers', href: '/suppliers', icon: Building2 },
     ],
   },
   {

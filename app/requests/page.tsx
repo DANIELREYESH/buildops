@@ -27,6 +27,7 @@ export default function RequestsPage() {
   const [showNew, setShowNew] = useState(false)
   const [showQuote, setShowQuote] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [aiGenerating, setAiGenerating] = useState(false)
   const [dragOver, setDragOver] = useState<Request['status'] | null>(null)
   const [draggingId, setDraggingId] = useState<string | null>(null)
 
@@ -88,6 +89,37 @@ export default function RequestsPage() {
     setShowQuote(false)
     setQuoteItems([{ description: '', qty: '1', unit: 'item', unit_price: '' }])
     toast(`Quote of ${fmt(total)} sent`)
+  }
+
+  const aiSuggestQuote = async () => {
+    if (!panel) return
+    setAiGenerating(true)
+    try {
+      const res = await fetch('/api/ai-quote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          job_type: panel.job_type,
+          description: panel.description,
+          location: panel.location,
+          budget_estimate: panel.budget_estimate,
+        }),
+      })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error || 'AI quote generation failed')
+      setQuoteItems(json.line_items.map((li: { description: string; qty: number; unit: string; unit_price: number }) => ({
+        description: li.description,
+        qty: String(li.qty),
+        unit: li.unit,
+        unit_price: String(li.unit_price),
+      })))
+      if (json.notes) setQuoteNotes(json.notes)
+      toast('AI generated quote items')
+    } catch (err) {
+      toast(err instanceof Error ? err.message : 'AI generation failed', 'error')
+    } finally {
+      setAiGenerating(false)
+    }
   }
 
   const convertToProject = async () => {
@@ -255,9 +287,23 @@ export default function RequestsPage() {
           <div className="bg-surface border border-border rounded-2xl w-full max-w-2xl shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-border flex items-center justify-between">
               <h3 className="font-bold text-sm text-text-primary">Quote Builder — {panel.client_name}</h3>
-              <button onClick={() => setShowQuote(false)} className="text-text-muted hover:text-text-primary">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={aiSuggestQuote}
+                  disabled={aiGenerating}
+                  className="flex items-center gap-1.5 text-[10px] font-semibold px-3 py-1.5 rounded-lg bg-accent/10 text-accent border border-accent/20 hover:bg-accent/20 disabled:opacity-50 transition-colors"
+                >
+                  {aiGenerating ? (
+                    <span className="w-3 h-3 border border-accent border-t-transparent rounded-full animate-spin flex-shrink-0" />
+                  ) : (
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="currentColor"/></svg>
+                  )}
+                  {aiGenerating ? 'Generating...' : 'AI Suggest'}
+                </button>
+                <button onClick={() => setShowQuote(false)} className="text-text-muted hover:text-text-primary">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+                </button>
+              </div>
             </div>
             <div className="p-6">
               <table className="w-full mb-3">
