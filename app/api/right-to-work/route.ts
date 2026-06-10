@@ -26,7 +26,7 @@ import Anthropic from '@anthropic-ai/sdk'
 
 export const maxDuration = 60
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
+const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY ?? 'placeholder' })
 
 const SYSTEM_PROMPT = `You are a UK Right to Work compliance specialist. Analyze this identity document image and the provided worker details. Return JSON with:
 - valid: boolean

@@ -3,7 +3,7 @@ import Anthropic from '@anthropic-ai/sdk'
 
 export const maxDuration = 60
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
+const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY ?? 'placeholder' })
 
 type LineItem = { description: string; qty: number; unit: string; unit_price: number }
 

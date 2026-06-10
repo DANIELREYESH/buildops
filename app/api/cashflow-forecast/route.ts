@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY ?? 'placeholder' })
 
 const SYSTEM_PROMPT = `You are a construction business cashflow analyst. Based on the financial data provided, generate a 90-day cashflow forecast. Return JSON with:
 - current_balance_estimate: number
