@@ -12,7 +12,7 @@ export default function NotFound() {
         The page you&apos;re looking for doesn&apos;t exist or has been moved.
       </p>
       <Link
-        href="/dashboard"
+        href="/app/dashboard"
         className="inline-flex items-center gap-2 bg-[#6366f1] hover:bg-[#4f46e5] text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors"
       >
         Back to dashboard

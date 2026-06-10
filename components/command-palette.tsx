@@ -77,7 +77,7 @@ export function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenCh
               {recentProjects.map(p => (
                 <Command.Item
                   key={p.id}
-                  onSelect={() => go(`/projects?id=${p.id}`)}
+                  onSelect={() => go(`/app/projects?id=${p.id}`)}
                   className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm text-text-secondary cursor-pointer aria-selected:bg-muted aria-selected:text-text-primary"
                 >
                   <FolderKanban size={14} />

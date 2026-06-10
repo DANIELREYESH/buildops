@@ -168,7 +168,7 @@ export default function AIAssistant() {
     setSavingContract(false)
     if (error) { toast.error('Failed to save: ' + error.message); return }
     toast.success('Contract saved — ' + contractNumber)
-    router.push('/contracts')
+    router.push('/app/contracts')
   }
 
   const handleDailyBriefing = () => sendMessage('Send me the daily briefing')
@@ -268,7 +268,7 @@ export default function AIAssistant() {
                     )}
                     {msg.isInvoiceIntent && (
                       <button
-                        onClick={() => router.push('/invoicing?new=1')}
+                        onClick={() => router.push('/app/invoicing?new=1')}
                         className="text-[10px] font-semibold px-2.5 py-1 rounded-lg bg-[#6366f1]/20 text-[#6366f1] hover:bg-[#6366f1]/30 transition-colors"
                       >
                         Go to Invoicing →
@@ -276,7 +276,7 @@ export default function AIAssistant() {
                     )}
                     {msg.isProjectRisk && (
                       <button
-                        onClick={() => router.push('/projects')}
+                        onClick={() => router.push('/app/projects')}
                         className="text-[10px] font-semibold px-2.5 py-1 rounded-lg bg-[#f59e0b]/20 text-[#f59e0b] hover:bg-[#f59e0b]/30 transition-colors"
                       >
                         View Projects →

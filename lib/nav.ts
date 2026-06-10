@@ -14,56 +14,56 @@ export const NAV: NavGroup[] = [
   {
     group: 'WORKSPACE',
     items: [
-      { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-      { label: 'Projects', href: '/projects', icon: FolderKanban },
-      { label: 'Tasks', href: '/tasks', icon: CheckSquare },
+      { label: 'Dashboard', href: '/app/dashboard', icon: LayoutDashboard },
+      { label: 'Projects', href: '/app/projects', icon: FolderKanban },
+      { label: 'Tasks', href: '/app/tasks', icon: CheckSquare },
     ],
   },
   {
     group: 'FIELD OPS',
     items: [
-      { label: 'AI Check-ins', href: '/checkins', icon: Bot },
-      { label: 'Contracts', href: '/contracts', icon: FileSignature },
-      { label: 'Right to Work', href: '/right-to-work', icon: UserCheck },
-      { label: 'Timesheets', href: '/timesheets', icon: Clock },
-      { label: 'Scan Tickets', href: '/tickets', icon: ScanLine },
+      { label: 'AI Check-ins', href: '/app/checkins', icon: Bot },
+      { label: 'Contracts', href: '/app/contracts', icon: FileSignature },
+      { label: 'Right to Work', href: '/app/right-to-work', icon: UserCheck },
+      { label: 'Timesheets', href: '/app/timesheets', icon: Clock },
+      { label: 'Scan Tickets', href: '/app/tickets', icon: ScanLine },
     ],
   },
   {
     group: 'FINANCE',
     items: [
-      { label: 'Budget', href: '/costs', icon: Wallet },
-      { label: 'Cashflow', href: '/cashflow', icon: BarChart2 },
-      { label: 'Banking', href: '/banking', icon: Landmark },
-      { label: 'Invoicing', href: '/invoicing', icon: FileText },
-      { label: 'Sub Payments', href: '/payments', icon: Banknote },
+      { label: 'Budget', href: '/app/costs', icon: Wallet },
+      { label: 'Cashflow', href: '/app/cashflow', icon: BarChart2 },
+      { label: 'Banking', href: '/app/banking', icon: Landmark },
+      { label: 'Invoicing', href: '/app/invoicing', icon: FileText },
+      { label: 'Sub Payments', href: '/app/payments', icon: Banknote },
     ],
   },
   {
     group: 'CLIENTS',
     items: [
-      { label: 'Client Requests', href: '/requests', icon: Inbox },
-      { label: 'Client Portal', href: '/client-portal', icon: Users },
+      { label: 'Client Requests', href: '/app/requests', icon: Inbox },
+      { label: 'Client Portal', href: '/app/client-portal', icon: Users },
     ],
   },
   {
     group: 'NETWORK',
     items: [
-      { label: 'Sub Marketplace', href: '/marketplace', icon: Store },
-      { label: 'Suppliers', href: '/suppliers', icon: Building2 },
+      { label: 'Sub Marketplace', href: '/app/marketplace', icon: Store },
+      { label: 'Suppliers', href: '/app/suppliers', icon: Building2 },
     ],
   },
   {
     group: 'INTELLIGENCE',
     items: [
-      { label: 'AI Forecast', href: '/forecast', icon: TrendingUp },
+      { label: 'AI Forecast', href: '/app/forecast', icon: TrendingUp },
     ],
   },
   {
     group: 'SETTINGS',
     items: [
-      { label: 'Integrations', href: '/integrations', icon: Plug },
-      { label: 'Billing', href: '/users', icon: CreditCard },
+      { label: 'Integrations', href: '/app/integrations', icon: Plug },
+      { label: 'Billing', href: '/app/users', icon: CreditCard },
     ],
   },
 ]
