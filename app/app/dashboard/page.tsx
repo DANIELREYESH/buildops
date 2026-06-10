@@ -209,8 +209,9 @@ export default function DashboardPage() {
   const [checkinForm, setCheckinForm] = useState({ project_id: '', worker_name: '', message: '' })
 
   const load = useCallback(async () => {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { router.push('/'); return }
+    // TODO: Re-enable once Supabase Auth is wired up — auth is currently a placeholder
+    // const { data: { user } } = await supabase.auth.getUser()
+    // if (!user) { router.push('/'); return }
 
     const [{ data: ps }, { data: cs }, { data: cis }, { data: ts }, { data: subs }, invoicesRes] = await Promise.all([
       supabase.from('projects').select('*').order('created_at', { ascending: false }),
@@ -242,10 +243,10 @@ export default function DashboardPage() {
   const projName = (id: string | null) => projects.find(p => p.id === id)?.name ?? '—'
 
   const activity: ActivityItem[] = [
-    ...projects.slice(0, 3).map(p => ({ type: 'project' as const, label: `Project created: ${p.name}`, sub: p.client_name || 'No client', time: p.created_at, href: '/projects' })),
-    ...costs.slice(0, 3).map(c => ({ type: 'cost' as const, label: `Cost logged: ${c.supplier || c.category}`, sub: fmt(c.amount), time: c.created_at, href: '/costs' })),
-    ...checkins.slice(0, 3).map(c => ({ type: 'checkin' as const, label: `Check-in: ${c.worker_name}`, sub: projName(c.project_id), time: c.created_at, href: '/checkins' })),
-    ...tasks.slice(0, 3).map(t => ({ type: 'task' as const, label: `Task: ${t.title}`, sub: t.status, time: t.created_at, href: '/tasks' })),
+    ...projects.slice(0, 3).map(p => ({ type: 'project' as const, label: `Project created: ${p.name}`, sub: p.client_name || 'No client', time: p.created_at, href: '/app/projects' })),
+    ...costs.slice(0, 3).map(c => ({ type: 'cost' as const, label: `Cost logged: ${c.supplier || c.category}`, sub: fmt(c.amount), time: c.created_at, href: '/app/costs' })),
+    ...checkins.slice(0, 3).map(c => ({ type: 'checkin' as const, label: `Check-in: ${c.worker_name}`, sub: projName(c.project_id), time: c.created_at, href: '/app/checkins' })),
+    ...tasks.slice(0, 3).map(t => ({ type: 'task' as const, label: `Task: ${t.title}`, sub: t.status, time: t.created_at, href: '/app/tasks' })),
   ].sort((a, b) => b.time.localeCompare(a.time)).slice(0, 10)
 
   const handleCreateProject = async () => {
@@ -341,7 +342,7 @@ export default function DashboardPage() {
           <div className="col-span-2">
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-xs font-medium text-text-secondary">AI Check-ins</h2>
-              <button onClick={() => router.push('/checkins')} className="text-xs text-accent font-medium hover:text-accent-hover">View all →</button>
+              <button onClick={() => router.push('/app/checkins')} className="text-xs text-accent font-medium hover:text-accent-hover">View all →</button>
             </div>
             <div className="bg-surface border border-border rounded-xl divide-y divide-border overflow-hidden">
               {recentCheckins.length === 0 ? (
@@ -360,7 +361,7 @@ export default function DashboardPage() {
             {/* Projects table */}
             <div className="flex items-center justify-between mb-3 mt-6">
               <h2 className="text-xs font-medium text-text-secondary">Projects</h2>
-              <button onClick={() => router.push('/projects')} className="text-xs text-accent font-medium hover:text-accent-hover">View all →</button>
+              <button onClick={() => router.push('/app/projects')} className="text-xs text-accent font-medium hover:text-accent-hover">View all →</button>
             </div>
             <div className="bg-surface border border-border rounded-xl overflow-x-auto">
               <table className="w-full min-w-[480px]">
@@ -383,7 +384,7 @@ export default function DashboardPage() {
                     const spent = costs.filter(c => c.project_id === p.id).reduce((s, c) => s + c.amount, 0)
                     const over = (p.budget || 0) > 0 && spent > p.budget!
                     return (
-                      <tr key={p.id} onClick={() => router.push('/projects')} className="border-t border-border cursor-pointer hover:bg-muted/60 transition-colors transition-colors">
+                      <tr key={p.id} onClick={() => router.push('/app/projects')} className="border-t border-border cursor-pointer hover:bg-muted/60 transition-colors transition-colors">
                         <td className="px-4 py-2.5 text-xs font-medium text-text-primary max-w-[160px] truncate">{p.name}</td>
                         <td className="px-4 py-2.5 text-xs text-text-muted">{p.client_name || '—'}</td>
                         <td className="px-4 py-2.5 text-xs font-mono text-text-secondary">{p.budget ? fmt(p.budget) : '—'}</td>

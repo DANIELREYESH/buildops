@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 
 const PLAN_LABELS: Record<string, string> = {
@@ -12,7 +12,6 @@ const PLAN_LABELS: Record<string, string> = {
 }
 
 function SignupForm() {
-  const router = useRouter()
   const params = useSearchParams()
   const plan = params.get('plan') ?? ''
 
@@ -27,7 +26,8 @@ function SignupForm() {
     setLoading(true)
     // TODO: Replace with Supabase Auth
     await new Promise(r => setTimeout(r, 700))
-    router.push('/app/dashboard')
+    window.localStorage.setItem('buildops_logged_in', 'true')
+    window.location.href = '/app/dashboard'
   }
 
   const inputStyle: React.CSSProperties = {
